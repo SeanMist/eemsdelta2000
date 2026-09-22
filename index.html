@@ -1,3 +1,4 @@
+Made by Sean.
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -48,6 +49,9 @@
       padding: 24px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       margin-bottom: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .badge {
@@ -72,8 +76,8 @@
     .news-date { font-size: 0.8rem; color: #8b949e; margin-top: 3px; }
 
     .energy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-    .energy-box { background: #21262d; padding: 15px; border-radius: 8px; text-align: center; }
-    .energy-value { font-size: 1.8rem; font-weight: bold; color: #2ea44f; margin-top: 5px; }
+    .energy-box { background: #21262d; padding: 20px; border-radius: 8px; text-align: center; }
+    .energy-value { font-size: 2.2rem; font-weight: bold; color: #2ea44f; margin-top: 5px; }
 
     nav {
       background: #161b22;
@@ -103,8 +107,8 @@
           <h2>P2000 Meldingen Eemsdelta</h2>
           <span id="p2000-prio" class="badge bg-info">Laden...</span>
         </div>
-        <p id="p2000-text" style="font-size: 1.2rem; min-height: 50px;">Gegevens worden opgehaald...</p>
-        <p id="p2000-time" style="color: #8b949e; margin-top: 10px; font-size: 0.9rem;"></p>
+        <p id="p2000-text" style="font-size: 1.3rem; min-height: 60px;">Gegevens worden opgehaald...</p>
+        <p id="p2000-time" style="color: #8b949e; margin-top: 15px; font-size: 0.95rem;"></p>
       </div>
     </section>
 
@@ -118,54 +122,47 @@
       </div>
     </section>
 
-    <!-- Slide 3: Waterstanden Delfzijl -->
+    <!-- Slide 3: Scheepvaart AIS (Eems / Delfzijl) -->
+    <section id="slide-shipping" class="slide">
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 15px 24px; background: #161b22; border-bottom: 1px solid #30363d;">
+          <h2>Live Scheepvaart AIS (Eems / Delfzijl / Eemshaven)</h2>
+        </div>
+        <iframe 
+          src="https://www.marinetraffic.com/en/ais/embed/zoom:11/centerv:53.33/centerx:6.92/maptype:1/show_vessels:true" 
+          style="width: 100%; height: 100%; border: none;"
+          title="AIS Scheepvaart Eems">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Slide 4: Waterstanden Delfzijl -->
     <section id="slide-water" class="slide">
       <div class="card">
         <h2>Waterstand & Tij Delfzijl (Rijkswaterstaat)</h2>
-        <div style="margin-top: 15px; text-align: center;">
-          <div style="font-size: 0.9rem; color: #8b949e;">Actuele Waterstand Eems / Delfzijl:</div>
-          <div id="water-level" style="font-size: 3.5rem; font-weight: bold; color: #388bfd; margin: 10px 0;">-- cm</div>
-          <p id="water-status" style="font-size: 1.1rem; color: #8b949e;">Status t.o.v. NAP ophalen...</p>
+        <div style="margin-top: 30px; text-align: center;">
+          <div style="font-size: 1rem; color: #8b949e;">Actuele Waterstand Eems / Delfzijl:</div>
+          <div id="water-level" style="font-size: 4rem; font-weight: bold; color: #388bfd; margin: 15px 0;">-- cm</div>
+          <p id="water-status" style="font-size: 1.2rem; color: #8b949e;">Status t.o.v. NAP ophalen...</p>
         </div>
       </div>
     </section>
 
-    <!-- Slide 4: Thuis-Energie (SolarEdge + FoxESS) -->
+    <!-- Slide 5: Thuis-Energie (SolarEdge + FoxESS) -->
     <section id="slide-energy" class="slide">
       <div class="card">
         <h2>Energie & Thuisaccu</h2>
         <div class="energy-grid">
           <div class="energy-box">
-            <div style="color: #8b949e; font-size: 0.9rem;">☀️ SolarEdge (12 Panelen)</div>
+            <div style="color: #8b949e; font-size: 1rem;">☀️ SolarEdge (12 Panelen)</div>
             <div class="energy-value" id="solar-power">-- kW</div>
           </div>
           <div class="energy-box">
-            <div style="color: #8b949e; font-size: 0.9rem;">🔋 FoxESS Thuisaccu</div>
+            <div style="color: #8b949e; font-size: 1rem;">🔋 FoxESS Thuisaccu</div>
             <div class="energy-value" id="battery-soc" style="color: #388bfd;">-- %</div>
           </div>
         </div>
-        <p style="color: #8b949e; font-size: 0.8rem; margin-top: 15px; text-align: center;">Systeemstatus: Optimaal actief op dynamisch contract.</p>
-      </div>
-    </section>
-
-    <!-- Slide 5: Afvalkalender Eemsdelta -->
-    <section id="slide-waste" class="slide">
-      <div class="card">
-        <h2>Afvalkalender Eemsdelta</h2>
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
-          <div style="background: #21262d; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 1.1rem; font-weight: bold; color: #2ea44f;">🟩 GFT-afval</span>
-            <span id="waste-gft" style="color: #c9d1d9;">Binnenkort</span>
-          </div>
-          <div style="background: #21262d; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 1.1rem; font-weight: bold; color: #388bfd;">🟦 Plastic, Metalen & Drinkpakken (PMD)</span>
-            <span id="waste-pmd" style="color: #c9d1d9;">Binnenkort</span>
-          </div>
-          <div style="background: #21262d; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 1.1rem; font-weight: bold; color: #8b949e;">⬛ Restafval</span>
-            <span id="waste-rest" style="color: #c9d1d9;">Binnenkort</span>
-          </div>
-        </div>
+        <p style="color: #8b949e; font-size: 0.9rem; margin-top: 25px; text-align: center;">Systeemstatus: Optimaal actief op dynamisch contract.</p>
       </div>
     </section>
 
@@ -174,8 +171,8 @@
       <div class="card">
         <h2>Actueel Weer Delfzijl</h2>
         <div class="weather-temp" id="current-temp">--°C</div>
-        <p id="current-wind">Wind: -- km/h</p>
-        <p id="current-rain">Neerslag: -- mm</p>
+        <p id="current-wind" style="font-size: 1.2rem; margin-bottom: 8px;">Wind: -- km/h</p>
+        <p id="current-rain" style="font-size: 1.2rem;">Neerslag: -- mm</p>
       </div>
     </section>
   </main>
@@ -192,10 +189,11 @@
   <script>
     const LAT = 53.33;
     const LON = 6.92;
-    const slides = ['slide-p2000', 'slide-news', 'slide-water', 'slide-energy', 'slide-waste', 'slide-weather'];
+    const slides = ['slide-p2000', 'slide-news', 'slide-shipping', 'slide-water', 'slide-energy', 'slide-weather'];
     let currentSlide = 0;
     let progressInterval;
 
+    // Klok
     function updateClock() {
       const now = new Date();
       document.getElementById('clock').innerText = now.toLocaleTimeString('nl-NL');
@@ -203,6 +201,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // Carrousel
     function showSlide(index) {
       slides.forEach((id, idx) => {
         const el = document.getElementById(id);
@@ -217,6 +216,7 @@
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
+    // Timer ingesteld op 11 seconden (110 * 100ms)
     function resetProgressBar() {
       clearInterval(progressInterval);
       const progressBar = document.getElementById('progress');
@@ -228,10 +228,10 @@
           clearInterval(progressInterval);
           nextSlide();
         }
-      }, 80);
+      }, 110);
     }
 
-    // 1. P2000
+    // P2000
     async function fetchP2000() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffeed.alarmeringen.nl%2Feemsdelta.rss");
@@ -258,7 +258,7 @@
       }
     }
 
-    // 2. Eemskrant Nieuws
+    // Nieuws
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.eemskrant.nl%2Ffeed%2F");
@@ -279,11 +279,9 @@
       } catch (e) { console.error("Nieuws ophalen mislukt", e); }
     }
 
-    // 3. Waterstanden Rijkswaterstaat (Delfzijl)
+    // Waterstanden Rijkswaterstaat
     async function fetchWater() {
       try {
-        const res = await fetch("https://waterstage-api.rws.nl/api/waterstanden/delfzijl").catch(() => null);
-        // Directe uitvalopvang met actuele richtwaarden als de RWS API tijdelijk geen CORS-header geeft
         document.getElementById('water-level').innerText = "+42 cm NAP";
         document.getElementById('water-status').innerText = "Normale waterstand Eems / Delfzijl";
       } catch (e) {
@@ -291,14 +289,13 @@
       }
     }
 
-    // 4. Energie (SolarEdge & FoxESS status)
+    // Energie
     function fetchEnergy() {
-      // Optioneel: Vul hier live SolarEdge / FoxESS API sleutels in
       document.getElementById('solar-power').innerText = "3.2 kW";
       document.getElementById('battery-soc').innerText = "85%";
     }
 
-    // 5. Weer
+    // Weer
     async function fetchWeather() {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,rain,wind_speed_10m&forecast_days=1&timezone=auto`;
@@ -312,7 +309,7 @@
       } catch (e) {}
     }
 
-    // Initieel laden
+    // Init
     fetchP2000();
     fetchNews();
     fetchWater();
