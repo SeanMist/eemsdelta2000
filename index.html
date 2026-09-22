@@ -29,10 +29,10 @@
     .progress-bar-container { width: 100%; height: 4px; background: #21262d; }
     .progress-bar { height: 100%; width: 0%; background: #58a6ff; transition: width 0.1s linear; }
 
-    main { flex: 1; position: relative; padding: 25px; overflow: hidden; }
+    main { flex: 1; position: relative; padding: 20px; overflow: hidden; }
     .slide {
       position: absolute;
-      top: 25px; left: 25px; right: 25px; bottom: 25px;
+      top: 20px; left: 20px; right: 20px; bottom: 20px;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.6s ease-in-out, visibility 0.6s;
@@ -66,8 +66,6 @@
     .bg-info { background-color: #238636; }
 
     .weather-temp { font-size: 3.5rem; font-weight: bold; color: #f0f6fc; margin: 10px 0; }
-    .grid-forecast { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; }
-    .forecast-item { background: #21262d; padding: 12px; border-radius: 8px; text-align: center; }
 
     .news-item { border-bottom: 1px solid #30363d; padding: 10px 0; }
     .news-item:last-child { border-bottom: none; }
@@ -86,7 +84,7 @@
       gap: 10px;
       padding: 12px;
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; transition: background 0.3s; }
     .dot.active { background: #58a6ff; }
   </style>
 </head>
@@ -99,7 +97,7 @@
   <div class="progress-bar-container"><div class="progress-bar" id="progress"></div></div>
 
   <main>
-    <!-- Slide 1: P2000 (Index 0) -->
+    <!-- Slide 1: P2000 -->
     <section id="slide-p2000" class="slide active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -121,21 +119,45 @@
       </div>
     </section>
 
-    <!-- Slide 3: Scheepvaart AIS (Eems / Delfzijl) -->
+    <!-- Slide 3: Regionaal Nieuws (RTV Noord) -->
+    <section id="slide-rtvnoord" class="slide">
+      <div class="card">
+        <h2>Regionaal Nieuws (RTV Noord)</h2>
+        <div id="rtvnoord-container" style="margin-top: 15px;">
+          <p>RTV Noord berichten laden...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Scheepvaart AIS VesselFinder (Eems t.h.v. Delfzijl) -->
     <section id="slide-shipping" class="slide">
       <div class="card" style="padding: 0; overflow: hidden;">
-        <div style="padding: 15px 24px; background: #161b22; border-bottom: 1px solid #30363d;">
-          <h2>Live Scheepvaart AIS (Eems / Delfzijl / Eemshaven)</h2>
+        <div style="padding: 12px 20px; background: #161b22; border-bottom: 1px solid #30363d;">
+          <h2>Live Scheepvaart AIS (Eems t.h.v. Delfzijl)</h2>
         </div>
         <iframe 
-          src="https://www.marinetraffic.com/en/ais/embed/zoom:11/centerv:53.33/centerx:6.92/maptype:1/show_vessels:true" 
+          src="https://www.vesselfinder.com/aismap?zoom=11&lat=53.33&lon=6.92&width=100%25&height=100%25&names=true&mmsi=0&track=0&fleet=false&fleet_name=false&fleet_timespan=12&clicktoact=false&store_pos=true" 
           style="width: 100%; height: 100%; border: none;"
-          title="AIS Scheepvaart Eems">
+          title="AIS Scheepvaart Eems Delfzijl">
         </iframe>
       </div>
     </section>
 
-    <!-- Slide 4: Waterstanden Delfzijl -->
+    <!-- Slide 5: Live Vliegverkeer (Eemsdelta / Groningen) -->
+    <section id="slide-flights" class="slide">
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 12px 20px; background: #161b22; border-bottom: 1px solid #30363d;">
+          <h2>Live Vliegverkeer (Boven Eemsdelta & Regio Groningen)</h2>
+        </div>
+        <iframe 
+          src="https://www.radarbox.com/widget?lat=53.33&lng=6.92&zoom=9&theme=dark" 
+          style="width: 100%; height: 100%; border: none;"
+          title="Live Vliegverkeer Eemsdelta">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Slide 6: Waterstanden Delfzijl -->
     <section id="slide-water" class="slide">
       <div class="card">
         <h2>Waterstand & Tij Delfzijl (Rijkswaterstaat)</h2>
@@ -147,7 +169,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: Thuis-Energie (SolarEdge + FoxESS) -->
+    <!-- Slide 7: Thuis-Energie (SolarEdge + FoxESS) -->
     <section id="slide-energy" class="slide">
       <div class="card">
         <h2>Energie & Thuisaccu</h2>
@@ -165,7 +187,7 @@
       </div>
     </section>
 
-    <!-- Slide 6: Actueel Weer -->
+    <!-- Slide 8: Actueel Weer -->
     <section id="slide-weather" class="slide">
       <div class="card">
         <h2>Actueel Weer Delfzijl</h2>
@@ -183,15 +205,26 @@
     <div class="dot" onclick="goToSlide(3)"></div>
     <div class="dot" onclick="goToSlide(4)"></div>
     <div class="dot" onclick="goToSlide(5)"></div>
+    <div class="dot" onclick="goToSlide(6)"></div>
+    <div class="dot" onclick="goToSlide(7)"></div>
   </nav>
 
   <script>
     const LAT = 53.33;
     const LON = 6.92;
-    const slides = ['slide-p2000', 'slide-news', 'slide-shipping', 'slide-water', 'slide-energy', 'slide-weather'];
+    const slides = [
+      'slide-p2000', 
+      'slide-news', 
+      'slide-rtvnoord', 
+      'slide-shipping', 
+      'slide-flights', 
+      'slide-water', 
+      'slide-energy', 
+      'slide-weather'
+    ];
     let currentSlide = 0;
     let progressInterval;
-    let lastP2000Title = ""; // Onthoudt de laatste P2000-melding
+    let lastP2000Title = "";
 
     // Klok
     function updateClock() {
@@ -216,7 +249,7 @@
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
-    // Timer per slide: 11 seconden
+    // Timer per slide: 11 seconden (110 * 100ms)
     function resetProgressBar() {
       clearInterval(progressInterval);
       const progressBar = document.getElementById('progress');
@@ -231,72 +264,68 @@
       }, 110);
     }
 
-    // 1. P2000 met automatische 'spring naar P2000'-detectie
+    // 1. P2000 met Slimme Zoekfunctie voor Eemsdelta/Delfzijl
     async function fetchP2000() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
       const prioBadge = document.getElementById('p2000-prio');
 
-      const rssUrl = "https://feed.alarmeringen.nl/eemsdelta.rss";
-      let newTitle = "";
-      let newDate = "";
+      const feeds = [
+        "https://feed.alarmeringen.nl/eemsdelta.rss",
+        "https://feed.alarmeringen.nl/groningen.rss",
+        "https://alarmeringen.nl/feeds/all.rss"
+      ];
 
-      try {
-        let response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
-        let data = await response.json();
-        if (data && data.contents) {
-          let parser = new DOMParser();
-          let xmlDoc = parser.parseFromString(data.contents, "text/xml");
-          let firstItem = xmlDoc.querySelector("item");
-          if (firstItem) {
-            newTitle = firstItem.querySelector("title") ? firstItem.querySelector("title").textContent : "";
-            newDate = firstItem.querySelector("pubDate") ? firstItem.querySelector("pubDate").textContent : "";
-          }
-        }
-      } catch (e) {
-        console.warn("Primary P2000 failed, trying fallback...");
-      }
-
-      if (!newTitle) {
+      for (let feedUrl of feeds) {
         try {
-          let res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-          let data = await res.json();
-          if (data.status === 'ok' && data.items && data.items.length > 0) {
-            newTitle = data.items[0].title;
-            newDate = data.items[0].pubDate;
+          let response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`);
+          let data = await response.json();
+          
+          if (data && data.contents) {
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(data.contents, "text/xml");
+            let items = xmlDoc.querySelectorAll("item");
+
+            for (let item of items) {
+              let title = item.querySelector("title") ? item.querySelector("title").textContent : "";
+              let pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+
+              if (feedUrl.includes("eemsdelta") || title.toLowerCase().includes("delfzijl") || title.toLowerCase().includes("eemsdelta") || title.toLowerCase().includes("appingedam")) {
+                
+                p2000Text.innerText = title;
+                p2000Time.innerText = pubDate ? new Date(pubDate).toLocaleString('nl-NL') : "";
+
+                if (title.includes('Prio 1') || title.includes('A1')) {
+                  prioBadge.innerText = 'PRIO 1 / SPOED';
+                  prioBadge.className = 'badge bg-prio1';
+                } else if (title.includes('Prio 2') || title.includes('A2')) {
+                  prioBadge.innerText = 'PRIO 2';
+                  prioBadge.className = 'badge bg-prio2';
+                } else {
+                  prioBadge.innerText = 'INFO';
+                  prioBadge.className = 'badge bg-info';
+                }
+
+                // Spring direct naar P2000 als er een gloednieuwe melding binnenkomt
+                if (lastP2000Title !== "" && lastP2000Title !== title) {
+                  showSlide(0);
+                }
+                lastP2000Title = title;
+                return;
+              }
+            }
           }
-        } catch (err) {}
+        } catch (e) {
+          console.warn("P2000 feed overgeslagen...", e);
+        }
       }
 
-      if (newTitle) {
-        p2000Text.innerText = newTitle;
-        p2000Time.innerText = newDate ? new Date(newDate).toLocaleString('nl-NL') : "";
-
-        if (newTitle.includes('Prio 1') || newTitle.includes('A1')) {
-          prioBadge.innerText = 'PRIO 1 / SPOED';
-          prioBadge.className = 'badge bg-prio1';
-        } else if (newTitle.includes('Prio 2') || newTitle.includes('A2')) {
-          prioBadge.innerText = 'PRIO 2';
-          prioBadge.className = 'badge bg-prio2';
-        } else {
-          prioBadge.innerText = 'INFO';
-          prioBadge.className = 'badge bg-info';
-        }
-
-        // CONTROLEER OF ER EEN NIEUWE MELDING IS BINNENGEKOMEN
-        if (lastP2000Title !== "" && lastP2000Title !== newTitle) {
-          console.log("Nieuwe P2000 melding gedetecteerd! Springen naar P2000 slide...");
-          showSlide(0); // Spring direct naar P2000 (slide 0)
-        }
-        lastP2000Title = newTitle;
-      } else {
-        p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta gevonden.";
-        prioBadge.innerText = "INFO";
-        prioBadge.className = "badge bg-info";
-      }
+      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta/Delfzijl.";
+      prioBadge.innerText = "GEEN MELDINGEN";
+      prioBadge.className = "badge bg-info";
     }
 
-    // 2. Nieuws
+    // 2. Lokaal Nieuws (Eemskrant)
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.eemskrant.nl%2Ffeed%2F");
@@ -317,7 +346,30 @@
       } catch (e) {}
     }
 
-    // 3. Waterstanden Rijkswaterstaat
+    // 3. Regionaal Nieuws (RTV Noord)
+    async function fetchRTVNoord() {
+      try {
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.rtvnoord.nl%2Frss");
+        const data = await res.json();
+        const container = document.getElementById('rtvnoord-container');
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          container.innerHTML = '';
+          data.items.slice(0, 4).forEach(item => {
+            const dateStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            container.innerHTML += `
+              <div class="news-item">
+                <div class="news-title">${item.title}</div>
+                <div class="news-date">📅 ${dateStr}</div>
+              </div>
+            `;
+          });
+        }
+      } catch (e) {
+        console.warn("RTV Noord ophalen mislukt...", e);
+      }
+    }
+
+    // 4. Waterstanden Rijkswaterstaat
     async function fetchWater() {
       try {
         document.getElementById('water-level').innerText = "+42 cm NAP";
@@ -325,13 +377,13 @@
       } catch (e) {}
     }
 
-    // 4. Energie
+    // 5. Energie
     function fetchEnergy() {
       document.getElementById('solar-power').innerText = "3.2 kW";
       document.getElementById('battery-soc').innerText = "85%";
     }
 
-    // 5. Weer
+    // 6. Weer (Open-Meteo)
     async function fetchWeather() {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,rain,wind_speed_10m&forecast_days=1&timezone=auto`;
@@ -348,14 +400,16 @@
     // Initieel laden
     fetchP2000();
     fetchNews();
+    fetchRTVNoord();
     fetchWater();
     fetchEnergy();
     fetchWeather();
     resetProgressBar();
 
-    // Verversings-intervals (Controleert elke 20 sec op nieuwe P2000)
+    // Verversings-intervals
     setInterval(fetchP2000, 20000);
     setInterval(fetchNews, 300000);
+    setInterval(fetchRTVNoord, 300000);
     setInterval(fetchWater, 600000);
     setInterval(fetchWeather, 600000);
   </script>
