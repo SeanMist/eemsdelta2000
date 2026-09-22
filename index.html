@@ -215,7 +215,7 @@
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
-    // Timer ingesteld op 11 seconden per slide
+    // Timer per slide: 11 seconden
     function resetProgressBar() {
       clearInterval(progressInterval);
       const progressBar = document.getElementById('progress');
