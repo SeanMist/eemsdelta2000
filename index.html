@@ -29,10 +29,10 @@
     .progress-bar-container { width: 100%; height: 4px; background: #21262d; }
     .progress-bar { height: 100%; width: 0%; background: #58a6ff; transition: width 0.1s linear; }
 
-    main { flex: 1; position: relative; padding: 20px; overflow: hidden; }
+    main { flex: 1; position: relative; padding: 25px; overflow: hidden; }
     .slide {
       position: absolute;
-      top: 20px; left: 20px; right: 20px; bottom: 20px;
+      top: 25px; left: 25px; right: 25px; bottom: 25px;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.6s ease-in-out, visibility 0.6s;
@@ -84,7 +84,7 @@
       gap: 10px;
       padding: 12px;
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; transition: background 0.3s; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
     .dot.active { background: #58a6ff; }
   </style>
 </head>
@@ -129,30 +129,30 @@
       </div>
     </section>
 
-    <!-- Slide 4: Scheepvaart AIS VesselFinder (Eems t.h.v. Delfzijl) -->
+    <!-- Slide 4: Live Scheepvaart AIS (MarineTraffic) -->
     <section id="slide-shipping" class="slide">
       <div class="card" style="padding: 0; overflow: hidden;">
         <div style="padding: 12px 20px; background: #161b22; border-bottom: 1px solid #30363d;">
           <h2>Live Scheepvaart AIS (Eems t.h.v. Delfzijl)</h2>
         </div>
         <iframe 
-          src="https://www.vesselfinder.com/aismap?zoom=11&lat=53.33&lon=6.92&width=100%25&height=100%25&names=true&mmsi=0&track=0&fleet=false&fleet_name=false&fleet_timespan=12&clicktoact=false&store_pos=true" 
+          src="https://www.marinetraffic.com/en/ais/embed/zoom:11/centerv:53.33/centerx:6.92/maptype:1/show_vessels:true" 
           style="width: 100%; height: 100%; border: none;"
           title="AIS Scheepvaart Eems Delfzijl">
         </iframe>
       </div>
     </section>
 
-    <!-- Slide 5: Live Vliegverkeer (Eemsdelta / Groningen) -->
-    <section id="slide-flights" class="slide">
+    <!-- Slide 5: Live Vliegverkeer (ADSBexchange) -->
+    <section id="slide-flight" class="slide">
       <div class="card" style="padding: 0; overflow: hidden;">
         <div style="padding: 12px 20px; background: #161b22; border-bottom: 1px solid #30363d;">
-          <h2>Live Vliegverkeer (Boven Eemsdelta & Regio Groningen)</h2>
+          <h2>Live Vliegverkeer Boven Eemsdelta (ADSBexchange)</h2>
         </div>
         <iframe 
-          src="https://www.radarbox.com/widget?lat=53.33&lng=6.92&zoom=9&theme=dark" 
+          src="https://globe.adsbexchange.com/?lat=53.33&lon=6.92&zoom=9.5" 
           style="width: 100%; height: 100%; border: none;"
-          title="Live Vliegverkeer Eemsdelta">
+          title="ADSBexchange Vliegverkeer Eemsdelta">
         </iframe>
       </div>
     </section>
@@ -212,16 +212,7 @@
   <script>
     const LAT = 53.33;
     const LON = 6.92;
-    const slides = [
-      'slide-p2000', 
-      'slide-news', 
-      'slide-rtvnoord', 
-      'slide-shipping', 
-      'slide-flights', 
-      'slide-water', 
-      'slide-energy', 
-      'slide-weather'
-    ];
+    const slides = ['slide-p2000', 'slide-news', 'slide-rtvnoord', 'slide-shipping', 'slide-flight', 'slide-water', 'slide-energy', 'slide-weather'];
     let currentSlide = 0;
     let progressInterval;
     let lastP2000Title = "";
@@ -249,7 +240,7 @@
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
-    // Timer per slide: 11 seconden (110 * 100ms)
+    // Timer per slide: 11 seconden
     function resetProgressBar() {
       clearInterval(progressInterval);
       const progressBar = document.getElementById('progress');
@@ -306,7 +297,6 @@
                   prioBadge.className = 'badge bg-info';
                 }
 
-                // Spring direct naar P2000 als er een gloednieuwe melding binnenkomt
                 if (lastP2000Title !== "" && lastP2000Title !== title) {
                   showSlide(0);
                 }
@@ -316,7 +306,7 @@
             }
           }
         } catch (e) {
-          console.warn("P2000 feed overgeslagen...", e);
+          console.warn("Feed overgeslagen...", e);
         }
       }
 
@@ -364,9 +354,7 @@
             `;
           });
         }
-      } catch (e) {
-        console.warn("RTV Noord ophalen mislukt...", e);
-      }
+      } catch (e) {}
     }
 
     // 4. Waterstanden Rijkswaterstaat
@@ -383,7 +371,7 @@
       document.getElementById('battery-soc').innerText = "85%";
     }
 
-    // 6. Weer (Open-Meteo)
+    // 6. Weer
     async function fetchWeather() {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,rain,wind_speed_10m&forecast_days=1&timezone=auto`;
