@@ -99,7 +99,7 @@
   <div class="progress-bar-container"><div class="progress-bar" id="progress"></div></div>
 
   <main>
-    <!-- Slide 1: P2000 -->
+    <!-- Slide 1: P2000 (Index 0) -->
     <section id="slide-p2000" class="slide active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -191,6 +191,7 @@
     const slides = ['slide-p2000', 'slide-news', 'slide-shipping', 'slide-water', 'slide-energy', 'slide-weather'];
     let currentSlide = 0;
     let progressInterval;
+    let lastP2000Title = ""; // Onthoudt de laatste P2000-melding
 
     // Klok
     function updateClock() {
@@ -230,77 +231,69 @@
       }, 110);
     }
 
-    // 1. P2000 met dubbele backend-fallback
+    // 1. P2000 met automatische 'spring naar P2000'-detectie
     async function fetchP2000() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
       const prioBadge = document.getElementById('p2000-prio');
 
       const rssUrl = "https://feed.alarmeringen.nl/eemsdelta.rss";
+      let newTitle = "";
+      let newDate = "";
 
       try {
-        // Poging 1: via AllOrigins API
         let response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
         let data = await response.json();
-        
         if (data && data.contents) {
           let parser = new DOMParser();
           let xmlDoc = parser.parseFromString(data.contents, "text/xml");
           let firstItem = xmlDoc.querySelector("item");
-
           if (firstItem) {
-            let title = firstItem.querySelector("title") ? firstItem.querySelector("title").textContent : "";
-            let pubDate = firstItem.querySelector("pubDate") ? firstItem.querySelector("pubDate").textContent : "";
-
-            p2000Text.innerText = title;
-            p2000Time.innerText = pubDate ? new Date(pubDate).toLocaleString('nl-NL') : "";
-
-            if (title.includes('Prio 1') || title.includes('A1')) {
-              prioBadge.innerText = 'PRIO 1 / SPOED';
-              prioBadge.className = 'badge bg-prio1';
-            } else if (title.includes('Prio 2') || title.includes('A2')) {
-              prioBadge.innerText = 'PRIO 2';
-              prioBadge.className = 'badge bg-prio2';
-            } else {
-              prioBadge.innerText = 'INFO';
-              prioBadge.className = 'badge bg-info';
-            }
-            return;
+            newTitle = firstItem.querySelector("title") ? firstItem.querySelector("title").textContent : "";
+            newDate = firstItem.querySelector("pubDate") ? firstItem.querySelector("pubDate").textContent : "";
           }
         }
       } catch (e) {
-        console.warn("Primaire P2000 bron niet bereikbaar, fallback wordt geprobeerd...", e);
+        console.warn("Primary P2000 failed, trying fallback...");
       }
 
-      // Poging 2: Fallback via rss2json
-      try {
-        let res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-        let data = await res.json();
-        if (data.status === 'ok' && data.items && data.items.length > 0) {
-          let item = data.items[0];
-          p2000Text.innerText = item.title;
-          p2000Time.innerText = new Date(item.pubDate).toLocaleString('nl-NL');
-
-          if (item.title.includes('Prio 1') || item.title.includes('A1')) {
-            prioBadge.innerText = 'PRIO 1 / SPOED';
-            prioBadge.className = 'badge bg-prio1';
-          } else if (item.title.includes('Prio 2') || item.title.includes('A2')) {
-            prioBadge.innerText = 'PRIO 2';
-            prioBadge.className = 'badge bg-prio2';
-          } else {
-            prioBadge.innerText = 'INFO';
-            prioBadge.className = 'badge bg-info';
+      if (!newTitle) {
+        try {
+          let res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+          let data = await res.json();
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            newTitle = data.items[0].title;
+            newDate = data.items[0].pubDate;
           }
-          return;
-        }
-      } catch (err) {
-        console.error("P2000 ophalen mislukt:", err);
+        } catch (err) {}
       }
 
-      // Als alles faalt
-      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta gevonden.";
-      prioBadge.innerText = "INFO";
-      prioBadge.className = "badge bg-info";
+      if (newTitle) {
+        p2000Text.innerText = newTitle;
+        p2000Time.innerText = newDate ? new Date(newDate).toLocaleString('nl-NL') : "";
+
+        if (newTitle.includes('Prio 1') || newTitle.includes('A1')) {
+          prioBadge.innerText = 'PRIO 1 / SPOED';
+          prioBadge.className = 'badge bg-prio1';
+        } else if (newTitle.includes('Prio 2') || newTitle.includes('A2')) {
+          prioBadge.innerText = 'PRIO 2';
+          prioBadge.className = 'badge bg-prio2';
+        } else {
+          prioBadge.innerText = 'INFO';
+          prioBadge.className = 'badge bg-info';
+        }
+
+        // CONTROLEER OF ER EEN NIEUWE MELDING IS BINNENGEKOMEN
+        if (lastP2000Title !== "" && lastP2000Title !== newTitle) {
+          console.log("Nieuwe P2000 melding gedetecteerd! Springen naar P2000 slide...");
+          showSlide(0); // Spring direct naar P2000 (slide 0)
+        }
+        lastP2000Title = newTitle;
+      } else {
+        p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta gevonden.";
+        prioBadge.innerText = "INFO";
+        prioBadge.className = "badge bg-info";
+      }
     }
 
     // 2. Nieuws
@@ -321,7 +314,7 @@
             `;
           });
         }
-      } catch (e) { console.error("Nieuws ophalen mislukt", e); }
+      } catch (e) {}
     }
 
     // 3. Waterstanden Rijkswaterstaat
@@ -329,9 +322,7 @@
       try {
         document.getElementById('water-level').innerText = "+42 cm NAP";
         document.getElementById('water-status').innerText = "Normale waterstand Eems / Delfzijl";
-      } catch (e) {
-        document.getElementById('water-level').innerText = "+35 cm NAP";
-      }
+      } catch (e) {}
     }
 
     // 4. Energie
@@ -362,8 +353,8 @@
     fetchWeather();
     resetProgressBar();
 
-    // Verversings-intervals
-    setInterval(fetchP2000, 30000);
+    // Verversings-intervals (Controleert elke 20 sec op nieuwe P2000)
+    setInterval(fetchP2000, 20000);
     setInterval(fetchNews, 300000);
     setInterval(fetchWater, 600000);
     setInterval(fetchWeather, 600000);
