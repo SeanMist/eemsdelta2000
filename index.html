@@ -1,4 +1,3 @@
-Made by Sean.
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -216,7 +215,7 @@ Made by Sean.
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
-    // Timer ingesteld op 11 seconden (110 * 100ms)
+    // Timer ingesteld op 11 seconden per slide
     function resetProgressBar() {
       clearInterval(progressInterval);
       const progressBar = document.getElementById('progress');
@@ -231,17 +230,57 @@ Made by Sean.
       }, 110);
     }
 
-    // P2000
+    // 1. P2000 met dubbele backend-fallback
     async function fetchP2000() {
-      try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffeed.alarmeringen.nl%2Feemsdelta.rss");
-        const data = await res.json();
-        if (data.status === 'ok' && data.items && data.items.length > 0) {
-          const item = data.items[0];
-          document.getElementById('p2000-text').innerText = item.title;
-          document.getElementById('p2000-time').innerText = new Date(item.pubDate).toLocaleString('nl-NL');
+      const p2000Text = document.getElementById('p2000-text');
+      const p2000Time = document.getElementById('p2000-time');
+      const prioBadge = document.getElementById('p2000-prio');
 
-          const prioBadge = document.getElementById('p2000-prio');
+      const rssUrl = "https://feed.alarmeringen.nl/eemsdelta.rss";
+
+      try {
+        // Poging 1: via AllOrigins API
+        let response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
+        let data = await response.json();
+        
+        if (data && data.contents) {
+          let parser = new DOMParser();
+          let xmlDoc = parser.parseFromString(data.contents, "text/xml");
+          let firstItem = xmlDoc.querySelector("item");
+
+          if (firstItem) {
+            let title = firstItem.querySelector("title") ? firstItem.querySelector("title").textContent : "";
+            let pubDate = firstItem.querySelector("pubDate") ? firstItem.querySelector("pubDate").textContent : "";
+
+            p2000Text.innerText = title;
+            p2000Time.innerText = pubDate ? new Date(pubDate).toLocaleString('nl-NL') : "";
+
+            if (title.includes('Prio 1') || title.includes('A1')) {
+              prioBadge.innerText = 'PRIO 1 / SPOED';
+              prioBadge.className = 'badge bg-prio1';
+            } else if (title.includes('Prio 2') || title.includes('A2')) {
+              prioBadge.innerText = 'PRIO 2';
+              prioBadge.className = 'badge bg-prio2';
+            } else {
+              prioBadge.innerText = 'INFO';
+              prioBadge.className = 'badge bg-info';
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Primaire P2000 bron niet bereikbaar, fallback wordt geprobeerd...", e);
+      }
+
+      // Poging 2: Fallback via rss2json
+      try {
+        let res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+        let data = await res.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          let item = data.items[0];
+          p2000Text.innerText = item.title;
+          p2000Time.innerText = new Date(item.pubDate).toLocaleString('nl-NL');
+
           if (item.title.includes('Prio 1') || item.title.includes('A1')) {
             prioBadge.innerText = 'PRIO 1 / SPOED';
             prioBadge.className = 'badge bg-prio1';
@@ -252,13 +291,19 @@ Made by Sean.
             prioBadge.innerText = 'INFO';
             prioBadge.className = 'badge bg-info';
           }
+          return;
         }
-      } catch (e) {
-        document.getElementById('p2000-text').innerText = "Geen actuele meldingen beschikbaar.";
+      } catch (err) {
+        console.error("P2000 ophalen mislukt:", err);
       }
+
+      // Als alles faalt
+      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta gevonden.";
+      prioBadge.innerText = "INFO";
+      prioBadge.className = "badge bg-info";
     }
 
-    // Nieuws
+    // 2. Nieuws
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.eemskrant.nl%2Ffeed%2F");
@@ -279,7 +324,7 @@ Made by Sean.
       } catch (e) { console.error("Nieuws ophalen mislukt", e); }
     }
 
-    // Waterstanden Rijkswaterstaat
+    // 3. Waterstanden Rijkswaterstaat
     async function fetchWater() {
       try {
         document.getElementById('water-level').innerText = "+42 cm NAP";
@@ -289,13 +334,13 @@ Made by Sean.
       }
     }
 
-    // Energie
+    // 4. Energie
     function fetchEnergy() {
       document.getElementById('solar-power').innerText = "3.2 kW";
       document.getElementById('battery-soc').innerText = "85%";
     }
 
-    // Weer
+    // 5. Weer
     async function fetchWeather() {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,rain,wind_speed_10m&forecast_days=1&timezone=auto`;
@@ -309,7 +354,7 @@ Made by Sean.
       } catch (e) {}
     }
 
-    // Init
+    // Initieel laden
     fetchP2000();
     fetchNews();
     fetchWater();
