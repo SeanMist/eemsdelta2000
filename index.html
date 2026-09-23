@@ -68,16 +68,33 @@
     .bg-prio2 { background-color: #d29922; color: #0d1117; }
     .bg-info { background-color: #238636; }
 
+    /* Nieuws met Afbeeldingen */
+    .news-item-img {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid #30363d;
+      padding: 10px 0;
+    }
+    .news-item-img:last-child { border-bottom: none; }
+    .news-thumb {
+      width: 90px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background-color: #21262d;
+      flex-shrink: 0;
+    }
+    .news-content { flex: 1; }
+    .news-title { font-weight: 700; color: #58a6ff; font-size: 1.25rem; line-height: 1.3; }
+    .news-date { font-size: 0.95rem; color: #8b949e; margin-top: 4px; }
+
     /* Weer Typografie */
     .weather-temp-huge { font-size: 4.8rem; font-weight: 900; color: #f0f6fc; margin: 0; line-height: 1; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
     .grid-box { background: #21262d; padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
-
-    .news-item { border-bottom: 1px solid #30363d; padding: 12px 0; }
-    .news-item:last-child { border-bottom: none; }
-    .news-title { font-weight: 700; color: #58a6ff; font-size: 1.35rem; line-height: 1.3; }
-    .news-date { font-size: 1rem; color: #8b949e; margin-top: 4px; }
 
     nav {
       background: #161b22;
@@ -123,7 +140,7 @@
     <!-- Slide 2: Lokaal Nieuws (Eemskrant) -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
-        <h2 style="font-size: 1.8rem; margin-bottom: 15px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📰 Lokaal Nieuws (Eemskrant)</h2>
+        <h2 style="font-size: 1.8rem; margin-bottom: 10px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📰 Lokaal Nieuws (Eemskrant)</h2>
         <div id="news-container">
           <p style="font-size: 1.2rem;">Nieuwsberichten laden...</p>
         </div>
@@ -133,19 +150,18 @@
     <!-- Slide 3: Regionaal Nieuws (RTV Noord) -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
-        <h2 style="font-size: 1.8rem; margin-bottom: 15px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
+        <h2 style="font-size: 1.8rem; margin-bottom: 10px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
         <div id="rtvnoord-container">
           <p style="font-size: 1.2rem;">RTV Noord berichten laden...</p>
         </div>
       </div>
     </section>
 
-    <!-- Slide 4: Weer Compleet (Actueel + Details + 24u Verwachting) -->
+    <!-- Slide 4: Weer Compleet -->
     <section id="slide-weather" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🌤️ Weer & Verwachting Delfzijl</h2>
         
-        <!-- Actueel Weer Blok -->
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 5px 0;">
           <div class="weather-temp-huge" id="current-temp">--°C</div>
           <div style="text-align: left;">
@@ -160,7 +176,6 @@
           </div>
         </div>
 
-        <!-- 24-Uurs Grid -->
         <div style="margin-top: 5px;">
           <div style="color: #8b949e; font-size: 1rem; font-weight: 700; margin-bottom: 4px;">📈 Komende uren:</div>
           <div class="grid-forecast" id="forecast-container">
@@ -281,7 +296,7 @@
       }, 110);
     }
 
-    // P2000 Ophalen via betrouwbare RSS2JSON omzetter
+    // P2000
     async function fetchP2000() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
@@ -331,7 +346,7 @@
       prioBadge.className = "badge bg-info";
     }
 
-    // Nieuws feeds
+    // Nieuws feeds met Afbeeldingen
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.eemskrant.nl%2Ffeed%2F");
@@ -341,7 +356,19 @@
           container.innerHTML = '';
           data.items.slice(0, 3).forEach(item => {
             const dateStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            container.innerHTML += `<div class="news-item"><div class="news-title">${item.title}</div><div class="news-date">📅 ${dateStr}</div></div>`;
+            let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+            
+            let imgTag = imgUrl ? `<img src="${imgUrl}" class="news-thumb" alt="Nieuws foto">` : '';
+
+            container.innerHTML += `
+              <div class="news-item-img">
+                ${imgTag}
+                <div class="news-content">
+                  <div class="news-title">${item.title}</div>
+                  <div class="news-date">📅 ${dateStr}</div>
+                </div>
+              </div>
+            `;
           });
         }
       } catch (e) {}
@@ -356,7 +383,19 @@
           container.innerHTML = '';
           data.items.slice(0, 3).forEach(item => {
             const dateStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            container.innerHTML += `<div class="news-item"><div class="news-title">${item.title}</div><div class="news-date">📅 ${dateStr}</div></div>`;
+            let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+
+            let imgTag = imgUrl ? `<img src="${imgUrl}" class="news-thumb" alt="Nieuws foto">` : '';
+
+            container.innerHTML += `
+              <div class="news-item-img">
+                ${imgTag}
+                <div class="news-content">
+                  <div class="news-title">${item.title}</div>
+                  <div class="news-date">📅 ${dateStr}</div>
+                </div>
+              </div>
+            `;
           });
         }
       } catch (e) {}
