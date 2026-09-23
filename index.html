@@ -281,7 +281,7 @@
       }, 110);
     }
 
-    // P2000
+    // P2000 Ophalen via betrouwbare RSS2JSON omzetter
     async function fetchP2000() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
@@ -289,26 +289,22 @@
 
       const feeds = [
         "https://feed.alarmeringen.nl/eemsdelta.rss",
-        "https://feed.alarmeringen.nl/groningen.rss",
-        "https://alarmeringen.nl/feeds/all.rss"
+        "https://feed.alarmeringen.nl/groningen.rss"
       ];
 
       for (let feedUrl of feeds) {
         try {
-          let response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`);
-          let data = await response.json();
-          if (data && data.contents) {
-            let parser = new DOMParser();
-            let xmlDoc = parser.parseFromString(data.contents, "text/xml");
-            let items = xmlDoc.querySelectorAll("item");
+          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
+          const data = await res.json();
 
-            for (let item of items) {
-              let title = item.querySelector("title") ? item.querySelector("title").textContent : "";
-              let pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            for (let item of data.items) {
+              let title = item.title ? item.title.trim() : "";
+              let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
 
-              if (feedUrl.includes("eemsdelta") || title.toLowerCase().includes("delfzijl") || title.toLowerCase().includes("eemsdelta") || title.toLowerCase().includes("appingedam")) {
+              if (title !== "") {
                 p2000Text.innerText = title;
-                p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${new Date(pubDate).toLocaleString('nl-NL')}` : "";
+                p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
 
                 if (title.includes('Prio 1') || title.includes('A1')) {
                   prioBadge.innerText = 'PRIO 1 / SPOED';
@@ -317,7 +313,7 @@
                   prioBadge.innerText = 'PRIO 2';
                   prioBadge.className = 'badge bg-prio2';
                 } else {
-                  prioBadge.innerText = 'INFO';
+                  prioBadge.innerText = 'INFO / MELDING';
                   prioBadge.className = 'badge bg-info';
                 }
 
@@ -329,6 +325,7 @@
           }
         } catch (e) {}
       }
+
       p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta/Delfzijl.";
       prioBadge.innerText = "GEEN MELDINGEN";
       prioBadge.className = "badge bg-info";
@@ -377,7 +374,6 @@
           document.getElementById('current-rain').innerText = `Neerslag: ${data.current.rain} mm`;
           document.getElementById('current-humidity').innerText = `Vochtigheid: ${data.current.relative_humidity_2m}%`;
 
-          // Wind omrekenen naar Bft
           const kmh = data.current.wind_speed_10m;
           let bft = 1;
           if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
@@ -390,7 +386,6 @@
           document.getElementById('uv-status').innerText = uv > 5 ? 'Hoog' : 'Matig / Laag';
         }
 
-        // 24-uurs verwachting vullen
         const grid = document.getElementById('forecast-container');
         if (grid && data.hourly) {
           grid.innerHTML = '';
@@ -420,7 +415,7 @@
     fetchWeather();
     resetProgressBar();
 
-    setInterval(fetchP2000, 20000);
+    setInterval(fetchP2000, 15000);
     setInterval(fetchNews, 300000);
     setInterval(fetchRTVNoord, 300000);
     setInterval(fetchWeather, 600000);
