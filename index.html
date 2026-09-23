@@ -99,7 +99,7 @@
 
     .webcam-frame {
       width: 100%;
-      height: 280px;
+      height: 270px;
       object-fit: cover;
       border-radius: 10px;
       border: 2px solid #30363d;
@@ -150,16 +150,16 @@
       </div>
     </section>
 
-    <!-- Slide 2: Webcam Haven Delfzijl (Nieuw) -->
+    <!-- Slide 2: Live Cam Haven Delfzijl -->
     <section id="slide-webcam" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 8px;">
           <h2 style="font-size: 1.6rem;">🎥 Live Cam Haven Delfzijl</h2>
-          <span class="badge bg-info" style="font-size:0.9rem;">Auto-Refresh</span>
+          <span class="badge bg-info" style="font-size:0.9rem;">Auto-Refresh (30s)</span>
         </div>
         
         <div style="margin: 8px 0; text-align: center;">
-          <img id="haven-cam" src="https://images.webcams.travel/preview/1338408417.jpg" class="webcam-frame" alt="Webcam Haven Delfzijl">
+          <img id="haven-cam" src="https://images.weserv.nl/?url=webcams.windy.com/webcams/public/embed/1338408417/current" class="webcam-frame" alt="Webcam Haven Delfzijl">
         </div>
 
         <div style="background: #21262d; padding: 8px 15px; border-radius: 8px; border: 1px solid #30363d; text-align: center;">
@@ -216,7 +216,35 @@
       </div>
     </section>
 
-    <!-- Slide 6: Astronomie -->
+    <!-- Slide 6: Weer Groningen Stad -->
+    <section id="slide-weather-groningen" class="slide">
+      <div class="card">
+        <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🏙️ Weer & Verwachting Groningen Stad</h2>
+        
+        <div style="display: flex; align-items: center; justify-content: space-around; margin: 5px 0;">
+          <div class="weather-temp-huge" id="groningen-temp">--°C</div>
+          <div style="text-align: left;">
+            <p id="groningen-wind" style="font-size: 1.5rem; font-weight: 800; color: #58a6ff; margin-bottom: 4px;">Wind: -- Bft</p>
+            <p id="groningen-rain" style="font-size: 1.3rem; font-weight: 700; color: #388bfd;">Neerslag: -- mm</p>
+            <p id="groningen-humidity" style="font-size: 1.1rem; color: #8b949e;">Vochtigheid: --%</p>
+          </div>
+          <div style="text-align: center; background: #21262d; padding: 10px 15px; border-radius: 8px; border: 1px solid #30363d;">
+            <div style="color: #8b949e; font-size: 0.9rem;">☀️ UV-Index</div>
+            <div style="font-size: 2rem; font-weight: 900; color: #e3b341;" id="groningen-uv">--</div>
+            <div style="font-size: 0.9rem; color: #8b949e;" id="groningen-uv-status">--</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 5px;">
+          <div style="color: #8b949e; font-size: 1rem; font-weight: 700; margin-bottom: 4px;">📈 Komende uren Groningen:</div>
+          <div class="grid-forecast" id="groningen-forecast">
+            <p style="font-size: 1rem;">Verwachting laden...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Astronomie -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🌌 Astronomie & Zon Delfzijl</h2>
@@ -251,7 +279,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Actuele Brandstofprijzen -->
+    <!-- Slide 8: Actuele Brandstofprijzen -->
     <section id="slide-fuel" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">⛽ Actuele Brandstofprijzen Delfzijl</h2>
@@ -281,7 +309,7 @@
       </div>
     </section>
 
-    <!-- Slide 8: Live Openbaar Vervoer -->
+    <!-- Slide 9: Live Openbaar Vervoer -->
     <section id="slide-ov" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🚌🚆 Live Openbaar Vervoer</h2>
@@ -312,7 +340,7 @@
       </div>
     </section>
 
-    <!-- Slide 9: Getijden & Waterstand Delfzijl -->
+    <!-- Slide 10: Getijden & Waterstand Delfzijl -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🌊 Getijden & Waterstand Delfzijl</h2>
@@ -341,7 +369,7 @@
       </div>
     </section>
 
-    <!-- Slide 10: Verkeer, N33 & Bruggen -->
+    <!-- Slide 11: Verkeer, N33 & Bruggen -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -376,11 +404,14 @@
     <div class="dot" onclick="goToSlide(7)"></div>
     <div class="dot" onclick="goToSlide(8)"></div>
     <div class="dot" onclick="goToSlide(9)"></div>
+    <div class="dot" onclick="goToSlide(10)"></div>
   </nav>
 
   <script>
     const LAT_DELFZIJL = 53.33;
     const LON_DELFZIJL = 6.92;
+    const LAT_GRONINGEN = 53.22;
+    const LON_GRONINGEN = 6.57;
 
     const slides = [
       'slide-p2000', 
@@ -388,6 +419,7 @@
       'slide-news', 
       'slide-rtvnoord', 
       'slide-weather-delfzijl', 
+      'slide-weather-groningen',
       'slide-astro',
       'slide-fuel',
       'slide-ov',
@@ -433,11 +465,11 @@
       }, 110);
     }
 
-    // Auto-refresh Webcam Afbeelding elke 30 seconden
+    // Auto-refresh Webcam elke 30s via proxy
     function refreshWebcam() {
       const camImg = document.getElementById('haven-cam');
       if (camImg) {
-        camImg.src = "https://images.webcams.travel/preview/1338408417.jpg?timestamp=" + new Date().getTime();
+        camImg.src = "https://images.weserv.nl/?url=webcams.windy.com/webcams/public/embed/1338408417/current&t=" + new Date().getTime();
       }
     }
     setInterval(refreshWebcam, 30000);
@@ -545,44 +577,46 @@
       } catch (e) {}
     }
 
-    // Weer & Astronomie API (Open-Meteo)
-    async function fetchWeatherAndAstro() {
+    // Weer API (Open-Meteo)
+    async function fetchCityWeather(lat, lon, prefix) {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_DELFZIJL}&longitude=${LON_DELFZIJL}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
         const res = await fetch(url);
         const data = await res.json();
 
         if (data.current) {
-          document.getElementById('delfzijl-temp').innerText = `${Math.round(data.current.temperature_2m)}°C`;
-          document.getElementById('delfzijl-rain').innerText = `Neerslag: ${data.current.rain} mm`;
-          document.getElementById('delfzijl-humidity').innerText = `Vochtigheid: ${data.current.relative_humidity_2m}%`;
+          document.getElementById(`${prefix}-temp`).innerText = `${Math.round(data.current.temperature_2m)}°C`;
+          document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain} mm`;
+          document.getElementById(`${prefix}-humidity`).innerText = `Vochtigheid: ${data.current.relative_humidity_2m}%`;
 
           const kmh = data.current.wind_speed_10m;
           let bft = 1;
           if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
-          document.getElementById('delfzijl-wind').innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
+          document.getElementById(`${prefix}-wind`).innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
         }
 
         if (data.daily) {
           const uv = data.daily.uv_index_max[0];
-          document.getElementById('delfzijl-uv').innerText = uv;
-          document.getElementById('delfzijl-uv-status').innerText = uv > 5 ? 'Hoog' : 'Matig / Laag';
+          document.getElementById(`${prefix}-uv`).innerText = uv;
+          document.getElementById(`${prefix}-uv-status`).innerText = uv > 5 ? 'Hoog' : 'Matig / Laag';
 
-          if (data.daily.sunrise[0]) {
-            const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('sunrise-time').innerText = sunrise;
-          }
-          if (data.daily.sunset[0]) {
-            const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('sunset-time').innerText = sunset;
+          if (prefix === 'delfzijl') {
+            if (data.daily.sunrise[0]) {
+              const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+              document.getElementById('sunrise-time').innerText = sunrise;
+            }
+            if (data.daily.sunset[0]) {
+              const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+              document.getElementById('sunset-time').innerText = sunset;
 
-            const sunsetDate = new Date(data.daily.sunset[0]);
-            sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
-            document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+              const sunsetDate = new Date(data.daily.sunset[0]);
+              sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
+              document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            }
           }
         }
 
-        const grid = document.getElementById('delfzijl-forecast');
+        const grid = document.getElementById(`${prefix}-forecast`);
         if (grid && data.hourly) {
           grid.innerHTML = '';
           const nowHour = new Date().getHours();
@@ -603,6 +637,11 @@
           }
         }
       } catch (e) {}
+    }
+
+    function fetchAllWeather() {
+      fetchCityWeather(LAT_DELFZIJL, LON_DELFZIJL, 'delfzijl');
+      fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
     // Live Dynamische Berekende OV Tijden
@@ -628,14 +667,14 @@
     fetchP2000();
     fetchNews();
     fetchRTVNoord();
-    fetchWeatherAndAstro();
+    fetchAllWeather();
     calculateOVTimes();
     resetProgressBar();
 
     setInterval(fetchP2000, 15000);
     setInterval(fetchNews, 300000);
     setInterval(fetchRTVNoord, 300000);
-    setInterval(fetchWeatherAndAstro, 600000);
+    setInterval(fetchAllWeather, 600000);
   </script>
 </body>
 </html>
