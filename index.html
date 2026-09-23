@@ -53,7 +53,7 @@
       justify-content: space-between;
     }
 
-    /* Grote P2000 Badge */
+    /* Badges */
     .badge {
       display: inline-block;
       padding: 8px 18px;
@@ -67,6 +67,7 @@
     .bg-prio1 { background-color: #da3633; }
     .bg-prio2 { background-color: #d29922; color: #0d1117; }
     .bg-info { background-color: #238636; }
+    .bg-rain { background-color: #1f6feb; }
 
     /* Nieuws met Afbeeldingen */
     .news-item-img {
@@ -90,21 +91,12 @@
     .news-title { font-weight: 700; color: #58a6ff; font-size: 1.25rem; line-height: 1.3; }
     .news-date { font-size: 0.95rem; color: #8b949e; margin-top: 4px; }
 
-    /* Layout Grids & Webcam Styling */
+    /* Layout Grids */
     .weather-temp-huge { font-size: 4.8rem; font-weight: 900; color: #f0f6fc; margin: 0; line-height: 1; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
     .grid-box { background: #21262d; padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
-
-    .webcam-frame {
-      width: 100%;
-      height: 270px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid #30363d;
-      background: #21262d;
-    }
 
     .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 10px 15px; border-radius: 8px; border: 1px solid #30363d; margin-top: 8px; }
     .ov-time { font-size: 1.4rem; font-weight: 800; color: #2ea44f; }
@@ -124,7 +116,7 @@
 <body>
 
   <header>
-    <h1>Eemsdelta / Delfzijl Live</h1>
+    <h1>Eemsdelta / Delfzijl Live by seanmist</h1>
     <div id="clock">--:--:--</div>
   </header>
   <div class="progress-bar-container"><div class="progress-bar" id="progress"></div></div>
@@ -150,20 +142,36 @@
       </div>
     </section>
 
-    <!-- Slide 2: Live Cam Haven Delfzijl -->
-    <section id="slide-webcam" class="slide">
+    <!-- Slide 2: Buienalarm Delfzijl -->
+    <section id="slide-buienalarm" class="slide">
       <div class="card" style="justify-content: space-between;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 8px;">
-          <h2 style="font-size: 1.6rem;">🎥 Live Cam Haven Delfzijl</h2>
-          <span class="badge bg-info" style="font-size:0.9rem;">Auto-Refresh (30s)</span>
-        </div>
-        
-        <div style="margin: 8px 0; text-align: center;">
-          <img id="haven-cam" src="https://images.weserv.nl/?url=webcams.windy.com/webcams/public/embed/1338408417/current" class="webcam-frame" alt="Webcam Haven Delfzijl">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 10px;">
+          <h2 style="font-size: 1.8rem;">🌧️ Buienalarm Delfzijl</h2>
+          <span id="rain-badge" class="badge bg-rain">Droog</span>
         </div>
 
-        <div style="background: #21262d; padding: 8px 15px; border-radius: 8px; border: 1px solid #30363d; text-align: center;">
-          <p style="color: #8b949e; font-size: 0.95rem;">⚓ Live zicht op de havenkom & Eems-Estuarium Delfzijl</p>
+        <div style="text-align: center; margin: 15px 0;">
+          <p id="rain-status" style="font-size: 2.4rem; font-weight: 900; color: #f0f6fc;">
+            Momenteel geen neerslag verwacht
+          </p>
+          <p id="rain-detail" style="font-size: 1.5rem; color: #58a6ff; font-weight: 700; margin-top: 10px;">
+            Het blijft de komende 2 uur droog in Delfzijl
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">🌧️ Verwachte Neerslag</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #388bfd; margin-top: 4px;" id="rain-mm">0.0 mm/u</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">⏱️ Eerstvolgende Bui</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #f0f6fc; margin-top: 4px;" id="rain-start">Geen</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">⚡ Buien-Intensiteit</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #2ea44f; margin-top: 4px;" id="rain-intensity">Geen</div>
+          </div>
         </div>
       </div>
     </section>
@@ -414,8 +422,8 @@
     const LON_GRONINGEN = 6.57;
 
     const slides = [
-      'slide-p2000', 
-      'slide-webcam',
+      'slide-p2000',
+      'slide-buienalarm', 
       'slide-news', 
       'slide-rtvnoord', 
       'slide-weather-delfzijl', 
@@ -465,14 +473,65 @@
       }, 110);
     }
 
-    // Auto-refresh Webcam elke 30s via proxy
-    function refreshWebcam() {
-      const camImg = document.getElementById('haven-cam');
-      if (camImg) {
-        camImg.src = "https://images.weserv.nl/?url=webcams.windy.com/webcams/public/embed/1338408417/current&t=" + new Date().getTime();
+    // Buienalarm live data ophalen
+    async function fetchBuienalarm() {
+      try {
+        const url = `https://api.buienradar.nl/3.0/neerslag/2/line?lat=${LAT_DELFZIJL}&lon=${LON_DELFZIJL}`;
+        const res = await fetch(url);
+        const text = await res.text();
+        
+        // Buienradar API stuurt regels met "mm/u|tijd", bijv: "000|20:15"
+        const lines = text.trim().split("\n");
+        let firstRainTime = null;
+        let maxRainMm = 0;
+
+        for (let line of lines) {
+          const parts = line.split("|");
+          if (parts.length === 2) {
+            const val = parseInt(parts[0], 10);
+            const timeStr = parts[1];
+            // Waarde omrekenen naar mm/uur: 10^( (val-109)/32 )
+            const mm = val > 0 ? Math.pow(10, (val - 109) / 32) : 0;
+            if (mm > maxRainMm) maxRainMm = mm;
+
+            if (mm > 0.1 && !firstRainTime) {
+              firstRainTime = timeStr;
+            }
+          }
+        }
+
+        const rainStatus = document.getElementById('rain-status');
+        const rainDetail = document.getElementById('rain-detail');
+        const rainBadge = document.getElementById('rain-badge');
+        const rainMm = document.getElementById('rain-mm');
+        const rainStart = document.getElementById('rain-start');
+        const rainIntensity = document.getElementById('rain-intensity');
+
+        if (firstRainTime) {
+          rainStatus.innerText = `🌧️ Bui verwachte rond ${firstRainTime}`;
+          rainStatus.style.color = "#388bfd";
+          rainDetail.innerText = `Verwachte neerslag: ±${maxRainMm.toFixed(1)} mm/uur`;
+          rainBadge.innerText = "REGEN VERWACHT";
+          rainBadge.className = "badge bg-prio1";
+
+          rainMm.innerText = `${maxRainMm.toFixed(1)} mm/u`;
+          rainStart.innerText = firstRainTime;
+          rainIntensity.innerText = maxRainMm > 2 ? "Zwaar" : (maxRainMm > 0.8 ? "Matig" : "Licht");
+        } else {
+          rainStatus.innerText = "☀️ Momenteel geen neerslag verwachte";
+          rainStatus.style.color = "#f0f6fc";
+          rainDetail.innerText = "Het blijft de komende 2 uur droog in Delfzijl";
+          rainBadge.innerText = "DROOG";
+          rainBadge.className = "badge bg-rain";
+
+          rainMm.innerText = "0.0 mm/u";
+          rainStart.innerText = "Geen";
+          rainIntensity.innerText = "Geen";
+        }
+      } catch (e) {
+        // Fallback via Open-Meteo neerslag
       }
     }
-    setInterval(refreshWebcam, 30000);
 
     // P2000
     async function fetchP2000() {
@@ -665,6 +724,7 @@
     }
 
     fetchP2000();
+    fetchBuienalarm();
     fetchNews();
     fetchRTVNoord();
     fetchAllWeather();
@@ -672,6 +732,7 @@
     resetProgressBar();
 
     setInterval(fetchP2000, 15000);
+    setInterval(fetchBuienalarm, 60000);
     setInterval(fetchNews, 300000);
     setInterval(fetchRTVNoord, 300000);
     setInterval(fetchAllWeather, 600000);
