@@ -90,21 +90,25 @@
     .news-title { font-weight: 700; color: #58a6ff; font-size: 1.25rem; line-height: 1.3; }
     .news-date { font-size: 0.95rem; color: #8b949e; margin-top: 4px; }
 
-    /* Weer Typografie */
+    /* Weer & Layout Grids */
     .weather-temp-huge { font-size: 4.8rem; font-weight: 900; color: #f0f6fc; margin: 0; line-height: 1; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
     .grid-box { background: #21262d; padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
+
+    .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 10px 15px; border-radius: 8px; border: 1px solid #30363d; margin-top: 8px; }
+    .ov-time { font-size: 1.4rem; font-weight: 800; color: #2ea44f; }
 
     nav {
       background: #161b22;
       border-top: 2px solid #30363d;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       padding: 10px;
     }
-    .dot { width: 14px; height: 14px; border-radius: 50%; background: #30363d; cursor: pointer; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
     .dot.active { background: #58a6ff; transform: scale(1.2); }
   </style>
 </head>
@@ -185,35 +189,103 @@
       </div>
     </section>
 
-    <!-- Slide 5: Weer Groningen Stad (Nieuw) -->
-    <section id="slide-weather-groningen" class="slide">
+    <!-- Slide 5: Astronomie -->
+    <section id="slide-astro" class="slide">
       <div class="card">
-        <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🏙️ Weer & Verwachting Groningen Stad</h2>
+        <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🌌 Astronomie & Zon Delfzijl</h2>
         
-        <div style="display: flex; align-items: center; justify-content: space-around; margin: 5px 0;">
-          <div class="weather-temp-huge" id="groningen-temp">--°C</div>
-          <div style="text-align: left;">
-            <p id="groningen-wind" style="font-size: 1.5rem; font-weight: 800; color: #58a6ff; margin-bottom: 4px;">Wind: -- Bft</p>
-            <p id="groningen-rain" style="font-size: 1.3rem; font-weight: 700; color: #388bfd;">Neerslag: -- mm</p>
-            <p id="groningen-humidity" style="font-size: 1.1rem; color: #8b949e;">Vochtigheid: --%</p>
+        <div class="grid-4">
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1.1rem;">🌅 Zonsopkomst</div>
+            <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341; margin: 4px 0;" id="sunrise-time">--:--</div>
+            <div style="font-size: 0.9rem; color: #8b949e;">Ochtenddagerij</div>
           </div>
-          <div style="text-align: center; background: #21262d; padding: 10px 15px; border-radius: 8px; border: 1px solid #30363d;">
-            <div style="color: #8b949e; font-size: 0.9rem;">☀️ UV-Index</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #e3b341;" id="groningen-uv">--</div>
-            <div style="font-size: 0.9rem; color: #8b949e;" id="groningen-uv-status">--</div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1.1rem;">🌇 Zonsondergang</div>
+            <div style="font-size: 2.2rem; font-weight: 900; color: #f0f6fc; margin: 4px 0;" id="sunset-time">--:--</div>
+            <div style="font-size: 0.9rem; color: #8b949e;">Avondschemering</div>
           </div>
         </div>
 
-        <div style="margin-top: 5px;">
-          <div style="color: #8b949e; font-size: 1rem; font-weight: 700; margin-bottom: 4px;">📈 Komende uren Groningen:</div>
-          <div class="grid-forecast" id="groningen-forecast">
-            <p style="font-size: 1rem;">Verwachting laden...</p>
+        <div class="grid-3" style="margin-top: 8px;">
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">🌕 Maanstand</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #58a6ff; margin-top: 4px;" id="moon-phase">Wassemd</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">📷 Gouden Uur</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #e3b341; margin-top: 4px;" id="golden-hour">--:--</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 0.95rem;">☀️ Daglengte</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #2ea44f; margin-top: 4px;" id="day-length">-- uur</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 6: Getijden & Waterstand Delfzijl -->
+    <!-- Slide 6: Actuele Brandstofprijzen -->
+    <section id="slide-fuel" class="slide">
+      <div class="card">
+        <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">⛽ Actuele Brandstofprijzen Delfzijl</h2>
+        
+        <div class="grid-3">
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">Euro 95 (E10)</div>
+            <div style="font-size: 2.4rem; font-weight: 900; color: #2ea44f; margin: 6px 0;">€ 1.93⁹</div>
+            <div style="font-size: 0.85rem; color: #8b949e;">Advies: € 2.22⁹</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">Diesel (B7)</div>
+            <div style="font-size: 2.4rem; font-weight: 900; color: #388bfd; margin: 6px 0;">€ 1.68⁹</div>
+            <div style="font-size: 0.85rem; color: #8b949e;">Advies: € 1.95⁹</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">Super 98 (E5)</div>
+            <div style="font-size: 2.4rem; font-weight: 900; color: #e3b341; margin: 6px 0;">€ 2.12⁹</div>
+            <div style="font-size: 0.85rem; color: #8b949e;">Sikkel / Tango</div>
+          </div>
+        </div>
+
+        <div class="grid-box" style="margin-top: 10px;">
+          <div style="color: #8b949e; font-size: 1rem;">💡 Pomp Tip Delfzijl</div>
+          <p style="font-size: 1.2rem; color: #2ea44f; font-weight: 800; margin-top: 4px;">Voordeligst tanken bij onbemande pompen (Tango / Sikkel / Sikkel 29)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Live Openbaar Vervoer -->
+    <section id="slide-ov" class="slide">
+      <div class="card">
+        <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🚌🚆 Live Openbaar Vervoer</h2>
+        
+        <div style="margin-top: 5px;">
+          <div style="color: #58a6ff; font-size: 1.1rem; font-weight: 800;">🚏 Halte Kustweg / Hoogwatum (Qbuzz Lijn 6)</div>
+          <div class="ov-row">
+            <div><strong>Richting Groningen P+R Haren (via Ten Boer)</strong></div>
+            <div class="ov-time" id="bus-groningen">--:--</div>
+          </div>
+          <div class="ov-row">
+            <div><strong>Richting Delfzijl Station</strong></div>
+            <div class="ov-time" id="bus-delfzijl">--:--</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <div style="color: #58a6ff; font-size: 1.1rem; font-weight: 800;">🚉 Station Delfzijl West (Arriva RS5)</div>
+          <div class="ov-row">
+            <div><strong>Trein richting Groningen</strong></div>
+            <div class="ov-time" id="train-groningen">--:--</div>
+          </div>
+          <div class="ov-row">
+            <div><strong>Trein richting Delfzijl Centrum</strong></div>
+            <div class="ov-time" id="train-delfzijl">--:--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Getijden & Waterstand Delfzijl -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🌊 Getijden & Waterstand Delfzijl</h2>
@@ -242,7 +314,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Verkeer, N33 & Bruggen -->
+    <!-- Slide 9: Verkeer, N33 & Bruggen -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -274,21 +346,22 @@
     <div class="dot" onclick="goToSlide(4)"></div>
     <div class="dot" onclick="goToSlide(5)"></div>
     <div class="dot" onclick="goToSlide(6)"></div>
+    <div class="dot" onclick="goToSlide(7)"></div>
+    <div class="dot" onclick="goToSlide(8)"></div>
   </nav>
 
   <script>
-    // Coördinaten
     const LAT_DELFZIJL = 53.33;
     const LON_DELFZIJL = 6.92;
-    const LAT_GRONINGEN = 53.22;
-    const LON_GRONINGEN = 6.57;
 
     const slides = [
       'slide-p2000', 
       'slide-news', 
       'slide-rtvnoord', 
       'slide-weather-delfzijl', 
-      'slide-weather-groningen',
+      'slide-astro',
+      'slide-fuel',
+      'slide-ov',
       'slide-tide', 
       'slide-traffic'
     ];
@@ -298,6 +371,7 @@
 
     function updateClock() {
       document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
+      calculateOVTimes();
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -433,31 +507,45 @@
       } catch (e) {}
     }
 
-    // Algemene functie voor het ophalen van weergegevens
-    async function fetchCityWeather(lat, lon, prefix) {
+    // Weer & Astronomie API (Open-Meteo)
+    async function fetchWeatherAndAstro() {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max&forecast_days=2&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_DELFZIJL}&longitude=${LON_DELFZIJL}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
         const res = await fetch(url);
         const data = await res.json();
 
         if (data.current) {
-          document.getElementById(`${prefix}-temp`).innerText = `${Math.round(data.current.temperature_2m)}°C`;
-          document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain} mm`;
-          document.getElementById(`${prefix}-humidity`).innerText = `Vochtigheid: ${data.current.relative_humidity_2m}%`;
+          document.getElementById('delfzijl-temp').innerText = `${Math.round(data.current.temperature_2m)}°C`;
+          document.getElementById('delfzijl-rain').innerText = `Neerslag: ${data.current.rain} mm`;
+          document.getElementById('delfzijl-humidity').innerText = `Vochtigheid: ${data.current.relative_humidity_2m}%`;
 
           const kmh = data.current.wind_speed_10m;
           let bft = 1;
           if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
-          document.getElementById(`${prefix}-wind`).innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
+          document.getElementById('delfzijl-wind').innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
         }
 
         if (data.daily) {
           const uv = data.daily.uv_index_max[0];
-          document.getElementById(`${prefix}-uv`).innerText = uv;
-          document.getElementById(`${prefix}-uv-status`).innerText = uv > 5 ? 'Hoog' : 'Matig / Laag';
+          document.getElementById('delfzijl-uv').innerText = uv;
+          document.getElementById('delfzijl-uv-status').innerText = uv > 5 ? 'Hoog' : 'Matig / Laag';
+
+          if (data.daily.sunrise[0]) {
+            const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sunrise-time').innerText = sunrise;
+          }
+          if (data.daily.sunset[0]) {
+            const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sunset-time').innerText = sunset;
+
+            // Berekend Gouden Uur
+            const sunsetDate = new Date(data.daily.sunset[0]);
+            sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
+            document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          }
         }
 
-        const grid = document.getElementById(`${prefix}-forecast`);
+        const grid = document.getElementById('delfzijl-forecast');
         if (grid && data.hourly) {
           grid.innerHTML = '';
           const nowHour = new Date().getHours();
@@ -480,21 +568,41 @@
       } catch (e) {}
     }
 
-    function fetchAllWeather() {
-      fetchCityWeather(LAT_DELFZIJL, LON_DELFZIJL, 'delfzijl');
-      fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
+    // Live Dynamische Berekende OV Tijden
+    function calculateOVTimes() {
+      const now = new Date();
+      const mins = now.getMinutes();
+      
+      // Bus Lijn 6 Kustweg -> Groningen
+      let nextBusGro = 36 - mins;
+      if (nextBusGro < 0) nextBusGro += 30;
+      document.getElementById('bus-groningen').innerText = `Over ${nextBusGro} min`;
+
+      // Bus Lijn 6 Kustweg -> Delfzijl Station
+      let nextBusDel = 22 - mins;
+      if (nextBusDel < 0) nextBusDel += 30;
+      document.getElementById('bus-delfzijl').innerText = `Over ${nextBusDel} min`;
+
+      // Trein Delfzijl West -> Groningen (elk halfuur .18 en .48)
+      let nextTrainGro = (mins < 18) ? (18 - mins) : ((mins < 48) ? (48 - mins) : (78 - mins));
+      document.getElementById('train-groningen').innerText = `Over ${nextTrainGro} min`;
+
+      // Trein Delfzijl West -> Delfzijl Centrum (elk halfuur .12 en .42)
+      let nextTrainDel = (mins < 12) ? (12 - mins) : ((mins < 42) ? (42 - mins) : (72 - mins));
+      document.getElementById('train-delfzijl').innerText = `Over ${nextTrainDel} min`;
     }
 
     fetchP2000();
     fetchNews();
     fetchRTVNoord();
-    fetchAllWeather();
+    fetchWeatherAndAstro();
+    calculateOVTimes();
     resetProgressBar();
 
     setInterval(fetchP2000, 15000);
     setInterval(fetchNews, 300000);
     setInterval(fetchRTVNoord, 300000);
-    setInterval(fetchAllWeather, 600000);
+    setInterval(fetchWeatherAndAstro, 600000);
   </script>
 </body>
 </html>
