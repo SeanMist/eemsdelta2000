@@ -90,12 +90,21 @@
     .news-title { font-weight: 700; color: #58a6ff; font-size: 1.25rem; line-height: 1.3; }
     .news-date { font-size: 0.95rem; color: #8b949e; margin-top: 4px; }
 
-    /* Weer & Layout Grids */
+    /* Layout Grids & Webcam Styling */
     .weather-temp-huge { font-size: 4.8rem; font-weight: 900; color: #f0f6fc; margin: 0; line-height: 1; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
     .grid-box { background: #21262d; padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
+
+    .webcam-frame {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #30363d;
+      background: #21262d;
+    }
 
     .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 10px 15px; border-radius: 8px; border: 1px solid #30363d; margin-top: 8px; }
     .ov-time { font-size: 1.4rem; font-weight: 800; color: #2ea44f; }
@@ -105,7 +114,7 @@
       border-top: 2px solid #30363d;
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       padding: 10px;
     }
     .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
@@ -141,7 +150,25 @@
       </div>
     </section>
 
-    <!-- Slide 2: Lokaal Nieuws (Eemskrant) -->
+    <!-- Slide 2: Webcam Haven Delfzijl (Nieuw) -->
+    <section id="slide-webcam" class="slide">
+      <div class="card" style="justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 8px;">
+          <h2 style="font-size: 1.6rem;">🎥 Live Cam Haven Delfzijl</h2>
+          <span class="badge bg-info" style="font-size:0.9rem;">Auto-Refresh</span>
+        </div>
+        
+        <div style="margin: 8px 0; text-align: center;">
+          <img id="haven-cam" src="https://images.webcams.travel/preview/1338408417.jpg" class="webcam-frame" alt="Webcam Haven Delfzijl">
+        </div>
+
+        <div style="background: #21262d; padding: 8px 15px; border-radius: 8px; border: 1px solid #30363d; text-align: center;">
+          <p style="color: #8b949e; font-size: 0.95rem;">⚓ Live zicht op de havenkom & Eems-Estuarium Delfzijl</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Lokaal Nieuws (Eemskrant) -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 1.8rem; margin-bottom: 10px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📰 Lokaal Nieuws (Eemskrant)</h2>
@@ -151,7 +178,7 @@
       </div>
     </section>
 
-    <!-- Slide 3: Regionaal Nieuws (RTV Noord) -->
+    <!-- Slide 4: Regionaal Nieuws (RTV Noord) -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 1.8rem; margin-bottom: 10px; border-bottom: 2px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
@@ -161,7 +188,7 @@
       </div>
     </section>
 
-    <!-- Slide 4: Weer Delfzijl -->
+    <!-- Slide 5: Weer Delfzijl -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🌤️ Weer & Verwachting Delfzijl</h2>
@@ -189,7 +216,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: Astronomie -->
+    <!-- Slide 6: Astronomie -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🌌 Astronomie & Zon Delfzijl</h2>
@@ -224,7 +251,7 @@
       </div>
     </section>
 
-    <!-- Slide 6: Actuele Brandstofprijzen -->
+    <!-- Slide 7: Actuele Brandstofprijzen -->
     <section id="slide-fuel" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">⛽ Actuele Brandstofprijzen Delfzijl</h2>
@@ -254,7 +281,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Live Openbaar Vervoer -->
+    <!-- Slide 8: Live Openbaar Vervoer -->
     <section id="slide-ov" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem; border-bottom: 2px solid #30363d; padding-bottom: 6px;">🚌🚆 Live Openbaar Vervoer</h2>
@@ -285,7 +312,7 @@
       </div>
     </section>
 
-    <!-- Slide 8: Getijden & Waterstand Delfzijl -->
+    <!-- Slide 9: Getijden & Waterstand Delfzijl -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🌊 Getijden & Waterstand Delfzijl</h2>
@@ -314,7 +341,7 @@
       </div>
     </section>
 
-    <!-- Slide 9: Verkeer, N33 & Bruggen -->
+    <!-- Slide 10: Verkeer, N33 & Bruggen -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 1.6rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -348,6 +375,7 @@
     <div class="dot" onclick="goToSlide(6)"></div>
     <div class="dot" onclick="goToSlide(7)"></div>
     <div class="dot" onclick="goToSlide(8)"></div>
+    <div class="dot" onclick="goToSlide(9)"></div>
   </nav>
 
   <script>
@@ -356,6 +384,7 @@
 
     const slides = [
       'slide-p2000', 
+      'slide-webcam',
       'slide-news', 
       'slide-rtvnoord', 
       'slide-weather-delfzijl', 
@@ -403,6 +432,15 @@
         }
       }, 110);
     }
+
+    // Auto-refresh Webcam Afbeelding elke 30 seconden
+    function refreshWebcam() {
+      const camImg = document.getElementById('haven-cam');
+      if (camImg) {
+        camImg.src = "https://images.webcams.travel/preview/1338408417.jpg?timestamp=" + new Date().getTime();
+      }
+    }
+    setInterval(refreshWebcam, 30000);
 
     // P2000
     async function fetchP2000() {
@@ -538,7 +576,6 @@
             const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('sunset-time').innerText = sunset;
 
-            // Berekend Gouden Uur
             const sunsetDate = new Date(data.daily.sunset[0]);
             sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
             document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -573,21 +610,17 @@
       const now = new Date();
       const mins = now.getMinutes();
       
-      // Bus Lijn 6 Kustweg -> Groningen
       let nextBusGro = 36 - mins;
       if (nextBusGro < 0) nextBusGro += 30;
       document.getElementById('bus-groningen').innerText = `Over ${nextBusGro} min`;
 
-      // Bus Lijn 6 Kustweg -> Delfzijl Station
       let nextBusDel = 22 - mins;
       if (nextBusDel < 0) nextBusDel += 30;
       document.getElementById('bus-delfzijl').innerText = `Over ${nextBusDel} min`;
 
-      // Trein Delfzijl West -> Groningen (elk halfuur .18 en .48)
       let nextTrainGro = (mins < 18) ? (18 - mins) : ((mins < 48) ? (48 - mins) : (78 - mins));
       document.getElementById('train-groningen').innerText = `Over ${nextTrainGro} min`;
 
-      // Trein Delfzijl West -> Delfzijl Centrum (elk halfuur .12 en .42)
       let nextTrainDel = (mins < 12) ? (12 - mins) : ((mins < 42) ? (42 - mins) : (72 - mins));
       document.getElementById('train-delfzijl').innerText = `Over ${nextTrainDel} min`;
     }
