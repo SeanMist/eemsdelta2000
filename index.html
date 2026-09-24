@@ -634,37 +634,45 @@
     }
 
     // Live RDW Open Data API
-    async function fetchRDWLatestLicensePlate() {
-      try {
-        const url = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$where=voertuigsoort='Personenauto'&$order=datum_eerste_toelating_dt DESC&$limit=1";
-        const res = await fetch(url);
-        const data = await res.json();
+    // Live RDW Open Data API met correcte datumverwerking
+async function fetchRDWLatestLicensePlate() {
+  try {
+    const url = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$where=voertuigsoort='Personenauto'&$order=datum_eerste_toelating_dt DESC&$limit=1";
+    const res = await fetch(url);
+    const data = await res.json();
 
-        if (data && data.length > 0) {
-          const rawPlate = data[0].kenteken;
-          let formattedPlate = rawPlate;
-          if (rawPlate.length === 6) {
-            formattedPlate = `${rawPlate.slice(0,3)}-${rawPlate.slice(3,5)}-${rawPlate.slice(5,6)}`;
-          }
-
-          const merk = data[0].merk || "";
-          const handelsbenaming = data[0].handelsbenaming || "";
-          const datum = data[0].datum_eerste_toelating || "";
-
-          let formattedDate = "--";
-          if (datum.length === 8) {
-            formattedDate = `${datum.slice(6,8)}-${datum.slice(4,6)}-${datum.slice(0,4)}`;
-          }
-
-          document.getElementById('rdw-plate').innerText = formattedPlate;
-          document.getElementById('rdw-vehicle').innerText = `${merk} ${handelsbenaming}`.trim();
-          document.getElementById('rdw-date').innerText = `🕒 Ingeschreven op: ${formattedDate}`;
-        }
-      } catch (e) {
-        document.getElementById('rdw-plate').innerText = "KZF-19-P";
-        document.getElementById('rdw-vehicle').innerText = "Laatst geregistreerde auto";
+    if (data && data.length > 0) {
+      const rawPlate = data[0].kenteken;
+      let formattedPlate = rawPlate;
+      if (rawPlate && rawPlate.length === 6) {
+        formattedPlate = `${rawPlate.slice(0,3)}-${rawPlate.slice(3,5)}-${rawPlate.slice(5,6)}`;
       }
+
+      const merk = data[0].merk || "";
+      const handelsbenaming = data[0].handelsbenaming || "";
+      
+      // Probeer de NL toelatingsdatum of algemene eerste toelating te pakken
+      const rawDatum = data[0].datum_eerste_toelating_in_nederland || data[0].datum_eerste_toelating || "";
+
+      let formattedDate = "Vandaag";
+      if (rawDatum && rawDatum.length >= 8) {
+        // Formatteer YYYYMMDD naar DD-MM-YYYY
+        const dag = rawDatum.slice(6, 8);
+        const maand = rawDatum.slice(4, 6);
+        const jaar = rawDatum.slice(0, 4);
+        formattedDate = `${dag}-${maand}-${jaar}`;
+      }
+
+      document.getElementById('rdw-plate').innerText = formattedPlate;
+      document.getElementById('rdw-vehicle').innerText = `${merk} ${handelsbenaming}`.trim();
+      document.getElementById('rdw-date').innerText = `🕒 Ingeschreven op: ${formattedDate}`;
     }
+  } catch (e) {
+    document.getElementById('rdw-plate').innerText = "KZF-19-P";
+    document.getElementById('rdw-vehicle').innerText = "Laatst geregistreerde auto";
+    document.getElementById('rdw-date').innerText = "🕒 Ingeschreven op: Vandaag";
+  }
+}
 
     // P2000 Eemsdelta
     async function fetchP2000Eemsdelta() {
