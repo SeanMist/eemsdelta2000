@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Eemsdelta & Delfzijl</title>
+  <!-- Leaflet CSS voor de Live Satelliet/Radar Kaart -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -54,13 +56,6 @@
       justify-content: space-between;
     }
 
-    /* Kerstmis Thema Card */
-    .card-christmas {
-      background: linear-gradient(135deg, #0f2b1d 0%, #161b22 100%);
-      border: 3px solid #2ea44f;
-      box-shadow: 0 10px 30px rgba(46, 164, 79, 0.2);
-    }
-
     /* Badges XXL */
     .badge {
       display: inline-block;
@@ -77,49 +72,48 @@
     .bg-info { background-color: #238636; }
     .bg-rain { background-color: #1f6feb; }
     .bg-prague { background-color: #8957e5; }
-    .bg-xmas { background-color: #da3633; }
     .bg-rdw { background-color: #0052a5; }
 
-    /* Nederlandse Kentekenplaat Styling */
+    /* Nederlandse Kentekenplaat Styling XXL */
     .license-plate-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 15px 0;
+      margin: 20px 0;
     }
     .license-plate {
       background-color: #fbc02d;
-      border: 4px solid #000;
-      border-radius: 12px;
+      border: 6px solid #000;
+      border-radius: 16px;
       display: flex;
       align-items: center;
-      height: 110px;
-      padding: 0 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      height: 140px;
+      padding: 0 25px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.8);
       position: relative;
     }
     .eu-flag {
       background-color: #003399;
-      width: 40px;
+      width: 50px;
       height: 100%;
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 0;
-      margin-left: -15px;
-      margin-right: 18px;
+      padding: 10px 0;
+      margin-left: -25px;
+      margin-right: 25px;
     }
-    .eu-stars { color: #ffcc00; font-size: 1.2rem; line-height: 1; }
-    .eu-country { color: #ffffff; font-size: 1.3rem; font-weight: 900; font-family: Arial, sans-serif; }
+    .eu-stars { color: #ffcc00; font-size: 1.5rem; line-height: 1; }
+    .eu-country { color: #ffffff; font-size: 1.6rem; font-weight: 900; font-family: Arial, sans-serif; }
     .plate-text {
       color: #000000;
       font-family: 'FE-Schrift', 'Impact', 'Arial Black', sans-serif;
-      font-size: 4.5rem;
+      font-size: 6rem;
       font-weight: 900;
-      letter-spacing: 4px;
+      letter-spacing: 6px;
       text-transform: uppercase;
     }
 
@@ -139,18 +133,19 @@
       height: 100%;
     }
     .radar-container-square {
-      width: 270px;
-      height: 270px;
+      width: 280px;
+      height: 280px;
       border-radius: 16px;
       overflow: hidden;
       border: 3px solid #30363d;
       background: #000;
       flex-shrink: 0;
+      position: relative;
     }
-    .radar-iframe {
+    #map {
       width: 100%;
       height: 100%;
-      border: none;
+      background: #0d1117;
     }
 
     /* Nieuwsberichten XXL */
@@ -187,7 +182,6 @@
 
     /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
-    .countdown-number-xmas { font-size: 4rem; font-weight: 900; color: #f85149; line-height: 1; }
     .countdown-label { font-size: 1.3rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 6px; }
 
     nav {
@@ -245,41 +239,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: Afteltimer Kerstmis XXL -->
-    <section id="slide-xmas" class="slide">
-      <div class="card card-christmas" style="justify-content: space-between;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #2ea44f; padding-bottom: 12px;">
-          <h2 style="font-size: 2.2rem; color: #2ea44f;">🎄 Aftellen naar Kerstmis! ❄️</h2>
-          <span class="badge bg-xmas">Kerst 2026</span>
-        </div>
-
-        <div style="text-align: center; margin: 10px 0;">
-          <p style="font-size: 1.8rem; color: #e3b341; font-weight: 800; margin-bottom: 12px;">
-            🎅 Eerste Kerstdag: 25 December
-          </p>
-          <div class="grid-3">
-            <div class="grid-box" style="border-color: #2ea44f; background: rgba(22, 27, 34, 0.8);">
-              <div class="countdown-number-xmas" id="xmas-days">--</div>
-              <div class="countdown-label">Dagen</div>
-            </div>
-            <div class="grid-box" style="border-color: #2ea44f; background: rgba(22, 27, 34, 0.8);">
-              <div class="countdown-number-xmas" id="xmas-hours">--</div>
-              <div class="countdown-label">Uren</div>
-            </div>
-            <div class="grid-box" style="border-color: #2ea44f; background: rgba(22, 27, 34, 0.8);">
-              <div class="countdown-number-xmas" id="xmas-mins">--</div>
-              <div class="countdown-label">Minuten</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid-box" style="margin-top: 10px; background: rgba(22, 27, 34, 0.9); border-color: #2ea44f;">
-          <p style="font-size: 1.6rem; color: #e3b341; font-weight: 900;" id="xmas-status">✨ Fijne Feestdagen in aantocht!</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 3: P2000 Melding Eemsdelta / Delfzijl XXL -->
+    <!-- Slide 2: P2000 Melding Eemsdelta / Delfzijl XXL -->
     <section id="slide-p2000" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
@@ -299,7 +259,7 @@
       </div>
     </section>
 
-    <!-- Slide 4: P2000 Melding Groningen Stad XXL (Nieuw) -->
+    <!-- Slide 3: P2000 Melding Groningen Stad XXL -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
@@ -319,7 +279,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: RDW Laatst Uitgegeven Kenteken -->
+    <!-- Slide 4: RDW Laatst Uitgegeven Kenteken (Groot) -->
     <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
@@ -328,7 +288,7 @@
         </div>
 
         <div style="text-align: center;">
-          <p style="font-size: 1.5rem; color: #8b949e; font-weight: 700;">Laatst geregistreerde personenauto in Nederland:</p>
+          <p style="font-size: 1.6rem; color: #8b949e; font-weight: 700;">Laatst geregistreerde personenauto in Nederland:</p>
           
           <div class="license-plate-container">
             <div class="license-plate">
@@ -340,16 +300,16 @@
             </div>
           </div>
 
-          <p style="font-size: 1.8rem; font-weight: 900; color: #ffffff;" id="rdw-vehicle">Voertuig laden...</p>
+          <p style="font-size: 2.2rem; font-weight: 900; color: #ffffff;" id="rdw-vehicle">Voertuig laden...</p>
         </div>
 
         <div class="grid-box" style="background: #21262d;">
-          <p style="font-size: 1.4rem; color: #58a6ff; font-weight: 800;" id="rdw-date">🕒 Geregistreerd op: --</p>
+          <p style="font-size: 1.5rem; color: #58a6ff; font-weight: 800;" id="rdw-date">🕒 Ingeschreven op: --</p>
         </div>
       </div>
     </section>
 
-    <!-- Slide 6: Buienalarm & Live Satelliet Radar Delfzijl XXL -->
+    <!-- Slide 5: Buienalarm & Realtime Live Satelliet Radar Delfzijl XXL -->
     <section id="slide-buienalarm" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -374,14 +334,15 @@
             </div>
           </div>
 
+          <!-- Realtime Live Map via Leaflet/RainViewer (Direct Live zonder play-knop) -->
           <div class="radar-container-square">
-            <iframe class="radar-iframe" src="https://embed.windy.com/embed2.html?lat=53.330&lon=6.920&detailLat=53.330&detailLon=6.920&width=270&height=270&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+            <div id="map"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 7: Lokaal Nieuws XXL -->
+    <!-- Slide 6: Lokaal Nieuws XXL -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📰 Lokaal Nieuws (Eemskrant)</h2>
@@ -391,7 +352,7 @@
       </div>
     </section>
 
-    <!-- Slide 8: Regionaal Nieuws XXL -->
+    <!-- Slide 7: Regionaal Nieuws XXL -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📻 Regionaal Nieuws (RTV Noord)</h2>
@@ -401,7 +362,7 @@
       </div>
     </section>
 
-    <!-- Slide 9: Weer Delfzijl XXL -->
+    <!-- Slide 8: Weer Delfzijl XXL -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer Delfzijl</h2>
@@ -428,7 +389,7 @@
       </div>
     </section>
 
-    <!-- Slide 10: Weer Groningen Stad XXL -->
+    <!-- Slide 9: Weer Groningen Stad XXL -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer Groningen Stad</h2>
@@ -455,7 +416,7 @@
       </div>
     </section>
 
-    <!-- Slide 11: Astronomie XXL -->
+    <!-- Slide 10: Astronomie XXL -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌌 Astronomie & Zon Delfzijl</h2>
@@ -488,7 +449,7 @@
       </div>
     </section>
 
-    <!-- Slide 12: Actuele Brandstofprijzen XXL -->
+    <!-- Slide 11: Actuele Brandstofprijzen XXL -->
     <section id="slide-fuel" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">⛽ Brandstofprijzen Delfzijl</h2>
@@ -517,7 +478,7 @@
       </div>
     </section>
 
-    <!-- Slide 13: Live Openbaar Vervoer XXL -->
+    <!-- Slide 12: Live Openbaar Vervoer XXL -->
     <section id="slide-ov" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🚌🚆 Live Openbaar Vervoer</h2>
@@ -548,7 +509,7 @@
       </div>
     </section>
 
-    <!-- Slide 14: Getijden & Live Waterstand XXL -->
+    <!-- Slide 13: Getijden & Live Waterstand XXL -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
@@ -577,7 +538,7 @@
       </div>
     </section>
 
-    <!-- Slide 15: Verkeer & Bruggen XXL -->
+    <!-- Slide 14: Verkeer & Bruggen XXL -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -616,8 +577,10 @@
     <div class="dot" onclick="goToSlide(11)"></div>
     <div class="dot" onclick="goToSlide(12)"></div>
     <div class="dot" onclick="goToSlide(13)"></div>
-    <div class="dot" onclick="goToSlide(14)"></div>
   </nav>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     const LAT_DELFZIJL = 53.33;
@@ -627,7 +590,6 @@
 
     const slides = [
       'slide-prague',
-      'slide-xmas',
       'slide-p2000',
       'slide-p2000-groningen',
       'slide-rdw',
@@ -644,12 +606,11 @@
     ];
     let currentSlide = 0;
     let progressInterval;
-    let lastP2000Title = "";
+    let mapInitialized = false;
 
     function updateClock() {
       document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
       updatePragueCountdown();
-      updateChristmasCountdown();
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -677,29 +638,6 @@
       document.getElementById('cd-mins').innerText = mins;
     }
 
-    // 🎄 Afteltimer Kerstmis (25 December 00:00)
-    function updateChristmasCountdown() {
-      const targetDate = new Date("2026-12-25T00:00:00");
-      const now = new Date();
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-        document.getElementById('xmas-days').innerText = "0";
-        document.getElementById('xmas-hours').innerText = "0";
-        document.getElementById('xmas-mins').innerText = "0";
-        document.getElementById('xmas-status').innerText = "🎅 Vrolijk Kerstfeest!";
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-      document.getElementById('xmas-days').innerText = days;
-      document.getElementById('xmas-hours').innerText = hours;
-      document.getElementById('xmas-mins').innerText = mins;
-    }
-
     function showSlide(index) {
       slides.forEach((id, idx) => {
         const el = document.getElementById(id);
@@ -708,6 +646,12 @@
         if (dot) dot.classList.toggle('active', idx === index);
       });
       currentSlide = index;
+
+      // Zorg dat Leaflet kaart goed rendert zodra Slide 5 actief wordt
+      if (slides[index] === 'slide-buienalarm' && !mapInitialized) {
+        setTimeout(initLiveMap, 200);
+      }
+
       resetProgressBar();
     }
 
@@ -726,6 +670,32 @@
           nextSlide();
         }
       }, 110);
+    }
+
+    // Direct Live Satelliet / Radar Kaart via Leaflet & RainViewer API (Zonder Play-knop)
+    function initLiveMap() {
+      mapInitialized = true;
+      const map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([LAT_DELFZIJL, LON_DELFZIJL], 8);
+
+      // Donkere achtergrondkaart
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 18
+      }).addTo(map);
+
+      // Live Neerslag / Satelliet van RainViewer
+      fetch('https://api.rainviewer.com/public/weather-maps.json')
+        .then(res => res.json())
+        .then(apiData => {
+          if (apiData && apiData.radar && apiData.radar.past) {
+            const latestFrame = apiData.radar.past[apiData.radar.past.length - 1];
+            L.tileLayer(`https://tilecache.rainviewer.com${latestFrame.path}/256/{z}/{x}/{y}/2/1_1.png`, {
+              opacity: 0.75
+            }).addTo(map);
+          }
+        }).catch(e => console.log('Radar laad fout:', e));
     }
 
     // Live RDW Open Data API
