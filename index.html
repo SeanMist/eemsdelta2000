@@ -599,9 +599,10 @@
       }).setView([LAT_DELFZIJL, LON_DELFZIJL], 7);
 
       // Donkere achtergrondkaart (Stadia Alidade Smooth Dark)
-      L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-        maxZoom: 18
-      }).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  maxNativeZoom: 18,
+  maxZoom: 18
+}).addTo(map);
 
       // Live Animatie van de afgelopen 2 uur radarbeelden
       fetch('https://api.rainviewer.com/public/weather-maps.json')
