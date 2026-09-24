@@ -195,10 +195,10 @@
       border-top: 3px solid #30363d;
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       padding: 12px;
     }
-    .dot { width: 14px; height: 14px; border-radius: 50%; background: #30363d; cursor: pointer; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
     .dot.active { background: #58a6ff; transform: scale(1.3); }
   </style>
 </head>
@@ -279,11 +279,11 @@
       </div>
     </section>
 
-    <!-- Slide 3: P2000 Melding XXL -->
+    <!-- Slide 3: P2000 Melding Eemsdelta / Delfzijl XXL -->
     <section id="slide-p2000" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
-          <h2 style="font-size: 2.2rem;">🚨 P2000 Alarmering</h2>
+          <h2 style="font-size: 2.2rem;">🚨 P2000 Eemsdelta / Delfzijl</h2>
           <span id="p2000-prio" class="badge bg-info">Laden...</span>
         </div>
         
@@ -299,7 +299,27 @@
       </div>
     </section>
 
-    <!-- Slide 4: RDW Laatst Uitgegeven Kenteken (Nieuw) -->
+    <!-- Slide 4: P2000 Melding Groningen Stad XXL (Nieuw) -->
+    <section id="slide-p2000-groningen" class="slide">
+      <div class="card" style="justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
+          <h2 style="font-size: 2.2rem;">🏙️ P2000 Groningen Stad</h2>
+          <span id="p2000-gro-prio" class="badge bg-info">Laden...</span>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <p id="p2000-gro-text" style="font-size: 2.8rem; font-weight: 900; color: #ffffff; line-height: 1.25;">
+            Meldingen Groningen Stad laden...
+          </p>
+        </div>
+
+        <div style="background: #21262d; padding: 14px 20px; border-radius: 12px; border: 2px solid #30363d;">
+          <p id="p2000-gro-time" style="color: #58a6ff; font-size: 1.5rem; font-weight: 800;">🕒 --:--</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: RDW Laatst Uitgegeven Kenteken -->
     <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
@@ -329,7 +349,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: Buienalarm & Live Satelliet Radar Delfzijl XXL -->
+    <!-- Slide 6: Buienalarm & Live Satelliet Radar Delfzijl XXL -->
     <section id="slide-buienalarm" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -361,7 +381,7 @@
       </div>
     </section>
 
-    <!-- Slide 6: Lokaal Nieuws XXL -->
+    <!-- Slide 7: Lokaal Nieuws XXL -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📰 Lokaal Nieuws (Eemskrant)</h2>
@@ -371,7 +391,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Regionaal Nieuws XXL -->
+    <!-- Slide 8: Regionaal Nieuws XXL -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📻 Regionaal Nieuws (RTV Noord)</h2>
@@ -381,7 +401,7 @@
       </div>
     </section>
 
-    <!-- Slide 8: Weer Delfzijl XXL -->
+    <!-- Slide 9: Weer Delfzijl XXL -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer Delfzijl</h2>
@@ -408,7 +428,7 @@
       </div>
     </section>
 
-    <!-- Slide 9: Weer Groningen Stad XXL -->
+    <!-- Slide 10: Weer Groningen Stad XXL -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer Groningen Stad</h2>
@@ -435,7 +455,7 @@
       </div>
     </section>
 
-    <!-- Slide 10: Astronomie XXL -->
+    <!-- Slide 11: Astronomie XXL -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌌 Astronomie & Zon Delfzijl</h2>
@@ -468,7 +488,7 @@
       </div>
     </section>
 
-    <!-- Slide 11: Actuele Brandstofprijzen XXL -->
+    <!-- Slide 12: Actuele Brandstofprijzen XXL -->
     <section id="slide-fuel" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">⛽ Brandstofprijzen Delfzijl</h2>
@@ -497,7 +517,7 @@
       </div>
     </section>
 
-    <!-- Slide 12: Live Openbaar Vervoer XXL -->
+    <!-- Slide 13: Live Openbaar Vervoer XXL -->
     <section id="slide-ov" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🚌🚆 Live Openbaar Vervoer</h2>
@@ -528,7 +548,7 @@
       </div>
     </section>
 
-    <!-- Slide 13: Getijden & Live Waterstand XXL -->
+    <!-- Slide 14: Getijden & Live Waterstand XXL -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
@@ -557,7 +577,7 @@
       </div>
     </section>
 
-    <!-- Slide 14: Verkeer & Bruggen XXL -->
+    <!-- Slide 15: Verkeer & Bruggen XXL -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -596,6 +616,7 @@
     <div class="dot" onclick="goToSlide(11)"></div>
     <div class="dot" onclick="goToSlide(12)"></div>
     <div class="dot" onclick="goToSlide(13)"></div>
+    <div class="dot" onclick="goToSlide(14)"></div>
   </nav>
 
   <script>
@@ -608,6 +629,7 @@
       'slide-prague',
       'slide-xmas',
       'slide-p2000',
+      'slide-p2000-groningen',
       'slide-rdw',
       'slide-buienalarm', 
       'slide-news', 
@@ -706,7 +728,7 @@
       }, 110);
     }
 
-    // Live RDW Open Data API: Meest recente kenteken personenauto
+    // Live RDW Open Data API
     async function fetchRDWLatestLicensePlate() {
       try {
         const url = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$where=voertuigsoort='Personenauto'&$order=datum_eerste_toelating_dt DESC&$limit=1";
@@ -715,7 +737,6 @@
 
         if (data && data.length > 0) {
           const rawPlate = data[0].kenteken;
-          // Formatteer kenteken met streepjes (bijv. KZF-19-P)
           let formattedPlate = rawPlate;
           if (rawPlate.length === 6) {
             formattedPlate = `${rawPlate.slice(0,3)}-${rawPlate.slice(3,5)}-${rawPlate.slice(5,6)}`;
@@ -738,6 +759,84 @@
         document.getElementById('rdw-plate').innerText = "KZF-19-P";
         document.getElementById('rdw-vehicle').innerText = "Laatst geregistreerde auto";
       }
+    }
+
+    // P2000 Eemsdelta
+    async function fetchP2000Eemsdelta() {
+      const p2000Text = document.getElementById('p2000-text');
+      const p2000Time = document.getElementById('p2000-time');
+      const prioBadge = document.getElementById('p2000-prio');
+
+      try {
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent("https://feed.alarmeringen.nl/eemsdelta.rss")}`);
+        const data = await res.json();
+
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          let item = data.items[0];
+          let title = item.title ? item.title.trim() : "";
+          let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
+
+          if (title !== "") {
+            p2000Text.innerText = title;
+            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+            if (title.includes('Prio 1') || title.includes('A1')) {
+              prioBadge.innerText = 'PRIO 1 / SPOED';
+              prioBadge.className = 'badge bg-prio1';
+            } else if (title.includes('Prio 2') || title.includes('A2')) {
+              prioBadge.innerText = 'PRIO 2';
+              prioBadge.className = 'badge bg-prio2';
+            } else {
+              prioBadge.innerText = 'INFO / MELDING';
+              prioBadge.className = 'badge bg-info';
+            }
+            return;
+          }
+        }
+      } catch (e) {}
+
+      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta/Delfzijl.";
+      prioBadge.innerText = "GEEN MELDINGEN";
+      prioBadge.className = "badge bg-info";
+    }
+
+    // P2000 Groningen Stad
+    async function fetchP2000GroningenStad() {
+      const p2000Text = document.getElementById('p2000-gro-text');
+      const p2000Time = document.getElementById('p2000-gro-time');
+      const prioBadge = document.getElementById('p2000-gro-prio');
+
+      try {
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss")}`);
+        const data = await res.json();
+
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          let item = data.items[0];
+          let title = item.title ? item.title.trim() : "";
+          let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
+
+          if (title !== "") {
+            p2000Text.innerText = title;
+            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+            if (title.includes('Prio 1') || title.includes('A1')) {
+              prioBadge.innerText = 'PRIO 1 / SPOED';
+              prioBadge.className = 'badge bg-prio1';
+            } else if (title.includes('Prio 2') || title.includes('A2')) {
+              prioBadge.innerText = 'PRIO 2';
+              prioBadge.className = 'badge bg-prio2';
+            } else {
+              prioBadge.innerText = 'INFO / MELDING';
+              prioBadge.className = 'badge bg-info';
+            }
+            return;
+          }
+        }
+      } catch (e) {}
+
+      p2000Text.innerText = "Geen recente alarmeringen in Groningen Stad.";
+      prioBadge.innerText = "GEEN MELDINGEN";
+      prioBadge.className = "badge bg-info";
     }
 
     // Live Waterstand Rijkswaterstaat Delfzijl
@@ -767,7 +866,7 @@
       document.getElementById('tide-lw').innerText = "20:40 uur";
     }
 
-    // Live OV Vertrektijden (OVapi / NDOV)
+    // Live OV Vertrektijden
     async function fetchLiveOV() {
       try {
         const res = await fetch("https://v0.ovapi.nl/tpc/10601100");
@@ -866,56 +965,6 @@
           rainMm.innerText = "0.0 mm/u";
         }
       } catch (e) {}
-    }
-
-    // P2000
-    async function fetchP2000() {
-      const p2000Text = document.getElementById('p2000-text');
-      const p2000Time = document.getElementById('p2000-time');
-      const prioBadge = document.getElementById('p2000-prio');
-
-      const feeds = [
-        "https://feed.alarmeringen.nl/eemsdelta.rss",
-        "https://feed.alarmeringen.nl/groningen.rss"
-      ];
-
-      for (let feedUrl of feeds) {
-        try {
-          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
-          const data = await res.json();
-
-          if (data.status === 'ok' && data.items && data.items.length > 0) {
-            for (let item of data.items) {
-              let title = item.title ? item.title.trim() : "";
-              let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
-
-              if (title !== "") {
-                p2000Text.innerText = title;
-                p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
-
-                if (title.includes('Prio 1') || title.includes('A1')) {
-                  prioBadge.innerText = 'PRIO 1 / SPOED';
-                  prioBadge.className = 'badge bg-prio1';
-                } else if (title.includes('Prio 2') || title.includes('A2')) {
-                  prioBadge.innerText = 'PRIO 2';
-                  prioBadge.className = 'badge bg-prio2';
-                } else {
-                  prioBadge.innerText = 'INFO / MELDING';
-                  prioBadge.className = 'badge bg-info';
-                }
-
-                if (lastP2000Title !== "" && lastP2000Title !== title) { showSlide(2); }
-                lastP2000Title = title;
-                return;
-              }
-            }
-          }
-        } catch (e) {}
-      }
-
-      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta/Delfzijl.";
-      prioBadge.innerText = "GEEN MELDINGEN";
-      prioBadge.className = "badge bg-info";
     }
 
     // Nieuws feeds XXL
@@ -1038,7 +1087,8 @@
       fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
-    fetchP2000();
+    fetchP2000Eemsdelta();
+    fetchP2000GroningenStad();
     fetchRDWLatestLicensePlate();
     fetchBuienalarm();
     fetchNews();
@@ -1048,8 +1098,9 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000, 15000);
-    setInterval(fetchRDWLatestLicensePlate, 900000); // Ververst elke 15 minuten RDW
+    setInterval(fetchP2000Eemsdelta, 15000);
+    setInterval(fetchP2000GroningenStad, 15000);
+    setInterval(fetchRDWLatestLicensePlate, 900000);
     setInterval(fetchBuienalarm, 60000);
     setInterval(fetchLiveOV, 60000);
     setInterval(fetchLiveTide, 300000);
