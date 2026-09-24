@@ -681,9 +681,9 @@
       }).setView([LAT_DELFZIJL, LON_DELFZIJL], 8);
 
       // Donkere achtergrondkaart
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 18
-      }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18
+}).addTo(map);
 
       // Live Neerslag / Satelliet van RainViewer
       fetch('https://api.rainviewer.com/public/weather-maps.json')
