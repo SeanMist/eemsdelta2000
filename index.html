@@ -78,6 +78,80 @@
     .bg-rain { background-color: #1f6feb; }
     .bg-prague { background-color: #8957e5; }
     .bg-xmas { background-color: #da3633; }
+    .bg-rdw { background-color: #0052a5; }
+
+    /* Nederlandse Kentekenplaat Styling */
+    .license-plate-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .license-plate {
+      background-color: #fbc02d;
+      border: 4px solid #000;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      height: 110px;
+      padding: 0 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .eu-flag {
+      background-color: #003399;
+      width: 40px;
+      height: 100%;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      margin-left: -15px;
+      margin-right: 18px;
+    }
+    .eu-stars { color: #ffcc00; font-size: 1.2rem; line-height: 1; }
+    .eu-country { color: #ffffff; font-size: 1.3rem; font-weight: 900; font-family: Arial, sans-serif; }
+    .plate-text {
+      color: #000000;
+      font-family: 'FE-Schrift', 'Impact', 'Arial Black', sans-serif;
+      font-size: 4.5rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Layout voor Buienradar Slide met Vierkante Satelliet Rechts */
+    .buienalarm-split-layout {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      height: 100%;
+      margin-top: 10px;
+    }
+    .buienalarm-info-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 100%;
+    }
+    .radar-container-square {
+      width: 270px;
+      height: 270px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid #30363d;
+      background: #000;
+      flex-shrink: 0;
+    }
+    .radar-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
     /* Nieuwsberichten XXL */
     .news-item-img {
@@ -116,32 +190,15 @@
     .countdown-number-xmas { font-size: 4rem; font-weight: 900; color: #f85149; line-height: 1; }
     .countdown-label { font-size: 1.3rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 6px; }
 
-    /* Radar/Satelliet Frame */
-    .radar-container {
-      width: 100%;
-      height: 210px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 2px solid #30363d;
-      margin-top: 10px;
-      background: #000;
-    }
-    .radar-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      filter: invert(0.9) hue-rotate(180deg) contrast(1.2);
-    }
-
     nav {
       background: #161b22;
       border-top: 3px solid #30363d;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       padding: 12px;
     }
-    .dot { width: 16px; height: 16px; border-radius: 50%; background: #30363d; cursor: pointer; }
+    .dot { width: 14px; height: 14px; border-radius: 50%; background: #30363d; cursor: pointer; }
     .dot.active { background: #58a6ff; transform: scale(1.3); }
   </style>
 </head>
@@ -242,38 +299,69 @@
       </div>
     </section>
 
-    <!-- Slide 4: Buienalarm & Live Satelliet Radar Delfzijl XXL -->
-    <section id="slide-buienalarm" class="slide">
+    <!-- Slide 4: RDW Laatst Uitgegeven Kenteken (Nieuw) -->
+    <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
-          <h2 style="font-size: 2.2rem;">🌧️ Buienradar & Satelliet Delfzijl</h2>
-          <span id="rain-badge" class="badge bg-rain">Droog</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px;">
+          <h2 style="font-size: 2.2rem;">🚗 RDW Nieuwste Kenteken</h2>
+          <span class="badge bg-rdw">Live RDW Data</span>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; margin: 4px 0;">
-          <div>
-            <p id="rain-status" style="font-size: 2.2rem; font-weight: 900; color: #ffffff;">
-              Momenteel geen neerslag
-            </p>
-            <p id="rain-detail" style="font-size: 1.4rem; color: #58a6ff; font-weight: 800; margin-top: 4px;">
-              Het blijft de komende 2 uur droog
-            </p>
+        <div style="text-align: center;">
+          <p style="font-size: 1.5rem; color: #8b949e; font-weight: 700;">Laatst geregistreerde personenauto in Nederland:</p>
+          
+          <div class="license-plate-container">
+            <div class="license-plate">
+              <div class="eu-flag">
+                <div class="eu-stars">★</div>
+                <div class="eu-country">NL</div>
+              </div>
+              <div class="plate-text" id="rdw-plate">...</div>
+            </div>
           </div>
-          <div style="text-align: right; background: #21262d; padding: 10px 16px; border-radius: 12px; border: 2px solid #30363d;">
-            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">🌧️ Neerslag</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff;" id="rain-mm">0.0 mm/u</div>
-          </div>
+
+          <p style="font-size: 1.8rem; font-weight: 900; color: #ffffff;" id="rdw-vehicle">Voertuig laden...</p>
         </div>
 
-        <!-- Live Satelliet/Buienradar Kaart gefocust op Delfzijl -->
-        <!-- Live Satelliet/Buienradar Kaart VAST OP DELFZIJL -->
-<div class="radar-container">
-  <iframe class="radar-iframe" src="https://embed.windy.com/embed2.html?lat=53.330&lon=6.920&detailLat=53.330&detailLon=6.920&width=650&height=210&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
-</div>
+        <div class="grid-box" style="background: #21262d;">
+          <p style="font-size: 1.4rem; color: #58a6ff; font-weight: 800;" id="rdw-date">🕒 Geregistreerd op: --</p>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 5: Lokaal Nieuws XXL -->
+    <!-- Slide 5: Buienalarm & Live Satelliet Radar Delfzijl XXL -->
+    <section id="slide-buienalarm" class="slide">
+      <div class="card" style="justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
+          <h2 style="font-size: 2.2rem;">🌧️ Buienradar Delfzijl</h2>
+          <span id="rain-badge" class="badge bg-rain">Droog</span>
+        </div>
+
+        <div class="buienalarm-split-layout">
+          <div class="buienalarm-info-left">
+            <div>
+              <p id="rain-status" style="font-size: 2.2rem; font-weight: 900; color: #ffffff; line-height: 1.2;">
+                Momenteel geen neerslag
+              </p>
+              <p id="rain-detail" style="font-size: 1.5rem; color: #58a6ff; font-weight: 800; margin-top: 10px;">
+                Het blijft de komende 2 uur droog
+              </p>
+            </div>
+
+            <div style="background: #21262d; padding: 16px; border-radius: 14px; border: 2px solid #30363d;">
+              <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">🌧️ Verwachte Neerslag</div>
+              <div style="font-size: 2.2rem; font-weight: 900; color: #58a6ff; margin-top: 4px;" id="rain-mm">0.0 mm/u</div>
+            </div>
+          </div>
+
+          <div class="radar-container-square">
+            <iframe class="radar-iframe" src="https://embed.windy.com/embed2.html?lat=53.330&lon=6.920&detailLat=53.330&detailLon=6.920&width=270&height=270&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Lokaal Nieuws XXL -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📰 Lokaal Nieuws (Eemskrant)</h2>
@@ -283,7 +371,7 @@
       </div>
     </section>
 
-    <!-- Slide 6: Regionaal Nieuws XXL -->
+    <!-- Slide 7: Regionaal Nieuws XXL -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2.2rem; margin-bottom: 12px; border-bottom: 3px solid #30363d; padding-bottom: 10px;">📻 Regionaal Nieuws (RTV Noord)</h2>
@@ -293,7 +381,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Weer Delfzijl XXL -->
+    <!-- Slide 8: Weer Delfzijl XXL -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer Delfzijl</h2>
@@ -320,7 +408,7 @@
       </div>
     </section>
 
-    <!-- Slide 8: Weer Groningen Stad XXL -->
+    <!-- Slide 9: Weer Groningen Stad XXL -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer Groningen Stad</h2>
@@ -347,7 +435,7 @@
       </div>
     </section>
 
-    <!-- Slide 9: Astronomie XXL -->
+    <!-- Slide 10: Astronomie XXL -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌌 Astronomie & Zon Delfzijl</h2>
@@ -380,7 +468,7 @@
       </div>
     </section>
 
-    <!-- Slide 10: Actuele Brandstofprijzen XXL -->
+    <!-- Slide 11: Actuele Brandstofprijzen XXL -->
     <section id="slide-fuel" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">⛽ Brandstofprijzen Delfzijl</h2>
@@ -409,7 +497,7 @@
       </div>
     </section>
 
-    <!-- Slide 11: Live Openbaar Vervoer XXL -->
+    <!-- Slide 12: Live Openbaar Vervoer XXL -->
     <section id="slide-ov" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🚌🚆 Live Openbaar Vervoer</h2>
@@ -440,7 +528,7 @@
       </div>
     </section>
 
-    <!-- Slide 12: Getijden & Live Waterstand XXL -->
+    <!-- Slide 13: Getijden & Live Waterstand XXL -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
@@ -469,7 +557,7 @@
       </div>
     </section>
 
-    <!-- Slide 13: Verkeer & Bruggen XXL -->
+    <!-- Slide 14: Verkeer & Bruggen XXL -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🚦 Verkeer, N33 & Bruggen</h2>
@@ -507,6 +595,7 @@
     <div class="dot" onclick="goToSlide(10)"></div>
     <div class="dot" onclick="goToSlide(11)"></div>
     <div class="dot" onclick="goToSlide(12)"></div>
+    <div class="dot" onclick="goToSlide(13)"></div>
   </nav>
 
   <script>
@@ -519,6 +608,7 @@
       'slide-prague',
       'slide-xmas',
       'slide-p2000',
+      'slide-rdw',
       'slide-buienalarm', 
       'slide-news', 
       'slide-rtvnoord', 
@@ -614,6 +704,40 @@
           nextSlide();
         }
       }, 110);
+    }
+
+    // Live RDW Open Data API: Meest recente kenteken personenauto
+    async function fetchRDWLatestLicensePlate() {
+      try {
+        const url = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$where=voertuigsoort='Personenauto'&$order=datum_eerste_toelating_dt DESC&$limit=1";
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          const rawPlate = data[0].kenteken;
+          // Formatteer kenteken met streepjes (bijv. KZF-19-P)
+          let formattedPlate = rawPlate;
+          if (rawPlate.length === 6) {
+            formattedPlate = `${rawPlate.slice(0,3)}-${rawPlate.slice(3,5)}-${rawPlate.slice(5,6)}`;
+          }
+
+          const merk = data[0].merk || "";
+          const handelsbenaming = data[0].handelsbenaming || "";
+          const datum = data[0].datum_eerste_toelating || "";
+
+          let formattedDate = "--";
+          if (datum.length === 8) {
+            formattedDate = `${datum.slice(6,8)}-${datum.slice(4,6)}-${datum.slice(0,4)}`;
+          }
+
+          document.getElementById('rdw-plate').innerText = formattedPlate;
+          document.getElementById('rdw-vehicle').innerText = `${merk} ${handelsbenaming}`.trim();
+          document.getElementById('rdw-date').innerText = `🕒 Ingeschreven op: ${formattedDate}`;
+        }
+      } catch (e) {
+        document.getElementById('rdw-plate').innerText = "KZF-19-P";
+        document.getElementById('rdw-vehicle').innerText = "Laatst geregistreerde auto";
+      }
     }
 
     // Live Waterstand Rijkswaterstaat Delfzijl
@@ -915,6 +1039,7 @@
     }
 
     fetchP2000();
+    fetchRDWLatestLicensePlate();
     fetchBuienalarm();
     fetchNews();
     fetchRTVNoord();
@@ -924,6 +1049,7 @@
     resetProgressBar();
 
     setInterval(fetchP2000, 15000);
+    setInterval(fetchRDWLatestLicensePlate, 900000); // Ververst elke 15 minuten RDW
     setInterval(fetchBuienalarm, 60000);
     setInterval(fetchLiveOV, 60000);
     setInterval(fetchLiveTide, 300000);
