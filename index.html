@@ -582,7 +582,7 @@
 
     async function fetchP2000FeedXML() {
       const targetFeed = "https://p2000.net/rss/groningen.xml";
-      const proxyUrl = WORKER_PROXY + encodeURIComponent(targetFeed);
+      const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
       
       try {
         const response = await fetch(proxyUrl);
