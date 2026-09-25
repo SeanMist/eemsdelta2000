@@ -492,8 +492,6 @@
   </nav>
 
   <script>
-    const WORKER_PROXY = "https://p2000-proxy.seanlousmit.workers.dev/?url=";
-
     const LAT_DELFZIJL = 53.33;
     const LON_DELFZIJL = 6.92;
     const LAT_GRONINGEN = 53.22;
@@ -580,18 +578,16 @@
       }, 110);
     }
 
-  async function fetchP2000FeedXML() {
-      // Gebruik de stabiele P2000.net RSS feed voor Groningen
-      const targetFeed = "https://www.p2000.net/rss/groningen.xml";
+    // P2000 ophalen via je eigen Cloudflare Worker met fallback
+    async function fetchP2000FeedXML() {
+      const targetFeed = "https://p2000.net/rss/groningen.xml";
       const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
       
       try {
         const response = await fetch(proxyUrl);
         const xmlText = await response.text();
 
-        // Controleer of er geldige XML binnenkomt om XML-parse errors te voorkomen
         if (!xmlText.trim().startsWith("<")) {
-          console.error("Geen geldige XML ontvangen van P2000 bron");
           return [];
         }
 
@@ -613,76 +609,8 @@
         return [];
       }
     }
-    async function fetchNews() {
-      try {
-        const targetFeed = "https://www.eemskrant.nl/feed/";
-        const proxyUrl = WORKER_PROXY + encodeURIComponent(targetFeed);
-        
-        const res = await fetch(proxyUrl);
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
-        const container = document.getElementById('news-container');
-        
-        if (items && items.length > 0) {
-          container.innerHTML = '';
-          for (let i = 0; i < Math.min(items.length, 2); i++) {
-            const item = items[i];
-            const title = item.querySelector("title") ? item.querySelector("title").textContent : "Nieuwsbericht";
-            const rawDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
-            const pubDate = rawDate ? new Date(rawDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : "";
 
-            container.innerHTML += `
-              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
-                <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
-                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
-                </div>
-              </div>
-            `;
-          }
-        }
-      } catch (e) {
-        console.error("Fout bij ophalen Eemskrant nieuws:", e);
-      }
-    }
-
-    async function fetchRTVNoord() {
-      try {
-        const targetFeed = "https://www.rtvnoord.nl/rss";
-        const proxyUrl = WORKER_PROXY + encodeURIComponent(targetFeed);
-        
-        const res = await fetch(proxyUrl);
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
-        const container = document.getElementById('rtvnoord-container');
-        
-        if (items && items.length > 0) {
-          container.innerHTML = '';
-          for (let i = 0; i < Math.min(items.length, 2); i++) {
-            const item = items[i];
-            const title = item.querySelector("title") ? item.querySelector("title").textContent : "RTV Noord bericht";
-            const rawDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
-            const pubDate = rawDate ? new Date(rawDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : "";
-
-            container.innerHTML += `
-              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
-                <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
-                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
-                </div>
-              </div>
-            `;
-          }
-        }
-      } catch (e) {
-        console.error("Fout bij ophalen RTV Noord nieuws:", e);
-      }
-    }
-
+    // 🚨 Live P2000 Update voor Delfzijl & Groningen
     async function updateP2000Data() {
       const items = await fetchP2000FeedXML();
       if (!items || items.length === 0) return;
@@ -692,7 +620,7 @@
       listContainer.innerHTML = "";
       
       items.forEach(item => {
-        const timeStr = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : "";
+        const timeStr = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : "Zojuist";
         const lower = item.title.toLowerCase();
         let badgeClass = 'bg-info';
         let badgeText = 'MELDING';
@@ -782,6 +710,70 @@
       document.getElementById('tide-lw').innerText = "18:19 uur";
     }
 
+    async function fetchNews() {
+      try {
+        const targetFeed = "https://www.eemskrant.nl/feed/";
+        const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
+        
+        const res = await fetch(proxyUrl);
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('news-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function fetchRTVNoord() {
+      try {
+        const targetFeed = "https://www.rtvnoord.nl/rss";
+        const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
+        
+        const res = await fetch(proxyUrl);
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('rtvnoord-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {}
+    }
+
     async function fetchCityWeather(lat, lon, prefix) {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
@@ -838,9 +830,7 @@
             }
           }
         }
-      } catch (e) {
-        console.error("Fout bij weer fetch:", e);
-      }
+      } catch (e) {}
     }
 
     function fetchAllWeather() {
