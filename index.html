@@ -60,7 +60,7 @@
       padding: 8px 20px;
       font-weight: 900;
       border-radius: 12px;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       color: #fff;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -114,33 +114,47 @@
       width: 80px;
       height: 80px;
       animation: pulse-siren 0.8s infinite alternate ease-in-out;
+      flex-shrink: 0;
     }
     @keyframes pulse-siren {
       0% { transform: scale(0.95); opacity: 0.8; }
       100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px #da3633); }
     }
 
-    /* Nieuws Styling */
-    .news-item-img {
+    /* P2000 Lijst Styling (Zoals P2000alarm.nl) */
+    .p2000-list-container {
       display: flex;
-      align-items: center;
-      gap: 20px;
-      border-bottom: 2px solid #30363d;
-      padding: 10px 0;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: calc(100% - 60px);
+      padding-right: 6px;
     }
-    .news-item-img:last-child { border-bottom: none; }
-    .news-thumb {
-      width: 120px;
-      height: 85px;
-      object-fit: cover;
-      border-radius: 12px;
+    .p2000-item {
+      background: #1c2128;
       border: 2px solid #30363d;
-      background-color: #21262d;
-      flex-shrink: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .news-content { flex: 1; }
-    .news-title { font-weight: 800; color: #f0f6fc; font-size: 1.55rem; line-height: 1.25; }
-    .news-date { font-size: 1.1rem; color: #8b949e; margin-top: 4px; font-weight: 600; }
+    .p2000-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p2000-item-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+    .p2000-item-time {
+      font-size: 1rem;
+      color: #8b949e;
+      font-weight: 700;
+    }
 
     /* Layout Grids & XXL Typografie */
     .weather-temp-huge { font-size: 6rem; font-weight: 900; color: #ffffff; margin: 0; line-height: 0.9; }
@@ -148,8 +162,6 @@
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
     .grid-box { background: #21262d; padding: 14px; border-radius: 14px; border: 2px solid #30363d; text-align: center; }
-
-    .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 12px 18px; border-radius: 12px; border: 2px solid #30363d; margin-top: 8px; }
 
     /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
@@ -217,11 +229,11 @@
       </div>
     </section>
 
-    <!-- Slide 2: Live P2000 Provincie Groningen (AUTOMATISCHE PUSH IN JS) -->
+    <!-- Slide 2: Gefilterd Delfzijl / Eemsdelta (Toont ALTIJD laatste melding + PUSH bij nieuwe) -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
-          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Groningen</h2>
+          <h2 style="font-size: 2.2rem;">🚨 Meest Recente Melding Delfzijl / Eemsdelta</h2>
           <span id="p2000-prio" class="badge bg-info">Laden...</span>
         </div>
         
@@ -231,8 +243,8 @@
             <path d="M30 65 C30 35, 70 35, 70 65 Z" fill="#da3633"/>
             <path d="M40 45 C40 38, 60 38, 60 45 Z" fill="#ff7b72"/>
           </svg>
-          <p id="p2000-text" style="font-size: 2.6rem; font-weight: 900; color: #ffffff; line-height: 1.25;">
-            Gegevens worden opgehaald...
+          <p id="p2000-text" style="font-size: 2.4rem; font-weight: 900; color: #ffffff; line-height: 1.25;">
+            Zoeken naar meest recente melding in Delfzijl / Eemsdelta...
           </p>
         </div>
 
@@ -242,11 +254,14 @@
       </div>
     </section>
 
-    <!-- Slide 3: Recent P2000 Overzicht -->
+    <!-- Slide 3: Provincie Groningen Historie & Live Monitor (Zoals P2000alarm.nl) -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start;">
-        <h2 style="font-size: 2.2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🚒 Recent P2000 Overzicht</h2>
-        <div id="p2000-groningen-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
+          <h2 style="font-size: 2.2rem;">🚒 Live Monitor & Historie Groningen</h2>
+          <span class="badge bg-info">P2000 Live</span>
+        </div>
+        <div id="p2000-groningen-list" class="p2000-list-container">
           <p style="font-size: 1.4rem;">Groningen meldingen laden...</p>
         </div>
       </div>
@@ -399,20 +414,25 @@
       </div>
     </section>
 
-    <!-- Slide 11: Verkeer N33 Veendam - Delfzijl XXL -->
+    <!-- Slide 11: Live Verkeer N33 & N46 (Inclusief Groningen - Eemshaven) -->
     <section id="slide-traffic" class="slide">
       <div class="card">
-        <h2 style="font-size: 2rem;">🚦 Verkeer N33 Veendam ↔ Delfzijl</h2>
-        <div class="grid-4">
+        <h2 style="font-size: 2rem;">🚦 Live Verkeer & Trajecten Eemsdelta</h2>
+        <div class="grid-3">
           <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">🚗 Traject N33 Veendam - Delfzijl</div>
-            <div style="font-size: 2.2rem; font-weight: 900; color: #3fb950; margin-top: 8px;">Vrije Doorgang</div>
-            <div style="font-size: 1.1rem; color: #8b949e; margin-top: 4px;">Geen vertragingen gemeld</div>
+            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚗 N33 Veendam ↔ Delfzijl</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n33">Vrije Doorgang</div>
+            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen vertragingen</div>
           </div>
           <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">🌉 Bruggen & Kustkanaal</div>
-            <div style="font-size: 2.2rem; font-weight: 900; color: #58a6ff; margin-top: 8px;">Normaal Actief</div>
-            <div style="font-size: 1.1rem; color: #8b949e; margin-top: 4px;">Geen stremmingen</div>
+            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚛 N46 Groningen ↔ Eemshaven</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n46">Vrije Doorgang</div>
+            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Eemshavenweg normaal</div>
+          </div>
+          <div class="grid-box">
+            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🌉 Bruggen & Kustkanaal</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff; margin-top: 6px;">Normaal Actief</div>
+            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen stremmingen</div>
           </div>
         </div>
         <div class="grid-box" style="margin-top: 12px;">
@@ -477,6 +497,13 @@
     const LAT_GRONINGEN = 53.22;
     const LON_GRONINGEN = 6.57;
 
+    // Lokale dorpen & plaatsen rond Delfzijl / Eemsdelta
+    const LOCAL_PLACES = [
+      "delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", 
+      "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", 
+      "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"
+    ];
+
     const slides = [
       'slide-prague',
       'slide-p2000-eemsdelta',
@@ -493,7 +520,7 @@
     ];
     let currentSlide = 0;
     let progressInterval;
-    let lastP2000Title = "";
+    let lastDelfzijlTitle = "";
 
     function updateClock() {
       document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
@@ -598,64 +625,90 @@
       document.getElementById('tide-lw').innerText = "18:19 uur";
     }
 
-    // 🚨 100% Zelfstandige P2000 Groningen Check (ZONDER PYTHON)
-    async function fetchP2000GroningenLive() {
+    // 🚨 1. SLIDE 2: Toont ALTIJD de meest recente Delfzijl/Eemsdelta melding + PUSH
+    async function fetchP2000DelfzijlFeatured() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
       const prioBadge = document.getElementById('p2000-prio');
 
-      try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss"));
-        const data = await res.json();
+      const endpoints = [
+        "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/eemsdelta.rss"),
+        "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss")
+      ];
 
-        if (data.status === 'ok' && data.items && data.items.length > 0) {
-          let item = data.items[0]; // Pak de allerlaatste P2000 melding uit provincie Groningen
-          let title = item.title ? item.title.trim() : "";
-          let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
+      for (let url of endpoints) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
 
-          if (title !== "") {
-            p2000Text.innerText = title;
-            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+          const data = await res.json();
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            for (let item of data.items) {
+              let title = item.title ? item.title.trim() : "";
+              let lowerTitle = title.toLowerCase();
 
-            let lowerTitle = title.toLowerCase();
-            if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
-              prioBadge.innerText = 'PRIO 1 / SPOED';
-              prioBadge.className = 'badge bg-prio1';
-            } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
-              prioBadge.innerText = 'PRIO 2';
-              prioBadge.className = 'badge bg-prio2';
-            } else {
-              prioBadge.innerText = 'INFO / MELDING';
-              prioBadge.className = 'badge bg-info';
+              const isLocal = LOCAL_PLACES.some(place => lowerTitle.includes(place));
+
+              if (title !== "" && (url.includes("eemsdelta") || isLocal)) {
+                let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
+                
+                p2000Text.innerText = title;
+                p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+                if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
+                  prioBadge.innerText = 'PRIO 1 / SPOED';
+                  prioBadge.className = 'badge bg-prio1';
+                } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
+                  prioBadge.innerText = 'PRIO 2';
+                  prioBadge.className = 'badge bg-prio2';
+                } else {
+                  prioBadge.innerText = 'INFO / MELDING';
+                  prioBadge.className = 'badge bg-info';
+                }
+
+                // ALS ER EEN NIEUWE MELDING VOOR DELFZIJL IS -> AUTOMATISCH PUSH NAAR SLIDE 2
+                if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) { 
+                  showSlide(1); 
+                }
+                lastDelfzijlTitle = title;
+                return;
+              }
             }
-
-            // ALS ER EEN NIEUWE MELDING IS -> DIRECT AUTOMATISCH NAAR SLIDE 2 SPRINGEN!
-            if (lastP2000Title !== "" && lastP2000Title !== title) { 
-              showSlide(1); // Slide index 1 is Slide 2 (P2000 Live)
-            }
-            lastP2000Title = title;
           }
-        }
-      } catch (e) {}
+        } catch (e) {}
+      }
     }
 
+    // 🚒 2. SLIDE 3: Toont een complete scrollbare lijst van de provincie Groningen (zoals P2000alarm.nl)
     async function fetchP2000GroningenList() {
       const listContainer = document.getElementById('p2000-groningen-list');
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss"));
         const data = await res.json();
 
-        if (data.status === 'ok' && data.items) {
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
           listContainer.innerHTML = "";
-          data.items.slice(0, 3).forEach(item => {
-            const timeStr = new Date(item.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          data.items.forEach(item => {
+            const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
             const lower = item.title.toLowerCase();
-            let badgeClass = (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1')) ? 'bg-prio1' : 'bg-prio2';
+            let badgeClass = 'bg-info';
+            let badgeText = 'MELDING';
+
+            if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
+              badgeClass = 'bg-prio1';
+              badgeText = 'PRIO 1';
+            } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
+              badgeClass = 'bg-prio2';
+              badgeText = 'PRIO 2';
+            }
 
             listContainer.innerHTML += `
-              <div class="ov-row">
-                <div style="font-size: 1.3rem; font-weight: 800; color: #ffffff;">${item.title}</div>
-                <div class="badge ${badgeClass}" style="font-size: 1.1rem; padding: 6px 12px;">${timeStr}</div>
+              <div class="p2000-item">
+                <div class="p2000-item-header">
+                  <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+                  <span class="p2000-item-time">🕒 ${timeStr}</span>
+                </div>
+                <div class="p2000-item-title">${item.title}</div>
               </div>
             `;
           });
@@ -676,11 +729,11 @@
             let imgTag = imgUrl ? `<img src="${imgUrl}" class="news-thumb" alt="Nieuws foto">` : '';
 
             container.innerHTML += `
-              <div class="news-item-img">
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
                 ${imgTag}
-                <div class="news-content">
-                  <div class="news-title">${item.title}</div>
-                  <div class="news-date">📅 ${dateStr}</div>
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${dateStr}</div>
                 </div>
               </div>
             `;
@@ -702,11 +755,11 @@
             let imgTag = imgUrl ? `<img src="${imgUrl}" class="news-thumb" alt="Nieuws foto">` : '';
 
             container.innerHTML += `
-              <div class="news-item-img">
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
                 ${imgTag}
-                <div class="news-content">
-                  <div class="news-title">${item.title}</div>
-                  <div class="news-date">📅 ${dateStr}</div>
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${dateStr}</div>
                 </div>
               </div>
             `;
@@ -779,7 +832,7 @@
       fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
-    fetchP2000GroningenLive();
+    fetchP2000DelfzijlFeatured();
     fetchP2000GroningenList();
     fetchRDWLatestPlate();
     fetchNews();
@@ -788,8 +841,8 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000GroningenLive, 10000); // Scant elke 10 sec zelfstandig
-    setInterval(fetchP2000GroningenList, 30000);
+    setInterval(fetchP2000DelfzijlFeatured, 10000); // Scant elke 10 sec op nieuwe Delfzijl meldingen
+    setInterval(fetchP2000GroningenList, 20000); // Ververst historie elke 20 sec
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
