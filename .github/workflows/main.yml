@@ -17,16 +17,13 @@ jobs:
 
       - name: Ophalen P2000 en Nieuws Feeds
         run: |
-          # P2000 feed ophalen
+          # 1. P2000 Groningen
           curl -s -L -A "Mozilla/5.0" "https://feed.alarmeringen.nl/groningen.rss" -o p2000.xml || true
-          if [ ! -s p2000.xml ]; then
-            curl -s -L -A "Mozilla/5.0" "https://p2000.net/rss/groningen.xml" -o p2000.xml || true
-          fi
 
-          # Eemskrant feed ophalen
+          # 2. Eemskrant
           curl -s -L -A "Mozilla/5.0" "https://www.eemskrant.nl/feed/" -o eemskrant.xml || true
 
-          # RTV Noord feed ophalen
+          # 3. RTV Noord
           curl -s -L -A "Mozilla/5.0" "https://www.rtvnoord.nl/rss" -o rtvnoord.xml || true
 
       - name: Wijzigingen opslaan in repository
