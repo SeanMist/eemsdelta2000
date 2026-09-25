@@ -541,11 +541,95 @@
           return;
         }
 
-        const items = xmlDoc.querySelectorAll("item");
+        // Ondersteun zowel <item> als <entry> (voor alle type RSS/Atom feeds)
+        let items = xmlDoc.querySelectorAll("item");
+        if (!items || items.length === 0) {
+          items = xmlDoc.querySelectorAll("entry");
+        }
+
         if (!items || items.length === 0) {
           listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Geen meldingen gevonden in de feed.</div></div>`;
+          document.getElementById('p2000-text').innerText = "Geen actieve meldingen gevonden";
+          document.getElementById('p2000-time').innerText = "--:--";
+          document.getElementById('p2000-prio').innerText = "STANDBY";
+          document.getElementById('p2000-prio').className = "badge bg-info";
           return;
         }
+
+        let localFound = false;
+        let displayedCount = 0;
+
+        for (let i = 0; i < items.length; i++) {
+          if (displayedCount >= 3) break;
+
+          const item = items[i];
+          
+          // Haal titel en datum op op basis van tag-naam of fallback
+          const titleEl = item.querySelector("title") || item.querySelector("summary") || item.querySelector("content");
+          const dateEl = item.querySelector("pubDate") || item.querySelector("updated") || item.querySelector("date");
+          
+          const title = titleEl ? titleEl.textContent.trim() : "Melding zonder titel";
+          const rawDate = dateEl ? dateEl.textContent.trim() : "";
+          
+          let pubDateFormatted = "Zojuist";
+          if (rawDate) {
+            const parsedDate = new Date(rawDate);
+            if (!isNaN(parsedDate)) {
+              pubDateFormatted = parsedDate.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+            }
+          }
+
+          const lower = title.toLowerCase();
+
+          let badgeClass = 'bg-info';
+          let badgeText = 'MELDING';
+          if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
+          else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
+
+          // Voeg toe aan de Groningen lijst
+          listContainer.innerHTML += `
+            <div class="p2000-item">
+              <div class="p2000-item-header">
+                <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+                <span class="p2000-item-time">${pubDateFormatted}</span>
+              </div>
+              <div class="p2000-item-title">${title}</div>
+            </div>
+          `;
+          displayedCount++;
+
+          // Check of dit een lokale melding is voor Delfzijl/Eemsdelta slide
+          if (!localFound && LOCAL_PLACES.some(place => lower.includes(place))) {
+            document.getElementById('p2000-text').innerText = title;
+            document.getElementById('p2000-time').innerText = pubDateFormatted;
+            document.getElementById('p2000-prio').innerText = badgeText;
+            document.getElementById('p2000-prio').className = "badge " + badgeClass;
+            localFound = true;
+          }
+        }
+
+        // Als er geen specifieke lokale melding in de top 3 staat, toon de allerlaatste
+        if (!localFound && items.length > 0) {
+          const firstItem = items[0];
+          const firstTitleEl = firstItem.querySelector("title") || firstItem.querySelector("summary");
+          const firstDateEl = firstItem.querySelector("pubDate") || firstItem.querySelector("updated");
+          
+          const firstTitle = firstTitleEl ? firstTitleEl.textContent.trim() : "Laatste melding";
+          let firstDateStr = "";
+          if (firstDateEl) {
+            const d = new Date(firstDateEl.textContent.trim());
+            if (!isNaN(d)) firstDateStr = d.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+          }
+
+          document.getElementById('p2000-text').innerText = firstTitle;
+          document.getElementById('p2000-time').innerText = firstDateStr;
+          document.getElementById('p2000-prio').innerText = "REGIO";
+          document.getElementById('p2000-prio').className = "badge bg-info";
+        }
+      } catch (err) {
+        console.error("Fout bij laden P2000:", err);
+      }
+    }
 
         let localFound = false;
         let displayedCount = 0;
