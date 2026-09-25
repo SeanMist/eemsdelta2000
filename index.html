@@ -578,20 +578,28 @@
       }, 110);
     }
 
-    // 100% Betrouwbare P2000 ophaalfunctie met unieke handtekening-controle
+    // Directe live XML-fetching via CORSProxy om caching te omzeilen
     async function fetchP2000Data() {
       let items = [];
 
       try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+        const proxyUrl = "https://corsproxy.io/?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?nocache=" + Date.now());
+        const res = await fetch(proxyUrl);
         if (res.ok) {
-          const data = await res.json();
-          if (data.status === 'ok' && data.items && data.items.length > 0) {
-            items = data.items;
-          }
+          const xmlText = await res.text();
+          const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
+          const xmlItems = xmlDoc.querySelectorAll("item");
+          xmlItems.forEach(item => {
+            const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
+            const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
+            if (title) {
+              items.push({ title, pubDate });
+            }
+          });
         }
       } catch (e) {}
 
+      // Fallback als de proxy tijdelijk weigert
       if (items.length === 0) {
         const now = new Date();
         items = [
@@ -660,7 +668,6 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        // PUSH INTERRUPT: Alleen triggeren als de unieke handtekening (tekst + tijd) echt gewijzigd is!
         if (lastDelfzijlSignature !== "" && lastDelfzijlSignature !== currentSignature) {
           showSlide(1); 
         }
