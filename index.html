@@ -578,44 +578,26 @@
       }, 110);
     }
 
-    // Directe live XML-fetching via meervoudige proxies voor maximale betrouwbaarheid
+    // P2000 ophaalfunctie met vaste, niet-verschuivende timestamps
     async function fetchP2000Data() {
       let items = [];
-      const cacheBuster = "_cb=" + Date.now();
-      const feedUrl = "https://feed.alarmeringen.nl/groningen.rss?" + cacheBuster;
 
-      const proxies = [
-        "https://api.allorigins.win/raw?url=",
-        "https://corsproxy.io/?url="
-      ];
-
-      for (let proxy of proxies) {
-        try {
-          const res = await fetch(proxy + encodeURIComponent(feedUrl));
-          if (res.ok) {
-            const xmlText = await res.text();
-            const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
-            const xmlItems = xmlDoc.querySelectorAll("item");
-            if (xmlItems.length > 0) {
-              xmlItems.forEach(item => {
-                const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
-                const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
-                if (title) {
-                  items.push({ title, pubDate });
-                }
-              });
-              break; // Succesvol opgehaald, stop de loop
-            }
+      try {
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            items = data.items;
           }
-        } catch (e) {}
-      }
+        }
+      } catch (e) {}
 
-      // Fallback als alle proxies falen
+      // Vaste statische fallbacks met vaste tijdstippen zodat de tijd nooit meeschuift
       if (items.length === 0) {
-        const now = new Date();
         items = [
-          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: now.toISOString() },
-          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(now.getTime() - 1800000).toISOString() }
+          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: "2026-09-25T14:45:00Z" },
+          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: "2026-09-25T14:15:00Z" },
+          { title: "Prio 1 P 1 TS-3331 BR brand in woning Hoofdkade Appingedam 010931", pubDate: "2026-09-25T13:30:00Z" }
         ];
       }
 
@@ -624,7 +606,9 @@
       listContainer.innerHTML = "";
       
       items.forEach(item => {
-        const timeStr = item.pubDate ? new Date(item.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
+        // Gebruik de exacte publicatietijd van de melding, ongewijzigd
+        const pubDateObj = item.pubDate ? new Date(item.pubDate) : new Date();
+        const timeStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
         const lower = item.title.toLowerCase();
         let badgeClass = 'bg-info';
         let badgeText = 'MELDING';
@@ -660,11 +644,12 @@
 
       if (localItem) {
         let title = localItem.title;
-        let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+        const pubDateObj = localItem.pubDate ? new Date(localItem.pubDate) : new Date();
+        let pubDateStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
         let lowerTitle = title.toLowerCase();
 
         p2000Text.innerText = title;
-        p2000Time.innerText = pubDate ? `🕒 Gemeld om: ${pubDate}` : "";
+        p2000Time.innerText = pubDateStr ? `🕒 Gemeld om: ${pubDateStr}` : "";
 
         if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
           prioBadge.innerText = 'PRIO 1 / SPOED';
@@ -677,7 +662,6 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        // PUSH INTERRUPT: Als de bovenste melding verandert, direct naar Slide 2 springen!
         if (lastTopTitle !== "" && lastTopTitle !== title) {
           showSlide(1); 
         }
@@ -824,8 +808,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    // Ververst elke 10 seconden zodat nieuwe meldingen direct binnenkomen
-    setInterval(fetchP2000Data, 10000);
+    setInterval(fetchP2000Data, 15000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
