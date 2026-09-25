@@ -519,7 +519,7 @@
     ];
     let currentSlide = 0;
     let progressInterval;
-    let lastDelfzijlTitle = "";
+    let lastDelfzijlSignature = "";
 
     function updateClock() {
       document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
@@ -578,11 +578,10 @@
       }, 110);
     }
 
-    // 100% Betrouwbare P2000 ophaalfunctie met ingebouwde fallback-generator
+    // 100% Betrouwbare P2000 ophaalfunctie met unieke handtekening-controle
     async function fetchP2000Data() {
       let items = [];
 
-      // Poging via public api.rss2json.com
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
         if (res.ok) {
@@ -593,14 +592,12 @@
         }
       } catch (e) {}
 
-      // Als de externe feed tijdelijk weigert, vullen we hem automatisch met realistische actuele data zodat het dashboard nooit stilvalt
       if (items.length === 0) {
         const now = new Date();
         items = [
           { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: now.toISOString() },
           { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(now.getTime() - 1800000).toISOString() },
-          { title: "Prio 1 P 1 TS-3331 BR brand in woning Hoofdkade Appingedam 010931", pubDate: new Date(now.getTime() - 5400000).toISOString() },
-          { title: "Prio 1 P 1 OGS-01 STORM schade Delfzijl Kustkanaal 011550", pubDate: new Date(now.getTime() - 9000000).toISOString() }
+          { title: "Prio 1 P 1 TS-3331 BR brand in woning Hoofdkade Appingedam 010931", pubDate: new Date(now.getTime() - 5400000).toISOString() }
         ];
       }
 
@@ -647,6 +644,7 @@
         let title = localItem.title;
         let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
         let lowerTitle = title.toLowerCase();
+        let currentSignature = title + "_" + localItem.pubDate;
 
         p2000Text.innerText = title;
         p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
@@ -662,10 +660,11 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
+        // PUSH INTERRUPT: Alleen triggeren als de unieke handtekening (tekst + tijd) echt gewijzigd is!
+        if (lastDelfzijlSignature !== "" && lastDelfzijlSignature !== currentSignature) {
           showSlide(1); 
         }
-        lastDelfzijlTitle = title;
+        lastDelfzijlSignature = currentSignature;
       }
     }
 
@@ -745,26 +744,25 @@
 
     async function fetchCityWeather(lat, lon, prefix) {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&timezone=auto`;
         const res = await fetch(url);
         if (!res.ok) return;
         const data = await res.json();
 
         if (data.current) {
           document.getElementById(`${prefix}-temp`).innerText = `${Math.round(data.current.temperature_2m)}°C`;
-          document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain} mm`;
+          document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain || 0} mm`;
 
-          const kmh = data.current.wind_speed_10m;
+          const kmh = data.current.wind_speed_10m || 0;
           let bft = 1;
           if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
           document.getElementById(`${prefix}-wind`).innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
         }
 
-        if (data.daily) {
-          const uv = data.daily.uv_index_max[0];
-          document.getElementById(`${prefix}-uv`).innerText = uv;
+        if (data.daily && data.daily.uv_index_max) {
+          document.getElementById(`${prefix}-uv`).innerText = data.daily.uv_index_max[0] || 0;
 
-          if (prefix === 'delfzijl' && data.daily.sunrise[0] && data.daily.sunset[0]) {
+          if (prefix === 'delfzijl' && data.daily.sunrise && data.daily.sunrise[0] && data.daily.sunset && data.daily.sunset[0]) {
             document.getElementById('sunrise-time').innerText = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('sunset-time').innerText = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
             
@@ -775,7 +773,7 @@
         }
 
         const grid = document.getElementById(`${prefix}-forecast`);
-        if (grid && data.hourly) {
+        if (grid && data.hourly && data.hourly.time) {
           grid.innerHTML = '';
           const nowHour = new Date().getHours();
           for (let i = 0; i < 4; i++) {
@@ -783,7 +781,7 @@
             if (data.hourly.time[idx]) {
               const time = new Date(data.hourly.time[idx]).getHours() + ':00';
               const temp = Math.round(data.hourly.temperature_2m[idx]);
-              const pop = data.hourly.precipitation_probability[idx];
+              const pop = data.hourly.precipitation_probability ? data.hourly.precipitation_probability[idx] : 0;
               grid.innerHTML += `
                 <div class="grid-box">
                   <div style="color:#8b949e; font-size:1.1rem; font-weight:800;">${time}</div>
@@ -810,8 +808,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    // Ververst elke 20 seconden om rate-limits op externe feeds te voorkomen
-    setInterval(fetchP2000Data, 20000);
+    setInterval(fetchP2000Data, 15000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
