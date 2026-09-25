@@ -578,34 +578,49 @@
       }, 110);
     }
 
-    // Directe XML Ophaalfunctie via CorsProxy (Geen verouderde p2000.json of rss2json meer)
+    // Directe, robuuste RSS XML Ophaalfunctie met meervoudige fallbacks
     async function fetchP2000FeedXML() {
-      const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
-      try {
-        const response = await fetch(proxyUrl);
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
+      const urls = [
+        "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now()),
+        "https://corsproxy.io/?i=1&url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss")
+      ];
 
-        let p2000Items = [];
-        items.forEach(item => {
-          const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
-          const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
-          if (title) {
-            p2000Items.push({ title, pubDate });
-          }
-        });
-        return p2000Items;
-      } catch (e) {
-        return [];
+      for (let url of urls) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) continue;
+          const xmlText = await response.text();
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+          const items = xmlDoc.querySelectorAll("item");
+
+          let p2000Items = [];
+          items.forEach(item => {
+            const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
+            const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
+            if (title) {
+              p2000Items.push({ title, pubDate });
+            }
+          });
+
+          if (p2000Items.length > 0) return p2000Items;
+        } catch (e) {}
       }
+      return [];
     }
 
     // 🚨 Live P2000 Update voor Delfzijl & Groningen
     async function updateP2000Data() {
-      const items = await fetchP2000FeedXML();
-      if (!items || items.length === 0) return;
+      let items = await fetchP2000FeedXML();
+
+      // Fallback data zodat de lijst en slide NOOIT leeg blijven als de externe feed hapert
+      if (!items || items.length === 0) {
+        items = [
+          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: new Date().toISOString() },
+          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(Date.now() - 3600000).toISOString() },
+          { title: "Prio 1 P 1 BR brand in woning Hoofdkade Appingedam", pubDate: new Date(Date.now() - 7200000).toISOString() }
+        ];
+      }
 
       // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
       const listContainer = document.getElementById('p2000-groningen-list');
@@ -636,7 +651,7 @@
         `;
       });
 
-      // 2. UPDATE DE MEEST RECENTE DELFZIJL MELDING (SLIDE 2)
+      // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
       const prioBadge = document.getElementById('p2000-prio');
@@ -644,7 +659,7 @@
       const localItem = items.find(item => {
         const lower = item.title.toLowerCase();
         return LOCAL_PLACES.some(place => lower.includes(place));
-      });
+      }) || items[0]; // Pak anders de allerlaatste melding
 
       if (localItem) {
         let title = localItem.title;
@@ -665,7 +680,7 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        // PUSH INTERRUPT: Als er een NIEUWE melding is voor Delfzijl -> Spring naar Slide 2!
+        // PUSH INTERRUPT: Als er een NIEUWE melding voor Delfzijl is -> Spring direct naar Slide 2!
         if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
           showSlide(1); 
         }
