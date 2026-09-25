@@ -378,7 +378,7 @@
     <!-- Slide 9: Regionaal Nieuws (RTV Noord) XXL -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
-        <h2 style="font-size: 2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
+        <h2 style="font-size: 2.2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
         <div id="rtvnoord-container">
           <p style="font-size: 1.4rem;">RTV Noord berichten laden...</p>
         </div>
@@ -578,27 +578,30 @@
       }, 110);
     }
 
-    // Directe, robuuste P2000 ophaalfunctie met correcte tijden in het verleden
+    // Directe browser-fetching via api.allorigins.win /get?url= (omzeilt server-blokkades en CORS)
     async function fetchP2000Data() {
       let items = [];
 
       try {
-        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+        const targetUrl = "https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now();
+        const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl));
         if (res.ok) {
-          const text = await res.text();
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(text, "text/xml");
-          const rssItems = xml.querySelectorAll("item");
-          rssItems.forEach(item => {
-            items.push({
-              title: item.querySelector("title") ? item.querySelector("title").textContent : "",
-              pubDate: item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : new Date().toISOString()
+          const json = await res.json();
+          if (json && json.contents) {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(json.contents, "text/xml");
+            const rssItems = xml.querySelectorAll("item");
+            rssItems.forEach(item => {
+              items.push({
+                title: item.querySelector("title") ? item.querySelector("titleDavidson" || "title").textContent : "",
+                pubDate: item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : new Date().toISOString()
+              });
             });
-          });
+          }
         }
       } catch (e) {}
 
-      // Als externe feed faalt, genereren we fallback-tijden netjes IN HET VERLEDEN (5, 15 en 30 minuten geleden)
+      // Fallback in het verleden als de proxy of feed weigert
       if (items.length === 0) {
         const now = new Date();
         items = [
@@ -610,32 +613,34 @@
 
       // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
       const listContainer = document.getElementById('p2000-groningen-list');
-      listContainer.innerHTML = "";
-      
-      items.forEach(item => {
-        const timeStr = item.pubDate ? new Date(item.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
-        const lower = item.title.toLowerCase();
-        let badgeClass = 'bg-info';
-        let badgeText = 'MELDING';
+      if (listContainer) {
+        listContainer.innerHTML = "";
+        items.forEach(item => {
+          const pubDateObj = item.pubDate ? new Date(item.pubDate) : new Date();
+          const timeStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
+          const lower = item.title.toLowerCase();
+          let badgeClass = 'bg-info';
+          let badgeText = 'MELDING';
 
-        if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
-          badgeClass = 'bg-prio1';
-          badgeText = 'PRIO 1';
-        } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
-          badgeClass = 'bg-prio2';
-          badgeText = 'PRIO 2';
-        }
+          if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
+            badgeClass = 'bg-prio1';
+            badgeText = 'PRIO 1';
+          } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
+            badgeClass = 'bg-prio2';
+            badgeText = 'PRIO 2';
+          }
 
-        listContainer.innerHTML += `
-          <div class="p2000-item">
-            <div class="p2000-item-header">
-              <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
-              <span class="p2000-item-time">🕒 ${timeStr}</span>
+          listContainer.innerHTML += `
+            <div class="p2000-item">
+              <div class="p2000-item-header">
+                <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+                <span class="p2000-item-time">🕒 ${timeStr}</span>
+              </div>
+              <div class="p2000-item-title">${item.title}</div>
             </div>
-            <div class="p2000-item-title">${item.title}</div>
-          </div>
-        `;
-      });
+          `;
+        });
+      }
 
       // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
       const p2000Text = document.getElementById('p2000-text');
@@ -647,9 +652,10 @@
         return LOCAL_PLACES.some(place => lower.includes(place));
       }) || items[0];
 
-      if (localItem) {
+      if (localItem && p2000Text) {
         let title = localItem.title;
-        let pubDateStr = localItem.pubDate ? new Date(localItem.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+        const pubDateObj = localItem.pubDate ? new Date(localItem.pubDate) : new Date();
+        let pubDateStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
         let lowerTitle = title.toLowerCase();
 
         p2000Text.innerText = title;
