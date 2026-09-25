@@ -54,6 +54,7 @@
       justify-content: space-between;
     }
 
+    /* Kerstmis Thema Card */
     .card-christmas {
       background: linear-gradient(135deg, #0f2b1d 0%, #161b22 100%);
       border: 3px solid #2ea44f;
@@ -63,13 +64,13 @@
     /* Badges XXL */
     .badge {
       display: inline-block;
-      padding: 8px 18px;
+      padding: 6px 14px;
       font-weight: 900;
-      border-radius: 10px;
-      font-size: 1.3rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
     .bg-prio1 { background-color: #da3633; }
     .bg-prio2 { background-color: #d29922; color: #0d1117; }
@@ -78,7 +79,7 @@
     .bg-prague { background-color: #8957e5; }
     .bg-xmas { background-color: #da3633; }
 
-    /* P2000 Lijst Item Styling */
+    /* P2000 Item Lijst XXL */
     .p2000-item {
       background: #21262d;
       border: 2px solid #30363d;
@@ -90,22 +91,9 @@
       gap: 6px;
     }
     .p2000-item:last-child { margin-bottom: 0; }
-    .p2000-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .p2000-title {
-      font-size: 1.55rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.25;
-    }
-    .p2000-time {
-      font-size: 1.1rem;
-      color: #58a6ff;
-      font-weight: 700;
-    }
+    .p2000-header { display: flex; justify-content: space-between; align-items: center; }
+    .p2000-title { font-size: 1.5rem; font-weight: 800; color: #ffffff; line-height: 1.25; }
+    .p2000-time { font-size: 1.1rem; color: #58a6ff; font-weight: 700; }
 
     /* Nieuwsberichten XXL */
     .news-item-img {
@@ -139,10 +127,12 @@
     .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 14px 20px; border-radius: 12px; border: 2px solid #30363d; margin-top: 10px; }
     .ov-time { font-size: 1.9rem; font-weight: 900; color: #3fb950; }
 
+    /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
     .countdown-number-xmas { font-size: 4rem; font-weight: 900; color: #f85149; line-height: 1; }
     .countdown-label { font-size: 1.3rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 6px; }
 
+    /* Radar/Satelliet Frame */
     .radar-container {
       width: 100%;
       height: 210px;
@@ -248,16 +238,16 @@
       </div>
     </section>
 
-    <!-- Slide 3: P2000 Provincie Groningen (3 Meldingen) -->
+    <!-- Slide 3: P2000 Provincie Groningen (Top 3 Meldingen) -->
     <section id="slide-p2000" class="slide">
       <div class="card" style="justify-content: flex-start;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px; margin-bottom: 12px;">
-          <h2 style="font-size: 2rem;">🚨 P2000 Provincie Groningen</h2>
-          <span class="badge bg-info">3 Recente Meldingen</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 12px; margin-bottom: 12px;">
+          <h2 style="font-size: 2.2rem;">🚨 P2000 Provincie Groningen</h2>
+          <span style="font-size: 1.2rem; color: #8b949e; font-weight: 700;">3 Recente Meldingen</span>
         </div>
         
         <div id="p2000-list">
-          <p style="font-size: 1.4rem;">P2000 alarmeringen ophalen...</p>
+          <p style="font-size: 1.5rem; color: #8b949e;">Meldingen laden...</p>
         </div>
       </div>
     </section>
@@ -285,6 +275,7 @@
           </div>
         </div>
 
+        <!-- Live Satelliet/Buienradar Kaart -->
         <div class="radar-container">
           <iframe class="radar-iframe" src="https://gadgets.buienradar.nl/gadget/zoommap/?lat=53.33&lng=6.92&overal=1&zoom=8&naam=Delfzijl&size=3&voor=1"></iframe>
         </div>
@@ -550,7 +541,6 @@
     ];
     let currentSlide = 0;
     let progressInterval;
-    let lastDelfzijlP2000Title = "";
 
     function updateClock() {
       document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
@@ -560,7 +550,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 🇨🇿 Afteltimer Praag
+    // 🇨🇿 Afteltimer Praag (9 Oktober 17:00)
     function updatePragueCountdown() {
       const targetDate = new Date("2026-10-09T17:00:00");
       const now = new Date();
@@ -583,7 +573,7 @@
       document.getElementById('cd-mins').innerText = mins;
     }
 
-    // 🎄 Afteltimer Kerstmis
+    // 🎄 Afteltimer Kerstmis (25 December 00:00)
     function updateChristmasCountdown() {
       const targetDate = new Date("2026-12-25T00:00:00");
       const now = new Date();
@@ -634,7 +624,7 @@
       }, 110);
     }
 
-    // P2000 Provincie Groningen (Top 3 Meldingen) + Delfzijl Interrupt
+    // P2000 Provincie Groningen (Top 3 Meldingen, Geen geforceerde interrupt)
     async function fetchP2000() {
       const listContainer = document.getElementById('p2000-list');
       const feedUrl = "https://feed.alarmeringen.nl/groningen.rss";
@@ -647,40 +637,37 @@
           listContainer.innerHTML = '';
           const top3 = data.items.slice(0, 3);
 
-          top3.forEach((item, index) => {
-            let title = item.title ? item.title.trim() : "";
-            let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : "";
+          top3.forEach(item => {
+            let title = item.title ? item.title.trim() : "Geen titel";
+            let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : "";
 
-            let prioBadgeHtml = '<span class="badge bg-info">INFO</span>';
+            let badgeText = "INFO";
+            let badgeClass = "bg-info";
+
             if (title.includes('Prio 1') || title.includes('A1')) {
-              prioBadgeHtml = '<span class="badge bg-prio1">PRIO 1</span>';
+              badgeText = "PRIO 1";
+              badgeClass = "bg-prio1";
             } else if (title.includes('Prio 2') || title.includes('A2')) {
-              prioBadgeHtml = '<span class="badge bg-prio2">PRIO 2</span>';
+              badgeText = "PRIO 2";
+              badgeClass = "bg-prio2";
             }
 
             listContainer.innerHTML += `
               <div class="p2000-item">
                 <div class="p2000-header">
-                  ${prioBadgeHtml}
-                  <span class="p2000-time">🕒 ${pubDate} uur</span>
+                  <span class="badge ${badgeClass}">${badgeText}</span>
+                  <span class="p2000-time">🕒 ${pubDate}</span>
                 </div>
                 <div class="p2000-title">${title}</div>
               </div>
             `;
-
-            // ALLEEN als de nieuwste melding SPECIFIEK voor Delfzijl is, springen we meteen naar het meldscherm
-            if (index === 0 && title.toLowerCase().includes('delfzijl')) {
-              if (lastDelfzijlP2000Title !== "" && lastDelfzijlP2000Title !== title) {
-                showSlide(2); // Direct naar P2000 slide
-              }
-              lastDelfzijlP2000Title = title;
-            }
           });
-          return;
+        } else {
+          listContainer.innerHTML = '<p style="font-size: 1.5rem; color: #8b949e;">Geen recente alarmeringen in Groningen.</p>';
         }
-      } catch (e) {}
-
-      listContainer.innerHTML = '<p style="font-size:1.5rem;">Geen recente alarmeringen in Groningen.</p>';
+      } catch (e) {
+        listContainer.innerHTML = '<p style="font-size: 1.5rem; color: #da3633;">Fout bij ophalen P2000 gegevens.</p>';
+      }
     }
 
     // Live Waterstand Rijkswaterstaat Delfzijl
@@ -710,7 +697,7 @@
       document.getElementById('tide-lw').innerText = "20:40 uur";
     }
 
-    // Live OV Vertrektijden
+    // Live OV Vertrektijden (OVapi / NDOV)
     async function fetchLiveOV() {
       try {
         const res = await fetch("https://v0.ovapi.nl/tpc/10601100");
@@ -940,7 +927,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000, 15000);
+    setInterval(fetchP2000, 30000);
     setInterval(fetchBuienalarm, 60000);
     setInterval(fetchLiveOV, 60000);
     setInterval(fetchLiveTide, 300000);
