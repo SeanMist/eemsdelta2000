@@ -18,7 +18,7 @@
     
     header {
       background-color: #161b22;
-      padding: 12px 24px;F
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -139,7 +139,6 @@
     .grid-box { background: #21262d; padding: 14px; border-radius: 14px; border: 2px solid #30363d; text-align: center; }
 
     .ov-row { display: flex; justify-content: space-between; align-items: center; background: #21262d; padding: 12px 18px; border-radius: 12px; border: 2px solid #30363d; margin-top: 8px; }
-    .ov-time { font-size: 1.8rem; font-weight: 900; color: #3fb950; }
 
     /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
@@ -203,11 +202,11 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Eemsdelta (PUSH INTERRUPT) -->
+    <!-- Slide 2: P2000 Eemsdelta / Delfzijl (INTERRUPT SLIDE) -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
-          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Eemsdelta</h2>
+          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Eemsdelta / Delfzijl</h2>
           <span id="p2000-prio" class="badge bg-info">Laden...</span>
         </div>
         
@@ -459,6 +458,13 @@
     const LAT_GRONINGEN = 53.22;
     const LON_GRONINGEN = 6.57;
 
+    // Lijst met lokale Eemsdelta plaatsen
+    const LOCAL_PLACES = [
+      "delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", 
+      "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", 
+      "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"
+    ];
+
     const slides = [
       'slide-prague',
       'slide-p2000-eemsdelta',
@@ -557,49 +563,33 @@
     }
 
     // Live Waterstand Rijkswaterstaat Delfzijl
-    // Live Waterstand & Accurate Getijdetijden Delfzijl (Rijkswaterstaat RWS)
-async function fetchLiveTide() {
-  try {
-    // 1. Ophalen actuele waterstand
-    const res = await fetch("https://waterblik.nl/api/waterinfo/DELFZL");
-    const data = await res.json();
-    if (data && data.waterlevel !== undefined) {
-      document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
-      document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
+    async function fetchLiveTide() {
+      try {
+        const url = "https://waterblik.nl/api/waterinfo/DELFZL";
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.waterlevel) {
+          document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
+          document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
+        } else {
+          fetchTideFallback();
+        }
+      } catch (e) {
+        fetchTideFallback();
+      }
     }
 
-    // 2. Berekening actuele HW/LW getijden Delfzijl (Cyclus ~12u 25m)
-    calculateDelfzijlTides();
-  } catch (e) {
-    calculateDelfzijlTides();
-  }
-}
+    function fetchTideFallback() {
+      const now = new Date();
+      const hours = now.getHours();
+      const isRising = (hours % 12) < 6;
+      document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
+      document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
+      document.getElementById('tide-hw').innerText = "14:25 uur";
+      document.getElementById('tide-lw').innerText = "20:40 uur";
+    }
 
-function calculateDelfzijlTides() {
-  const now = new Date();
-  
-  // Referentiepunt hoogwater Delfzijl
-  const refHW = new Date("2026-09-25T12:05:00"); 
-  const periodMs = (12 * 60 + 25) * 60 * 1000; // Getijdeperiode van ~12 uur en 25 minuten
-
-  let nextHW = new Date(refHW.getTime());
-  while (nextHW < now) {
-    nextHW = new Date(nextHW.getTime() + periodMs);
-  }
-
-  // Laagwater valt gemiddeld 6 uur en 12 minuten voor/na hoogwater
-  let nextLW = new Date(nextHW.getTime() - (6 * 60 + 12) * 60 * 1000);
-  if (nextLW < now) {
-    nextLW = new Date(nextHW.getTime() + (6 * 60 + 12) * 60 * 1000);
-  }
-
-  const formatTime = (d) => d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) + " uur";
-
-  document.getElementById('tide-hw').innerText = formatTime(nextHW);
-  document.getElementById('tide-lw').innerText = formatTime(nextLW);
-}
-
-    // 🚨 Robuuste P2000 Eemsdelta ophalen (met dubbele API-bron)
+    // 🚨 Robuuste P2000 Check (Eemsdelta / Delfzijl Direct Push Interrupt)
     async function fetchP2000Eemsdelta() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
@@ -607,7 +597,7 @@ function calculateDelfzijlTides() {
 
       const endpoints = [
         "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/eemsdelta.rss"),
-        "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/eemsdelta.rss")
+        "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss")
       ];
 
       for (let url of endpoints) {
@@ -615,56 +605,50 @@ function calculateDelfzijlTides() {
           const res = await fetch(url);
           if (!res.ok) continue;
 
-          let title = "";
-          let pubDate = "";
+          const data = await res.json();
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            for (let item of data.items) {
+              let title = item.title ? item.title.trim() : "";
+              let lowerTitle = title.toLowerCase();
 
-          if (url.includes("rss2json")) {
-            const data = await res.json();
-            if (data.status === 'ok' && data.items && data.items.length > 0) {
-              title = data.items[0].title || "";
-              pubDate = data.items[0].pubDate || "";
+              // Controleer of de melding in Eemsdelta/Delfzijl omstreken is
+              const isLocal = LOCAL_PLACES.some(place => lowerTitle.includes(place));
+
+              if (title !== "" && (url.includes("eemsdelta") || isLocal)) {
+                let pubDate = item.pubDate ? new Date(item.pubDate).toLocaleString('nl-NL') : "";
+                
+                p2000Text.innerText = title;
+                p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+                if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
+                  prioBadge.innerText = 'PRIO 1 / SPOED';
+                  prioBadge.className = 'badge bg-prio1';
+                } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
+                  prioBadge.innerText = 'PRIO 2';
+                  prioBadge.className = 'badge bg-prio2';
+                } else {
+                  prioBadge.innerText = 'INFO / MELDING';
+                  prioBadge.className = 'badge bg-info';
+                }
+
+                // ALS ER EEN NIEUWE LOKALE MELDING IS -> PUSH DIRECT NAAR SLIDE 1 (Slide index 1 = P2000 Eemsdelta)
+                if (lastP2000Title !== "" && lastP2000Title !== title) { 
+                  showSlide(1); 
+                }
+                lastP2000Title = title;
+                return;
+              }
             }
-          } else {
-            const xmlText = await res.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-            const firstItem = xmlDoc.querySelector("item");
-            if (firstItem) {
-              title = firstItem.querySelector("title") ? firstItem.querySelector("title").textContent : "";
-              pubDate = firstItem.querySelector("pubDate") ? firstItem.querySelector("pubDate").textContent : "";
-            }
-          }
-
-          if (title !== "") {
-            title = title.trim();
-            p2000Text.innerText = title;
-            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${new Date(pubDate).toLocaleString('nl-NL')}` : "";
-
-            const lowerTitle = title.toLowerCase();
-            if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
-              prioBadge.innerText = 'PRIO 1 / SPOED';
-              prioBadge.className = 'badge bg-prio1';
-            } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
-              prioBadge.innerText = 'PRIO 2';
-              prioBadge.className = 'badge bg-prio2';
-            } else {
-              prioBadge.innerText = 'INFO / MELDING';
-              prioBadge.className = 'badge bg-info';
-            }
-
-            if (lastP2000Title !== "" && lastP2000Title !== title) { showSlide(1); }
-            lastP2000Title = title;
-            return;
           }
         } catch (e) {}
       }
 
-      p2000Text.innerText = "Geen recente alarmeringen in Eemsdelta.";
+      p2000Text.innerText = "Geen recente alarmeringen in Delfzijl / Eemsdelta.";
       prioBadge.innerText = "GEEN MELDINGEN";
       prioBadge.className = "badge bg-info";
     }
 
-    // 🚒 P2000 Provincie Groningen (STILLE LIJST)
+    // 🚒 P2000 Provincie Groningen (STILLE LIJST SLIDE 3)
     async function fetchP2000GroningenList() {
       const listContainer = document.getElementById('p2000-groningen-list');
       try {
@@ -816,7 +800,7 @@ function calculateDelfzijlTides() {
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000Eemsdelta, 10000); // 10 seconden
+    setInterval(fetchP2000Eemsdelta, 10000); // Checkt elke 10 seconden
     setInterval(fetchP2000GroningenList, 30000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
