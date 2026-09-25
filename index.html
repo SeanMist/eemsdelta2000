@@ -109,27 +109,22 @@
       line-height: 1;
     }
 
-    /* Nieuws & RSS Styling */
-    .news-item-img {
+    /* Cartoon Illustrations SVG */
+    .cartoon-container {
       display: flex;
+      justify-content: center;
       align-items: center;
       gap: 20px;
-      border-bottom: 2px solid #30363d;
-      padding: 10px 0;
     }
-    .news-item-img:last-child { border-bottom: none; }
-    .news-thumb {
-      width: 120px;
-      height: 85px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid #30363d;
-      background-color: #21262d;
-      flex-shrink: 0;
+    .siren-animation {
+      width: 80px;
+      height: 80px;
+      animation: pulse-siren 0.8s infinite alternate ease-in-out;
     }
-    .news-content { flex: 1; }
-    .news-title { font-weight: 800; color: #f0f6fc; font-size: 1.55rem; line-height: 1.25; }
-    .news-date { font-size: 1.1rem; color: #8b949e; margin-top: 4px; font-weight: 600; }
+    @keyframes pulse-siren {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px #da3633); }
+    }
 
     /* Layout Grids & XXL Typografie */
     .weather-temp-huge { font-size: 6rem; font-weight: 900; color: #ffffff; margin: 0; line-height: 0.9; }
@@ -143,8 +138,6 @@
     /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
     .countdown-label { font-size: 1.2rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 4px; }
-
-    .gif-icon { height: 50px; vertical-align: middle; border-radius: 8px; }
 
     nav {
       background: #161b22;
@@ -167,7 +160,7 @@
   <div class="progress-bar-container"><div class="progress-bar" id="progress"></div></div>
 
   <main>
-    <!-- Slide 1: Afteltimer Praag XXL -->
+    <!-- Slide 1: Afteltimer Praag XXL met Cartoon Auto -->
     <section id="slide-prague" class="slide active">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -176,10 +169,17 @@
         </div>
 
         <div style="text-align: center; margin: 10px 0;">
-          <p style="font-size: 1.7rem; color: #8b949e; font-weight: 700; margin-bottom: 10px;">
-            Vertrek: Donderdag 9 Oktober om 17:00 uur 
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1aWRxbWNhcWttZ3hqcWhwOHVzN2cxbXljOHp2NnplYjR4ODdrNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7ZetMrj4zA0aw88M/giphy.gif" class="gif-icon" alt="Auto gif">
-          </p>
+          <div class="cartoon-container" style="margin-bottom: 10px;">
+            <!-- Cartoon Auto Vector -->
+            <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 35 C10 30, 25 20, 45 20 L65 20 C75 20, 85 28, 90 35 L95 38 C98 40, 98 45, 95 45 L5 45 C2 45, 2 40, 5 38 Z" fill="#8957e5"/>
+              <path d="M30 22 L45 10 L65 10 L72 22 Z" fill="#a575ff"/>
+              <circle cx="25" cy="45" r="8" fill="#161b22" stroke="#ffffff" stroke-width="3"/>
+              <circle cx="75" cy="45" r="8" fill="#161b22" stroke="#ffffff" stroke-width="3"/>
+            </svg>
+            <span style="font-size: 1.7rem; color: #8b949e; font-weight: 700;">Vertrek: Donderdag 9 Oktober om 17:00 uur</span>
+          </div>
+
           <div class="grid-3">
             <div class="grid-box">
               <div class="countdown-number" id="cd-days">--</div>
@@ -202,7 +202,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Eemsdelta / Delfzijl (INTERRUPT SLIDE) -->
+    <!-- Slide 2: P2000 Eemsdelta / Delfzijl (Met geanimeerde Cartoon Zwaailicht) -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -210,8 +210,13 @@
           <span id="p2000-prio" class="badge bg-info">Laden...</span>
         </div>
         
-        <div style="margin: 15px 0; display: flex; align-items: center; gap: 20px;">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzRkM3kwdWZ4ZmVicG50azB4d2RiaXo2ZnZxbXVpYmdjN3R4dnlydyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26AHPxxnSw1L9D1h6/giphy.gif" style="height: 90px; border-radius: 12px;" alt="Zwaailicht">
+        <div style="margin: 15px 0; display: flex; align-items: center; gap: 24px;">
+          <!-- Geanimeerde Cartoon Zwaailicht -->
+          <svg class="siren-animation" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="25" y="65" width="50" height="20" rx="5" fill="#30363d"/>
+            <path d="M30 65 C30 35, 70 35, 70 65 Z" fill="#da3633"/>
+            <path d="M40 45 C40 38, 60 38, 60 45 Z" fill="#ff7b72"/>
+          </svg>
           <p id="p2000-text" style="font-size: 2.6rem; font-weight: 900; color: #ffffff; line-height: 1.25;">
             Gegevens worden opgehaald...
           </p>
@@ -458,7 +463,6 @@
     const LAT_GRONINGEN = 53.22;
     const LON_GRONINGEN = 6.57;
 
-    // Lijst met lokale Eemsdelta plaatsen
     const LOCAL_PLACES = [
       "delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", 
       "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", 
@@ -490,7 +494,6 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 🇨🇿 Afteltimer Praag (9 Oktober 17:00)
     function updatePragueCountdown() {
       const targetDate = new Date("2026-10-09T17:00:00");
       const now = new Date();
@@ -541,7 +544,6 @@
       }, 110);
     }
 
-    // 🚗 Live Nieuwste Kenteken ophalen via RDW Open Data API
     async function fetchRDWLatestPlate() {
       try {
         const res = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating%20DESC");
@@ -562,7 +564,6 @@
       }
     }
 
-    // Live Waterstand Rijkswaterstaat Delfzijl
     async function fetchLiveTide() {
       try {
         const url = "https://waterblik.nl/api/waterinfo/DELFZL";
@@ -585,11 +586,10 @@
       const isRising = (hours % 12) < 6;
       document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
       document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
-      document.getElementById('tide-hw').innerText = "14:25 uur";
-      document.getElementById('tide-lw').innerText = "20:40 uur";
+      document.getElementById('tide-hw').innerText = "12:05 uur";
+      document.getElementById('tide-lw').innerText = "18:19 uur";
     }
 
-    // 🚨 Robuuste P2000 Check (Eemsdelta / Delfzijl Direct Push Interrupt)
     async function fetchP2000Eemsdelta() {
       const p2000Text = document.getElementById('p2000-text');
       const p2000Time = document.getElementById('p2000-time');
@@ -611,7 +611,6 @@
               let title = item.title ? item.title.trim() : "";
               let lowerTitle = title.toLowerCase();
 
-              // Controleer of de melding in Eemsdelta/Delfzijl omstreken is
               const isLocal = LOCAL_PLACES.some(place => lowerTitle.includes(place));
 
               if (title !== "" && (url.includes("eemsdelta") || isLocal)) {
@@ -631,7 +630,6 @@
                   prioBadge.className = 'badge bg-info';
                 }
 
-                // ALS ER EEN NIEUWE LOKALE MELDING IS -> PUSH DIRECT NAAR SLIDE 1 (Slide index 1 = P2000 Eemsdelta)
                 if (lastP2000Title !== "" && lastP2000Title !== title) { 
                   showSlide(1); 
                 }
@@ -648,7 +646,6 @@
       prioBadge.className = "badge bg-info";
     }
 
-    // 🚒 P2000 Provincie Groningen (STILLE LIJST SLIDE 3)
     async function fetchP2000GroningenList() {
       const listContainer = document.getElementById('p2000-groningen-list');
       try {
@@ -673,7 +670,6 @@
       } catch (e) {}
     }
 
-    // Nieuws feeds XXL
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.eemskrant.nl%2Ffeed%2F");
@@ -726,7 +722,6 @@
       } catch (e) {}
     }
 
-    // Weer API (Open-Meteo) XXL
     async function fetchCityWeather(lat, lon, prefix) {
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
@@ -800,7 +795,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000Eemsdelta, 10000); // Checkt elke 10 seconden
+    setInterval(fetchP2000Eemsdelta, 10000);
     setInterval(fetchP2000GroningenList, 30000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
