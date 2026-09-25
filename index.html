@@ -579,23 +579,95 @@
     }
 
 async function fetchP2000FeedXML() {
-      // Gebruik rss2json API: zet RSS direct om in een makkelijk JSON-object
-      const apiUrl = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss");
+      const targetFeed = "https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now();
+      const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
+      
       try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        
-        if (data.status === 'ok' && data.items) {
-          return data.items.map(item => ({
-            title: item.title,
-            pubDate: item.pubDate
-          }));
-        }
-        return [];
+        const response = await fetch(proxyUrl);
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+
+        let p2000Items = [];
+        items.forEach(item => {
+          const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
+          const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
+          if (title) {
+            p2000Items.push({ title, pubDate });
+          }
+        });
+        return p2000Items;
       } catch (e) {
-        console.error("Fout bij P2000 fetch:", e);
+        console.error("Fout bij ophalen P2000:", e);
         return [];
       }
+    }
+
+    // 2. Eemskrant nieuws ophalen
+    async function fetchNews() {
+      try {
+        const targetFeed = "https://www.eemskrant.nl/feed/";
+        const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
+        
+        const res = await fetch(proxyUrl);
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('news-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. RTV Noord nieuws ophalen
+    async function fetchRTVNoord() {
+      try {
+        const targetFeed = "https://www.rtvnoord.nl/rss";
+        const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
+        
+        const res = await fetch(proxyUrl);
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('rtvnoord-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {}
     }
 
     async function updateP2000Data() {
