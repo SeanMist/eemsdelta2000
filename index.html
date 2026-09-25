@@ -580,13 +580,21 @@
       }, 110);
     }
 
-   async function fetchP2000FeedXML() {
-      const targetFeed = "https://feeds.feedburner.com/p2000-regio-groningen";
+  async function fetchP2000FeedXML() {
+      // Gebruik de stabiele P2000.net RSS feed voor Groningen
+      const targetFeed = "https://www.p2000.net/rss/groningen.xml";
       const proxyUrl = "https://p2000-proxy.seanlousmit.workers.dev/?url=" + encodeURIComponent(targetFeed);
       
       try {
         const response = await fetch(proxyUrl);
         const xmlText = await response.text();
+
+        // Controleer of er geldige XML binnenkomt om XML-parse errors te voorkomen
+        if (!xmlText.trim().startsWith("<")) {
+          console.error("Geen geldige XML ontvangen van P2000 bron");
+          return [];
+        }
+
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, "text/xml");
         const items = xmlDoc.querySelectorAll("item");
@@ -605,7 +613,6 @@
         return [];
       }
     }
-
     async function fetchNews() {
       try {
         const targetFeed = "https://www.eemskrant.nl/feed/";
