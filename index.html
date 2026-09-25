@@ -392,7 +392,7 @@
         <div class="grid-4">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Actuele Waterstand (RWS)</div>
-            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">+42 cm</div>
+            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">+48 cm</div>
             <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">t.o.v. NAP</div>
           </div>
           <div class="grid-box">
@@ -578,112 +578,81 @@
       }, 110);
     }
 
-    // Directe, robuuste RSS XML Ophaalfunctie met meervoudige fallbacks
-    async function fetchP2000FeedXML() {
-      const urls = [
-        "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now()),
-        "https://corsproxy.io/?i=1&url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss")
-      ];
+    // Directe RSS-naar-JSON API (Zonder CORS-problemen)
+    async function fetchP2000Data() {
+      try {
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss"));
+        const data = await res.json();
 
-      for (let url of urls) {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) continue;
-          const xmlText = await response.text();
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          const items = data.items;
 
-          let p2000Items = [];
+          // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
+          const listContainer = document.getElementById('p2000-groningen-list');
+          listContainer.innerHTML = "";
+          
           items.forEach(item => {
-            const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
-            const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
-            if (title) {
-              p2000Items.push({ title, pubDate });
+            const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            const lower = item.title.toLowerCase();
+            let badgeClass = 'bg-info';
+            let badgeText = 'MELDING';
+
+            if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
+              badgeClass = 'bg-prio1';
+              badgeText = 'PRIO 1';
+            } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
+              badgeClass = 'bg-prio2';
+              badgeText = 'PRIO 2';
             }
+
+            listContainer.innerHTML += `
+              <div class="p2000-item">
+                <div class="p2000-item-header">
+                  <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+                  <span class="p2000-item-time">🕒 ${timeStr}</span>
+                </div>
+                <div class="p2000-item-title">${item.title}</div>
+              </div>
+            `;
           });
 
-          if (p2000Items.length > 0) return p2000Items;
-        } catch (e) {}
-      }
-      return [];
-    }
+          // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
+          const p2000Text = document.getElementById('p2000-text');
+          const p2000Time = document.getElementById('p2000-time');
+          const prioBadge = document.getElementById('p2000-prio');
 
-    // 🚨 Live P2000 Update voor Delfzijl & Groningen
-    async function updateP2000Data() {
-      let items = await fetchP2000FeedXML();
+          const localItem = items.find(item => {
+            const lower = item.title.toLowerCase();
+            return LOCAL_PLACES.some(place => lower.includes(place));
+          }) || items[0];
 
-      if (!items || items.length === 0) {
-        items = [
-          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: new Date().toISOString() },
-          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(Date.now() - 3600000).toISOString() },
-          { title: "Prio 1 P 1 BR brand in woning Hoofdkade Appingedam", pubDate: new Date(Date.now() - 7200000).toISOString() }
-        ];
-      }
+          if (localItem) {
+            let title = localItem.title;
+            let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
+            let lowerTitle = title.toLowerCase();
 
-      // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
-      const listContainer = document.getElementById('p2000-groningen-list');
-      listContainer.innerHTML = "";
-      
-      items.forEach(item => {
-        const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-        const lower = item.title.toLowerCase();
-        let badgeClass = 'bg-info';
-        let badgeText = 'MELDING';
+            p2000Text.innerText = title;
+            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
 
-        if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
-          badgeClass = 'bg-prio1';
-          badgeText = 'PRIO 1';
-        } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
-          badgeClass = 'bg-prio2';
-          badgeText = 'PRIO 2';
+            if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
+              prioBadge.innerText = 'PRIO 1 / SPOED';
+              prioBadge.className = 'badge bg-prio1';
+            } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
+              prioBadge.innerText = 'PRIO 2';
+              prioBadge.className = 'badge bg-prio2';
+            } else {
+              prioBadge.innerText = 'INFO / MELDING';
+              prioBadge.className = 'badge bg-info';
+            }
+
+            // PUSH INTERRUPT: Als er een NIEUWE melding is voor Delfzijl -> Spring direct naar Slide 2!
+            if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
+              showSlide(1); 
+            }
+            lastDelfzijlTitle = title;
+          }
         }
-
-        listContainer.innerHTML += `
-          <div class="p2000-item">
-            <div class="p2000-item-header">
-              <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
-              <span class="p2000-item-time">🕒 ${timeStr}</span>
-            </div>
-            <div class="p2000-item-title">${item.title}</div>
-          </div>
-        `;
-      });
-
-      // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
-      const p2000Text = document.getElementById('p2000-text');
-      const p2000Time = document.getElementById('p2000-time');
-      const prioBadge = document.getElementById('p2000-prio');
-
-      const localItem = items.find(item => {
-        const lower = item.title.toLowerCase();
-        return LOCAL_PLACES.some(place => lower.includes(place));
-      }) || items[0];
-
-      if (localItem) {
-        let title = localItem.title;
-        let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
-        let lowerTitle = title.toLowerCase();
-
-        p2000Text.innerText = title;
-        p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
-
-        if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
-          prioBadge.innerText = 'PRIO 1 / SPOED';
-          prioBadge.className = 'badge bg-prio1';
-        } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
-          prioBadge.innerText = 'PRIO 2';
-          prioBadge.className = 'badge bg-prio2';
-        } else {
-          prioBadge.innerText = 'INFO / MELDING';
-          prioBadge.className = 'badge bg-info';
-        }
-
-        if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
-          showSlide(1); 
-        }
-        lastDelfzijlTitle = title;
-      }
+      } catch (e) {}
     }
 
     async function fetchRDWLatestPlate() {
@@ -700,77 +669,59 @@
             document.getElementById('rdw-date').innerText = dateStr;
           }
         }
-      } catch (e) {
-        document.getElementById('rdw-plate').innerText = "KZG-99-K";
-        document.getElementById('rdw-brand').innerText = "Volkswagen / BMW";
-      }
+      } catch (e) {}
     }
 
-    // Veilige Getijden / Waterstand berekening zonder dode API's
     function fetchLiveTide() {
       const now = new Date();
       const hours = now.getHours();
       const isRising = (hours % 12) < 6;
       document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
       document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
-      document.getElementById('tide-hw').innerText = "12:05 uur";
-      document.getElementById('tide-lw').innerText = "18:19 uur";
     }
 
     async function fetchNews() {
       try {
-        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
+        const data = await res.json();
         const container = document.getElementById('news-container');
         
-        if (items.length > 0) {
+        if (data.status === 'ok' && data.items) {
           container.innerHTML = '';
-          for (let i = 0; i < Math.min(items.length, 2); i++) {
-            const item = items[i];
-            const title = item.querySelector("title").textContent;
-            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-
+          data.items.slice(0, 2).forEach(item => {
+            const pubDate = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
             container.innerHTML += `
               <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
                 <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
                   <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
                 </div>
               </div>
             `;
-          }
+          });
         }
       } catch (e) {}
     }
 
     async function fetchRTVNoord() {
       try {
-        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
+        const data = await res.json();
         const container = document.getElementById('rtvnoord-container');
         
-        if (items.length > 0) {
+        if (data.status === 'ok' && data.items) {
           container.innerHTML = '';
-          for (let i = 0; i < Math.min(items.length, 2); i++) {
-            const item = items[i];
-            const title = item.querySelector("title").textContent;
-            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-
+          data.items.slice(0, 2).forEach(item => {
+            const pubDate = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
             container.innerHTML += `
               <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
                 <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
                   <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
                 </div>
               </div>
             `;
-          }
+          });
         }
       } catch (e) {}
     }
@@ -795,19 +746,13 @@
           const uv = data.daily.uv_index_max[0];
           document.getElementById(`${prefix}-uv`).innerText = uv;
 
-          if (prefix === 'delfzijl') {
-            if (data.daily.sunrise[0]) {
-              const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-              document.getElementById('sunrise-time').innerText = sunrise;
-            }
-            if (data.daily.sunset[0]) {
-              const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-              document.getElementById('sunset-time').innerText = sunset;
-
-              const sunsetDate = new Date(data.daily.sunset[0]);
-              sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
-              document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            }
+          if (prefix === 'delfzijl' && data.daily.sunrise[0] && data.daily.sunset[0]) {
+            document.getElementById('sunrise-time').innerText = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sunset-time').innerText = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            
+            const sunsetDate = new Date(data.daily.sunset[0]);
+            sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
+            document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
           }
         }
 
@@ -839,7 +784,7 @@
       fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
-    updateP2000Data();
+    fetchP2000Data();
     fetchRDWLatestPlate();
     fetchNews();
     fetchRTVNoord();
@@ -847,7 +792,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(updateP2000Data, 10000);
+    setInterval(fetchP2000Data, 10000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
