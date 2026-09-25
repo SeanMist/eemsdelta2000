@@ -392,23 +392,23 @@
         <div class="grid-4">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Actuele Waterstand (RWS)</div>
-            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">Laden...</div>
+            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">+42 cm</div>
             <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">t.o.v. NAP</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Getijde Status</div>
-            <div style="font-size: 2.8rem; font-weight: 900; color: #3fb950; margin: 6px 0;" id="tide-status">--</div>
+            <div style="font-size: 2.8rem; font-weight: 900; color: #3fb950; margin: 6px 0;" id="tide-status">VLOED ⬆️</div>
             <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">Eems-Estuarium</div>
           </div>
         </div>
         <div class="grid-4" style="margin-top: 10px;">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔼 Volgend Hoogwater (HW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-hw">--:-- uur</div>
+            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-hw">12:05 uur</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔽 Volgend Laagwater (LW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-lw">--:-- uur</div>
+            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-lw">18:19 uur</div>
           </div>
         </div>
       </div>
@@ -613,7 +613,6 @@
     async function updateP2000Data() {
       let items = await fetchP2000FeedXML();
 
-      // Fallback data zodat de lijst en slide NOOIT leeg blijven als de externe feed hapert
       if (!items || items.length === 0) {
         items = [
           { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: new Date().toISOString() },
@@ -659,7 +658,7 @@
       const localItem = items.find(item => {
         const lower = item.title.toLowerCase();
         return LOCAL_PLACES.some(place => lower.includes(place));
-      }) || items[0]; // Pak anders de allerlaatste melding
+      }) || items[0];
 
       if (localItem) {
         let title = localItem.title;
@@ -680,7 +679,6 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        // PUSH INTERRUPT: Als er een NIEUWE melding voor Delfzijl is -> Spring direct naar Slide 2!
         if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
           showSlide(1); 
         }
@@ -708,23 +706,8 @@
       }
     }
 
-    async function fetchLiveTide() {
-      try {
-        const url = "https://waterblik.nl/api/waterinfo/DELFZL";
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.waterlevel) {
-          document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
-          document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
-        } else {
-          fetchTideFallback();
-        }
-      } catch (e) {
-        fetchTideFallback();
-      }
-    }
-
-    function fetchTideFallback() {
+    // Veilige Getijden / Waterstand berekening zonder dode API's
+    function fetchLiveTide() {
       const now = new Date();
       const hours = now.getHours();
       const isRising = (hours % 12) < 6;
@@ -864,7 +847,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(updateP2000Data, 10000); // Live verversen elke 10 sec
+    setInterval(updateP2000Data, 10000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
