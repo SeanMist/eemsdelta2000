@@ -17,12 +17,17 @@ jobs:
 
       - name: Ophalen P2000 en Nieuws Feeds
         run: |
-          # Stabiele directe RSS-feed voor P2000 Groningen
-          curl -s -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://www.p2000-lock.nl/rss/groningen.xml" -o p2000.xml || true
+          # Probeer eerst een directe open XML feed
+          curl -s -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://www.p2000-alarmen.nl/rss/groningen" -o p2000.xml || true
           
-          # Fallback naar een alternatieve feed als de eerste leeg is
-          if [ ! -s p2000.xml ] || grep -q "403" p2000.xml; then
-            curl -s -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://rss.p2000-alarmen.nl/groningen" -o p2000.xml || true
+          # Als de feed leeg is, probeer een alternatieve directe bron
+          if [ ! -s p2000.xml ] || grep -q "403" p2000.xml || grep -q "Cloudflare" p2000.xml; then
+            curl -s -L -A "Mozilla/5.0" "https://alarmeringen.nl/feed/groningen.rss" -o p2000.xml || true
+          fi
+
+          # Als er nog steeds niets is, maak een geldig basis-XML bestandje aan zodat het nooit faalt
+          if [ ! -s p2000.xml ]; then
+            echo '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><item><title>P2000 Systeem Standby - Wachten op volgende update</title><pubDate>$(date -u)</pubDate></item></channel></rss>' > p2000.xml
           fi
 
           # Eemskrant
@@ -36,5 +41,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add p2000.xml eemskrant.xml rtvnoord.xml || true
-          git commit -m "Auto-update verse P2000 data" || exit 0
+          git commit -m "Auto-update P2000 en nieuws data" || exit 0
           git push
