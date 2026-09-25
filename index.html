@@ -579,8 +579,8 @@
     }
 
     // Directe XML Ophaalfunctie via CorsProxy (Geen verouderde rss2json meer)
-    async function fetchP2000FeedXML() {
-      const proxyUrl = "https://corsproxy.io/?url= + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
+   async function fetchP2000FeedXML() {
+      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
       try {
         const response = await fetch(proxyUrl);
         const xmlText = await response.text();
