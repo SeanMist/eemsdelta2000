@@ -121,7 +121,7 @@
       100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px #da3633); }
     }
 
-    /* P2000 Lijst Styling (Zoals P2000alarm.nl) */
+    /* P2000 Lijst Styling */
     .p2000-list-container {
       display: flex;
       flex-direction: column;
@@ -229,7 +229,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: Gefilterd Delfzijl / Eemsdelta (Meest recente melding + PUSH) -->
+    <!-- Slide 2: Gefilterd Delfzijl / Eemsdelta -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -461,7 +461,7 @@
         <div class="grid-3" style="margin-top: 8px;">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🌕 Maanstand</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #58a6ff; margin-top: 4px;" id="moon-phase">Wassemd</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #58a6ff; margin-top: 4px;" id="moon-phase">Wassend</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">📷 Gouden Uur</div>
@@ -578,9 +578,8 @@
       }, 110);
     }
 
-    // Directe XML Ophaalfunctie via CorsProxy (Geen verouderde rss2json meer)
-   async function fetchP2000FeedXML() {
-      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
+    async function fetchP2000FeedXML() {
+      const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
       try {
         const response = await fetch(proxyUrl);
         const xmlText = await response.text();
@@ -602,7 +601,6 @@
       }
     }
 
-    // 🚨 Live P2000 Update voor Delfzijl & Groningen
     async function updateP2000Data() {
       const items = await fetchP2000FeedXML();
       if (!items || items.length === 0) return;
@@ -665,7 +663,6 @@
           prioBadge.className = 'badge bg-info';
         }
 
-        // PUSH INTERRUPT: Als er een NIEUWE melding is voor Delfzijl -> Spring naar Slide 2!
         if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
           showSlide(1); 
         }
@@ -693,23 +690,7 @@
       }
     }
 
-    async function fetchLiveTide() {
-      try {
-        const url = "https://waterblik.nl/api/waterinfo/DELFZL";
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.waterlevel) {
-          document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
-          document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
-        } else {
-          fetchTideFallback();
-        }
-      } catch (e) {
-        fetchTideFallback();
-      }
-    }
-
-    function fetchTideFallback() {
+    function fetchLiveTide() {
       const now = new Date();
       const hours = now.getHours();
       const isRising = (hours % 12) < 6;
@@ -721,7 +702,7 @@
 
     async function fetchNews() {
       try {
-        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
+        const res = await fetch("https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
         const xmlText = await res.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, "text/xml");
@@ -750,7 +731,7 @@
 
     async function fetchRTVNoord() {
       try {
-        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
+        const res = await fetch("https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
         const xmlText = await res.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, "text/xml");
@@ -849,7 +830,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(updateP2000Data, 10000); // Live verversen elke 10 sec
+    setInterval(updateP2000Data, 10000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
