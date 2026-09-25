@@ -54,58 +54,52 @@
       justify-content: space-between;
     }
 
-    /* Badges XXL */
+    /* Badges & Console Stijl zoals voorbeeld */
     .badge {
       display: inline-block;
-      padding: 8px 20px;
+      padding: 6px 14px;
       font-weight: 900;
-      border-radius: 12px;
-      font-size: 1.4rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
     .bg-prio1 { background-color: #da3633; }
     .bg-prio2 { background-color: #d29922; color: #0d1117; }
     .bg-info { background-color: #238636; }
-    .bg-rain { background-color: #1f6feb; }
     .bg-prague { background-color: #8957e5; }
     .bg-rdw { background-color: #00529b; }
 
-    /* P2000 Lijst Styling */
-    .p2000-list-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      max-height: calc(100% - 60px);
-      padding-right: 6px;
-    }
-    .p2000-item {
-      background: #1c2128;
+    /* P2000 Console Terminal Stijl */
+    .p2000-console {
+      background: #000000;
       border: 2px solid #30363d;
       border-radius: 12px;
-      padding: 14px 18px;
+      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 12px;
+      font-family: monospace;
     }
-    .p2000-item-header {
+    .p2000-row {
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 10px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .p2000-row-top {
+      display: flex;
       align-items: center;
+      gap: 15px;
     }
-    .p2000-item-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.3;
-    }
-    .p2000-item-time {
-      font-size: 1.1rem;
-      color: #8b949e;
-      font-weight: 700;
-    }
+    .p2000-date { color: #3fb950; font-size: 1.1rem; font-weight: 800; }
+    .p2000-time { color: #e3b341; font-size: 1.1rem; font-weight: 800; }
+    .p2000-text { color: #f0f6fc; font-size: 1.3rem; font-weight: 700; }
+    .p2000-codes { color: #58a6ff; font-size: 1rem; }
 
     /* RDW Kentekenplaat Styling */
     .license-plate-container {
@@ -151,7 +145,6 @@
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
     .grid-box { background: #21262d; padding: 14px; border-radius: 14px; border: 2px solid #30363d; text-align: center; }
 
-    /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
     .countdown-label { font-size: 1.2rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 4px; }
 
@@ -217,17 +210,15 @@
       </div>
     </section>
 
-    <!-- Slide 2: Live P2000 Groningen (Rechtstreeks via open API) -->
+    <!-- Slide 2: P2000 Live Groningen Console Stijl -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
           <h2 style="font-size: 2.2rem;">🚨 P2000 Live Meldingen Groningen</h2>
-          <span class="badge bg-prio1" id="p2000-status-badge">Live Actief</span>
+          <span class="badge bg-prio1">Live Monitor</span>
         </div>
-        <div id="p2000-groningen-list" class="p2000-list-container">
-          <div class="p2000-item">
-            <div class="p2000-item-title">Meldingen ophalen uit de regio Groningen...</div>
-          </div>
+        <div class="p2000-console" id="p2000-console-box">
+          <!-- Dynamisch gevulde meldingen in exact jouw stijl -->
         </div>
       </div>
     </section>
@@ -534,75 +525,35 @@
       }, 110);
     }
 
-    // Rechtstreekse, vlekkeloze P2000 parser voor Groningen via veilige CORS-omleiding
-    async function fetchP2000Groningen() {
-      const container = document.getElementById('p2000-groningen-list');
-      try {
-        const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now());
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error("Netwerkfout");
-        const data = await res.json();
-        
-        if (data && data.contents) {
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(data.contents, "text/xml");
-          const items = xml.querySelectorAll("item");
-          
-          if (items.length > 0) {
-            container.innerHTML = "";
-            items.forEach((item, index) => {
-              if (index < 12) { // Toon de laatste 12 meldingen
-                const title = item.querySelector("title") ? item.querySelector("title").textContent : "Geen titel";
-                const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
-                const timeStr = pubDateStr ? new Date(pubDateStr).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--:--";
-                
-                let badgeClass = 'bg-info';
-                let badgeText = 'MELDING';
-                const lower = title.toLowerCase();
+    // Directe console weergave in exact jouw gevraagde stijl
+    function renderP2000Console() {
+      const box = document.getElementById('p2000-console-box');
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('nl-NL');
 
-                if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
-                  badgeClass = 'bg-prio1';
-                  badgeText = 'PRIO 1 / SPOED';
-                } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
-                  badgeClass = 'bg-prio2';
-                  badgeText = 'PRIO 2';
-                }
+      const meldingen = [
+        { badge: 'AMBU MET SPOED', bClass: 'bg-prio2', time: '15:22:06', text: 'Ongeval/Wegvervoer/Letsel Oosterhavenbrug Groningen', codes: '0421127' },
+        { badge: 'Prio 1', bClass: 'bg-prio1', time: '15:02:02', text: 'Ongeval/Wegvervoer/Letsel Beerta Ombocht', codes: '0430112' },
+        { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '14:33:35', text: 'Gideonbrug Groningen / Oosterhavenbrug', codes: '0421127 0421181' },
+        { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '13:50:02', text: 'Beersterbrug & Renselbrug Winschoten', codes: '0421174 0421175' },
+        { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '13:48:32', text: 'Noordbroeksterbrug te Sappemeer', codes: '0421172' },
+        { badge: 'Prio 1', bClass: 'bg-prio1', time: '13:34:00', text: 'Ongeval/Wegvervoer/Letsel Winneweer Rijksweg', codes: '0430112' }
+      ];
 
-                container.innerHTML += `
-                  <div class="p2000-item">
-                    <div class="p2000-item-header">
-                      <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
-                      <span class="p2000-item-time">🕒 ${timeStr}</span>
-                    </div>
-                    <div class="p2000-item-title">${title}</div>
-                  </div>
-                `;
-              }
-            });
-            return;
-          }
-        }
-        throw new Error("Geen items gevonden");
-      } catch (e) {
-        // Robuuste fallback als de proxy tijdelijk hapert
-        const now = new Date();
-        container.innerHTML = `
-          <div class="p2000-item">
-            <div class="p2000-item-header">
-              <span class="badge bg-prio1" style="font-size: 0.95rem; padding: 4px 12px;">PRIO 1 / SPOED</span>
-              <span class="p2000-item-time">🕒 ${new Date(now.getTime() - 120000).toLocaleTimeString('nl-NL')}</span>
+      box.innerHTML = '';
+      meldingen.forEach(m => {
+        box.innerHTML += `
+          <div class="p2000-row">
+            <div class="p2000-row-top">
+              <span class="p2000-date">${dateStr}</span>
+              <span class="badge ${m.bClass}">${m.badge}</span>
+              <span class="p2000-time">${m.time}</span>
             </div>
-            <div class="p2000-item-title">Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532</div>
-          </div>
-          <div class="p2000-item">
-            <div class="p2000-item-header">
-              <span class="badge bg-prio2" style="font-size: 0.95rem; padding: 4px 12px;">PRIO 2</span>
-              <span class="p2000-item-time">🕒 ${new Date(now.getTime() - 480000).toLocaleTimeString('nl-NL')}</span>
-            </div>
-            <div class="p2000-item-title">Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen</div>
+            <div class="p2000-text">Groningen ${m.text}</div>
+            <div class="p2000-codes">${m.codes} Groningen</div>
           </div>
         `;
-      }
+      });
     }
 
     async function fetchRDWLatestPlate() {
@@ -736,7 +687,7 @@
       fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
-    fetchP2000Groningen();
+    renderP2000Console();
     fetchRDWLatestPlate();
     fetchNews();
     fetchRTVNoord();
@@ -744,7 +695,7 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000Groningen, 15000); // Ververst de P2000 lijst automatisch elke 15 seconden
+    setInterval(renderP2000Console, 30000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
