@@ -17,8 +17,11 @@ jobs:
 
       - name: Ophalen P2000 en Nieuws Feeds
         run: |
-          # Haal P2000 Groningen op via een rechtstreekse feed die niet blokkeert
-          curl -s -L -A "Mozilla/5.0" "https://feeds.feedburner.com/p2000-regio-groningen" -o p2000.xml || true
+          # Betrouwbare P2000 XML feed voor Groningen / Noord-Nederland
+          curl -s -L -A "Mozilla/5.0" "https://www.p2000-lock.nl/rss/groningen.xml" -o p2000.xml || true
+          if [ ! -s p2000.xml ]; then
+            curl -s -L -A "Mozilla/5.0" "https://www.alarmeringen.nl/feed/groningen.rss" -o p2000.xml || true
+          fi
           
           # Eemskrant
           curl -s -L -A "Mozilla/5.0" "https://www.eemskrant.nl/feed/" -o eemskrant.xml || true
