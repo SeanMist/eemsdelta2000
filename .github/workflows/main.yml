@@ -1,0 +1,29 @@
+name: Update Dashboard Data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ophalen P2000 en Nieuws Feeds
+        run: |
+          curl -s -A "Mozilla/5.0" "https://feed.alarmeringen.nl/groningen.rss" -o p2000.xml || true
+          curl -s -A "Mozilla/5.0" "https://www.eemskrant.nl/feed/" -o eemskrant.xml || true
+          curl -s -A "Mozilla/5.0" "https://www.rtvnoord.nl/rss" -o rtvnoord.xml || true
+
+      - name: Wijzigingen opslaan in repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add p2000.xml eemskrant.xml rtvnoord.xml
+          git commit -m "Auto-update P2000 en nieuws data" || exit 0
+          git push
