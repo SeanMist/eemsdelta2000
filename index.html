@@ -523,31 +523,36 @@
       }
     }
 
-    async function updateP2000() {
+   async function updateP2000() {
       const xmlDoc = await loadLocalXML('p2000.xml');
       const listContainer = document.getElementById('p2000-groningen-list');
       listContainer.innerHTML = "";
 
       if (!xmlDoc) {
-        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Wachten op eerste automatische update van GitHub Actions...</div></div>`;
+        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Wachten op update...</div></div>`;
         return;
       }
 
       const items = xmlDoc.querySelectorAll("item");
       if (!items || items.length === 0) {
-        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Geen P2000 meldingen gevonden in de feed. De GitHub Action haalt zo automatisch nieuwe data op.</div></div>`;
-        document.getElementById('p2000-text').innerText = "Geen actieve meldingen voor Eemsdelta / Delfzijl";
-        document.getElementById('p2000-time').innerText = "🕒 Automatische update actief";
-        document.getElementById('p2000-prio').innerText = "STANDBY";
-        document.getElementById('p2000-prio').className = "badge bg-info";
+        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Geen meldingen gevonden.</div></div>`;
         return;
       }
 
       let localFound = false;
+      let displayedCount = 0; // Teller voor maximaal 3 meldingen
 
-      items.forEach((item) => {
+      for (let i = 0; i < items.length; i++) {
+        if (displayedCount >= 3) break; // Stop direct na de 3 allerlaatste meldingen
+
+        const item = items[i];
         const title = item.querySelector("title") ? item.querySelector("title").textContent : "";
-        const pubDate = item.querySelector("pubDate") ? new Date(item.querySelector("pubDate").textContent).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "Zojuist";
+        const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+        
+        // Controleer of de melding van vandaag is (optioneel, of filter oudere eruit)
+        const itemDate = pubDateStr ? new Date(pubDateStr) : new Date();
+        const pubDateFormatted = !isNaN(itemDate) ? itemDate.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "Zojuist";
+
         const lower = title.toLowerCase();
 
         let badgeClass = 'bg-info';
@@ -555,24 +560,38 @@
         if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
         else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
 
+        // Voeg toe aan de lijst van Groningen (maximaal 3)
         listContainer.innerHTML += `
           <div class="p2000-item">
             <div class="p2000-item-header">
               <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
-              <span class="p2000-item-time">🕒 ${pubDate}</span>
+              <span class="p2000-item-time">🕒 ${pubDateFormatted}</span>
             </div>
             <div class="p2000-item-title">${title}</div>
           </div>
         `;
+        displayedCount++;
 
+        // Pak de eerste lokale melding voor de grote Delfzijl-slide
         if (!localFound && LOCAL_PLACES.some(place => lower.includes(place))) {
           document.getElementById('p2000-text').innerText = title;
-          document.getElementById('p2000-time').innerText = "🕒 Gemeld op: " + pubDate;
+          document.getElementById('p2000-time').innerText = "🕒 Gemeld op: " + pubDateFormatted;
           document.getElementById('p2000-prio').innerText = badgeText;
           document.getElementById('p2000-prio').className = "badge " + badgeClass;
           localFound = true;
         }
-      });
+      }
+
+      // Als er geen lokale Delfzijl melding in de top 3 staat, toon de allerlaatste
+      if (!localFound && items.length > 0) {
+        const firstTitle = items[0].querySelector("title") ? items[0].querySelector("title").textContent : "Laatste melding";
+        const firstDate = items[0].querySelector("pubDate") ? new Date(items[0].querySelector("pubDate").textContent).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "";
+        document.getElementById('p2000-text').innerText = firstTitle;
+        document.getElementById('p2000-time').innerText = "🕒 " + firstDate;
+        document.getElementById('p2000-prio').innerText = "REGIO";
+        document.getElementById('p2000-prio').className = "badge bg-info";
+      }
+    }
 
       if (!localFound && items.length > 0) {
         // Als er geen specifieke Delfzijl/Eemsdelta melding is, toon de allerlaatste Groningse melding
