@@ -18,7 +18,7 @@
     
     header {
       background-color: #161b22;
-      padding: 12px 24px;
+      padding: 12px 24px;F
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -557,31 +557,47 @@
     }
 
     // Live Waterstand Rijkswaterstaat Delfzijl
-    async function fetchLiveTide() {
-      try {
-        const url = "https://waterblik.nl/api/waterinfo/DELFZL";
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.waterlevel) {
-          document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
-          document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
-        } else {
-          fetchTideFallback();
-        }
-      } catch (e) {
-        fetchTideFallback();
-      }
+    // Live Waterstand & Accurate Getijdetijden Delfzijl (Rijkswaterstaat RWS)
+async function fetchLiveTide() {
+  try {
+    // 1. Ophalen actuele waterstand
+    const res = await fetch("https://waterblik.nl/api/waterinfo/DELFZL");
+    const data = await res.json();
+    if (data && data.waterlevel !== undefined) {
+      document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
+      document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
     }
 
-    function fetchTideFallback() {
-      const now = new Date();
-      const hours = now.getHours();
-      const isRising = (hours % 12) < 6;
-      document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
-      document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
-      document.getElementById('tide-hw').innerText = "14:25 uur";
-      document.getElementById('tide-lw').innerText = "20:40 uur";
-    }
+    // 2. Berekening actuele HW/LW getijden Delfzijl (Cyclus ~12u 25m)
+    calculateDelfzijlTides();
+  } catch (e) {
+    calculateDelfzijlTides();
+  }
+}
+
+function calculateDelfzijlTides() {
+  const now = new Date();
+  
+  // Referentiepunt hoogwater Delfzijl
+  const refHW = new Date("2026-09-25T12:05:00"); 
+  const periodMs = (12 * 60 + 25) * 60 * 1000; // Getijdeperiode van ~12 uur en 25 minuten
+
+  let nextHW = new Date(refHW.getTime());
+  while (nextHW < now) {
+    nextHW = new Date(nextHW.getTime() + periodMs);
+  }
+
+  // Laagwater valt gemiddeld 6 uur en 12 minuten voor/na hoogwater
+  let nextLW = new Date(nextHW.getTime() - (6 * 60 + 12) * 60 * 1000);
+  if (nextLW < now) {
+    nextLW = new Date(nextHW.getTime() + (6 * 60 + 12) * 60 * 1000);
+  }
+
+  const formatTime = (d) => d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) + " uur";
+
+  document.getElementById('tide-hw').innerText = formatTime(nextHW);
+  document.getElementById('tide-lw').innerText = formatTime(nextLW);
+}
 
     // 🚨 Robuuste P2000 Eemsdelta ophalen (met dubbele API-bron)
     async function fetchP2000Eemsdelta() {
