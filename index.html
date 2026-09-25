@@ -525,16 +525,29 @@
 
     async function updateP2000() {
       const xmlDoc = await loadLocalXML('p2000.xml');
-      if (!xmlDoc) return;
-      const items = xmlDoc.querySelectorAll("item");
       const listContainer = document.getElementById('p2000-groningen-list');
       listContainer.innerHTML = "";
+
+      if (!xmlDoc) {
+        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Wachten op eerste automatische update van GitHub Actions...</div></div>`;
+        return;
+      }
+
+      const items = xmlDoc.querySelectorAll("item");
+      if (!items || items.length === 0) {
+        listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Geen P2000 meldingen gevonden in de feed. De GitHub Action haalt zo automatisch nieuwe data op.</div></div>`;
+        document.getElementById('p2000-text').innerText = "Geen actieve meldingen voor Eemsdelta / Delfzijl";
+        document.getElementById('p2000-time').innerText = "🕒 Automatische update actief";
+        document.getElementById('p2000-prio').innerText = "STANDBY";
+        document.getElementById('p2000-prio').className = "badge bg-info";
+        return;
+      }
 
       let localFound = false;
 
       items.forEach((item) => {
         const title = item.querySelector("title") ? item.querySelector("title").textContent : "";
-        const pubDate = item.querySelector("pubDate") ? new Date(item.querySelector("pubDate").textContent).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "";
+        const pubDate = item.querySelector("pubDate") ? new Date(item.querySelector("pubDate").textContent).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "Zojuist";
         const lower = title.toLowerCase();
 
         let badgeClass = 'bg-info';
@@ -560,8 +573,16 @@
           localFound = true;
         }
       });
-    }
 
+      if (!localFound && items.length > 0) {
+        // Als er geen specifieke Delfzijl/Eemsdelta melding is, toon de allerlaatste Groningse melding
+        const firstTitle = items[0].querySelector("title") ? items[0].querySelector("title").textContent : "Laatste melding";
+        document.getElementById('p2000-text').innerText = firstTitle;
+        document.getElementById('p2000-time').innerText = "🕒 Regio Groningen";
+        document.getElementById('p2000-prio').innerText = "INFO";
+        document.getElementById('p2000-prio').className = "badge bg-info";
+      }
+    }
     async function updateNews() {
       const xmlDoc = await loadLocalXML('eemskrant.xml');
       if (!xmlDoc) return;
