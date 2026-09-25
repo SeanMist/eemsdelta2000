@@ -17,13 +17,18 @@ jobs:
 
       - name: Ophalen P2000 en Nieuws Feeds
         run: |
-          # Haal vers op met unieke tijdstempel om caching te omzeilen
-          curl -s -L -A "Mozilla/5.0" "https://www.alarmeringen.nl/feed/groningen.rss?t=$(date +%s)" -o p2000.xml || true
-          if [ ! -s p2000.xml ]; then
-            curl -s -L -A "Mozilla/5.0" "https://www.p2000-lock.nl/rss/groningen.xml" -o p2000.xml || true
-          fi
+          # Stabiele directe RSS-feed voor P2000 Groningen
+          curl -s -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://www.p2000-lock.nl/rss/groningen.xml" -o p2000.xml || true
           
+          # Fallback naar een alternatieve feed als de eerste leeg is
+          if [ ! -s p2000.xml ] || grep -q "403" p2000.xml; then
+            curl -s -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://rss.p2000-alarmen.nl/groningen" -o p2000.xml || true
+          fi
+
+          # Eemskrant
           curl -s -L -A "Mozilla/5.0" "https://www.eemskrant.nl/feed/" -o eemskrant.xml || true
+
+          # RTV Noord
           curl -s -L -A "Mozilla/5.0" "https://www.rtvnoord.nl/rss" -o rtvnoord.xml || true
 
       - name: Wijzigingen opslaan in repository
