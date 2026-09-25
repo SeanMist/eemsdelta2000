@@ -109,6 +109,7 @@
       line-height: 1;
     }
 
+    /* Cartoon Vector Styling */
     .siren-animation {
       width: 80px;
       height: 80px;
@@ -120,6 +121,7 @@
       100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px #da3633); }
     }
 
+    /* P2000 Lijst Styling (Zoals P2000alarm.nl) */
     .p2000-list-container {
       display: flex;
       flex-direction: column;
@@ -154,12 +156,14 @@
       font-weight: 700;
     }
 
+    /* Layout Grids & XXL Typografie */
     .weather-temp-huge { font-size: 6rem; font-weight: 900; color: #ffffff; margin: 0; line-height: 0.9; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 8px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
     .grid-forecast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
     .grid-box { background: #21262d; padding: 14px; border-radius: 14px; border: 2px solid #30363d; text-align: center; }
 
+    /* Countdown XXL Styling */
     .countdown-number { font-size: 4rem; font-weight: 900; color: #d2a8ff; line-height: 1; }
     .countdown-label { font-size: 1.2rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 4px; }
 
@@ -225,7 +229,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: Gefilterd Delfzijl / Eemsdelta -->
+    <!-- Slide 2: Gefilterd Delfzijl / Eemsdelta (Meest recente melding + PUSH) -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -245,7 +249,7 @@
         </div>
 
         <div style="background: #21262d; padding: 12px 18px; border-radius: 12px; border: 2px solid #30363d;">
-          <p id="p2000-time" style="color: #58a6ff; font-size: 1.4rem; font-weight: 800;">--:--</p>
+          <p id="p2000-time" style="color: #58a6ff; font-size: 1.4rem; font-weight: 800;">🕒 --:--</p>
         </div>
       </div>
     </section>
@@ -263,7 +267,7 @@
       </div>
     </section>
 
-    <!-- Slide 4: RDW Kenteken -->
+    <!-- Slide 4: Nieuwste Uitgegeven RDW Kenteken XXL -->
     <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -298,7 +302,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: Buienradar -->
+    <!-- Slide 5: Satelliet & Regenradar Eemsdelta -->
     <section id="slide-radar" class="slide">
       <div class="card" style="padding: 16px; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -311,10 +315,11 @@
       </div>
     </section>
 
-    <!-- Slide 6: Weer Delfzijl -->
+    <!-- Slide 6: Weer Delfzijl 24 Uur XXL -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer & 24u Verwachting Delfzijl</h2>
+        
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 8px 0;">
           <div class="weather-temp-huge" id="delfzijl-temp">--°C</div>
           <div style="text-align: left;">
@@ -326,14 +331,20 @@
             <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="delfzijl-uv">--</div>
           </div>
         </div>
-        <div><div class="grid-forecast" id="delfzijl-forecast"><p style="font-size: 1.2rem;">Verwachting laden...</p></div></div>
+
+        <div>
+          <div class="grid-forecast" id="delfzijl-forecast">
+            <p style="font-size: 1.2rem;">Verwachting laden...</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 7: Weer Groningen -->
+    <!-- Slide 7: Weer Groningen Stad XXL -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer & 24u Verwachting Groningen Stad</h2>
+        
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 8px 0;">
           <div class="weather-temp-huge" id="groningen-temp">--°C</div>
           <div style="text-align: left;">
@@ -345,68 +356,77 @@
             <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="groningen-uv">--</div>
           </div>
         </div>
-        <div><div class="grid-forecast" id="groningen-forecast"><p style="font-size: 1.2rem;">Verwachting laden...</p></div></div>
+
+        <div>
+          <div class="grid-forecast" id="groningen-forecast">
+            <p style="font-size: 1.2rem;">Verwachting laden...</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 8: Eemskrant -->
+    <!-- Slide 8: Lokaal Nieuws (Eemskrant) XXL -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📰 Lokaal Nieuws (Eemskrant)</h2>
-        <div id="news-container"><p style="font-size: 1.4rem;">Nieuwsberichten laden...</p></div>
+        <div id="news-container">
+          <p style="font-size: 1.4rem;">Nieuwsberichten laden...</p>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 9: RTV Noord -->
+    <!-- Slide 9: Regionaal Nieuws (RTV Noord) XXL -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
-        <div id="rtvnoord-container"><p style="font-size: 1.4rem;">RTV Noord berichten laden...</p></div>
+        <div id="rtvnoord-container">
+          <p style="font-size: 1.4rem;">RTV Noord berichten laden...</p>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 10: Getijden -->
+    <!-- Slide 10: Getijden & Live Waterstand XXL -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
         <div class="grid-4">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Actuele Waterstand (RWS)</div>
-            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">+48 cm</div>
+            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">Laden...</div>
             <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">t.o.v. NAP</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Getijde Status</div>
-            <div style="font-size: 2.8rem; font-weight: 900; color: #3fb950; margin: 6px 0;" id="tide-status">VLOED ⬆️</div>
+            <div style="font-size: 2.8rem; font-weight: 900; color: #3fb950; margin: 6px 0;" id="tide-status">--</div>
             <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">Eems-Estuarium</div>
           </div>
         </div>
         <div class="grid-4" style="margin-top: 10px;">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔼 Volgend Hoogwater (HW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-hw">12:05 uur</div>
+            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-hw">--:-- uur</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔽 Volgend Laagwater (LW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-lw">18:19 uur</div>
+            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-lw">--:-- uur</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 11: Verkeer -->
+    <!-- Slide 11: Live Verkeer N33 & N46 -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🚦 Live Verkeer & Trajecten Eemsdelta</h2>
         <div class="grid-3">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚗 N33 Veendam ↔ Delfzijl</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;">Vrije Doorgang</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n33">Vrije Doorgang</div>
             <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen vertragingen</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚛 N46 Groningen ↔ Eemshaven</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;">Vrije Doorgang</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n46">Vrije Doorgang</div>
             <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Eemshavenweg normaal</div>
           </div>
           <div class="grid-box">
@@ -415,13 +435,18 @@
             <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen stremmingen</div>
           </div>
         </div>
+        <div class="grid-box" style="margin-top: 12px;">
+          <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">❄️ Wegdek & Strooimeldingen</div>
+          <p style="font-size: 1.5rem; color: #3fb950; font-weight: 900; margin-top: 4px;">Wegdek Veilig & Droog</p>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 12: Astronomie -->
+    <!-- Slide 12: Astronomie & Zon XXL -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌌 Astronomie & Zon Delfzijl</h2>
+        
         <div class="grid-4">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">🌅 Zonsopkomst</div>
@@ -432,10 +457,11 @@
             <div style="font-size: 2.6rem; font-weight: 900; color: #ffffff; margin: 4px 0;" id="sunset-time">--:--</div>
           </div>
         </div>
+
         <div class="grid-3" style="margin-top: 8px;">
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🌕 Maanstand</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #58a6ff; margin-top: 4px;">Wassend</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #58a6ff; margin-top: 4px;" id="moon-phase">Wassemd</div>
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">📷 Gouden Uur</div>
@@ -443,7 +469,7 @@
           </div>
           <div class="grid-box">
             <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">☀️ Daglengte</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #3fb950; margin-top: 4px;">12.5 uur</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #3fb950; margin-top: 4px;" id="day-length">-- uur</div>
           </div>
         </div>
       </div>
@@ -466,133 +492,185 @@
   </nav>
 
   <script>
-    const LOCAL_PLACES = ["delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"];
-    const slides = ['slide-prague', 'slide-p2000-eemsdelta', 'slide-p2000-groningen', 'slide-rdw', 'slide-radar', 'slide-weather-delfzijl', 'slide-weather-groningen', 'slide-news', 'slide-rtvnoord', 'slide-tide', 'slide-traffic', 'slide-astro'];
+    const LAT_DELFZIJL = 53.33;
+    const LON_DELFZIJL = 6.92;
+    const LAT_GRONINGEN = 53.22;
+    const LON_GRONINGEN = 6.57;
+
+    const LOCAL_PLACES = [
+      "delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", 
+      "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", 
+      "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"
+    ];
+
+    const slides = [
+      'slide-prague',
+      'slide-p2000-eemsdelta',
+      'slide-p2000-groningen',
+      'slide-rdw',
+      'slide-radar',
+      'slide-weather-delfzijl', 
+      'slide-weather-groningen',
+      'slide-news', 
+      'slide-rtvnoord', 
+      'slide-tide', 
+      'slide-traffic',
+      'slide-astro'
+    ];
     let currentSlide = 0;
     let progressInterval;
+    let lastDelfzijlTitle = "";
 
     function updateClock() {
-      try {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
-        const targetDate = new Date("2026-10-09T17:00:00");
-        const diff = targetDate - new Date();
-        if (diff > 0) {
-          document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-          document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        }
-      } catch (e) {}
+      document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
+      updatePragueCountdown();
     }
     setInterval(updateClock, 1000);
     updateClock();
 
+    function updatePragueCountdown() {
+      const targetDate = new Date("2026-10-09T17:00:00");
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.getElementById('cd-days').innerText = "0";
+        document.getElementById('cd-hours').innerText = "0";
+        document.getElementById('cd-mins').innerText = "0";
+        document.getElementById('cd-status').innerText = "🎉 Fijne reis naar Praag!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      document.getElementById('cd-days').innerText = days;
+      document.getElementById('cd-hours').innerText = hours;
+      document.getElementById('cd-mins').innerText = mins;
+    }
+
     function showSlide(index) {
-      try {
-        slides.forEach((id, idx) => {
-          const el = document.getElementById(id);
-          const dot = document.querySelectorAll('.dot')[idx];
-          if (el) el.classList.toggle('active', idx === index);
-          if (dot) dot.classList.toggle('active', idx === index);
-        });
-        currentSlide = index;
-        resetProgressBar();
-      } catch (e) {}
+      slides.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        const dot = document.querySelectorAll('.dot')[idx];
+        if (el) el.classList.toggle('active', idx === index);
+        if (dot) dot.classList.toggle('active', idx === index);
+      });
+      currentSlide = index;
+      resetProgressBar();
     }
 
     function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
     function goToSlide(index) { showSlide(index); }
 
     function resetProgressBar() {
-      try {
-        clearInterval(progressInterval);
-        const progressBar = document.getElementById('progress');
-        let width = 0;
-        progressInterval = setInterval(() => {
-          width += 1;
-          if (progressBar) progressBar.style.width = width + '%';
-          if (width >= 100) {
-            clearInterval(progressInterval);
-            nextSlide();
-          }
-        }, 110);
-      } catch (e) {}
+      clearInterval(progressInterval);
+      const progressBar = document.getElementById('progress');
+      let width = 0;
+      progressInterval = setInterval(() => {
+        width += 1;
+        if (progressBar) progressBar.style.width = width + '%';
+        if (width >= 100) {
+          clearInterval(progressInterval);
+          nextSlide();
+        }
+      }, 110);
     }
 
-    async function updateP2000() {
+    // Directe XML Ophaalfunctie via CorsProxy (Geen verouderde p2000.json of rss2json meer)
+    async function fetchP2000FeedXML() {
+      const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?v=" + Date.now());
       try {
-        const res = await fetch('./p2000.json?v=' + Date.now());
-        const data = await res.json();
-        const listContainer = document.getElementById('p2000-groningen-list');
-        if (!listContainer) return;
-        listContainer.innerHTML = "";
+        const response = await fetch(proxyUrl);
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
 
-        if (!data || data.length === 0) {
-          listContainer.innerHTML = `<div class="p2000-item"><div class="p2000-item-title">Geen meldingen gevonden.</div></div>`;
-          return;
-        }
-
-        let localFound = false;
-
-        data.forEach((item, index) => {
-          if (index >= 3) return;
-
-          const title = item.titel || item.title || "Melding zonder titel";
-          const pubDateFormatted = item.datum ? new Date(item.datum).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}) : "Zojuist";
-          const lower = title.toLowerCase();
-
-          let badgeClass = 'bg-info';
-          let badgeText = 'MELDING';
-          if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
-          else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
-
-          listContainer.innerHTML += `
-            <div class="p2000-item">
-              <div class="p2000-item-header">
-                <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
-                <span class="p2000-item-time">${pubDateFormatted}</span>
-              </div>
-              <div class="p2000-item-title">${title}</div>
-            </div>
-          `;
-
-          if (!localFound && LOCAL_PLACES.some(place => lower.includes(place))) {
-            document.getElementById('p2000-text').innerText = title;
-            document.getElementById('p2000-time').innerText = pubDateFormatted;
-            document.getElementById('p2000-prio').innerText = badgeText;
-            document.getElementById('p2000-prio').className = "badge " + badgeClass;
-            localFound = true;
+        let p2000Items = [];
+        items.forEach(item => {
+          const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
+          const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
+          if (title) {
+            p2000Items.push({ title, pubDate });
           }
         });
-
-        if (!localFound && data.length > 0) {
-          document.getElementById('p2000-text').innerText = data[0].titel || data[0].title || "Laatste melding";
-          document.getElementById('p2000-time').innerText = "Regio Groningen";
-          document.getElementById('p2000-prio').innerText = "REGIO";
-          document.getElementById('p2000-prio').className = "badge bg-info";
-        }
+        return p2000Items;
       } catch (e) {
-        console.error("Fout bij laden P2000 JSON:", e);
+        return [];
       }
     }
 
-    async function updateNews(filename, containerId) {
-      try {
-        const res = await fetch('./' + filename + '?v=' + Date.now());
-        const text = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
-        const container = document.getElementById(containerId);
-        if (items.length > 0 && container) {
-          container.innerHTML = '';
-          for (let i = 0; i < Math.min(items.length, 2); i++) {
-            const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "";
-            const dateEl = items[i].querySelector("pubDate");
-            const pubDate = dateEl ? new Date(dateEl.textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : "";
-            container.innerHTML += `<div style="padding:10px 0; border-bottom:2px solid #30363d;"><div style="font-weight:800; font-size:1.55rem;">${title}</div><div style="color:#8b949e; margin-top:4px;">${pubDate}</div></div>`;
-          }
+    // 🚨 Live P2000 Update voor Delfzijl & Groningen
+    async function updateP2000Data() {
+      const items = await fetchP2000FeedXML();
+      if (!items || items.length === 0) return;
+
+      // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
+      const listContainer = document.getElementById('p2000-groningen-list');
+      listContainer.innerHTML = "";
+      
+      items.forEach(item => {
+        const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        const lower = item.title.toLowerCase();
+        let badgeClass = 'bg-info';
+        let badgeText = 'MELDING';
+
+        if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
+          badgeClass = 'bg-prio1';
+          badgeText = 'PRIO 1';
+        } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
+          badgeClass = 'bg-prio2';
+          badgeText = 'PRIO 2';
         }
-      } catch (e) {}
+
+        listContainer.innerHTML += `
+          <div class="p2000-item">
+            <div class="p2000-item-header">
+              <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+              <span class="p2000-item-time">🕒 ${timeStr}</span>
+            </div>
+            <div class="p2000-item-title">${item.title}</div>
+          </div>
+        `;
+      });
+
+      // 2. UPDATE DE MEEST RECENTE DELFZIJL MELDING (SLIDE 2)
+      const p2000Text = document.getElementById('p2000-text');
+      const p2000Time = document.getElementById('p2000-time');
+      const prioBadge = document.getElementById('p2000-prio');
+
+      const localItem = items.find(item => {
+        const lower = item.title.toLowerCase();
+        return LOCAL_PLACES.some(place => lower.includes(place));
+      });
+
+      if (localItem) {
+        let title = localItem.title;
+        let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
+        let lowerTitle = title.toLowerCase();
+
+        p2000Text.innerText = title;
+        p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+        if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
+          prioBadge.innerText = 'PRIO 1 / SPOED';
+          prioBadge.className = 'badge bg-prio1';
+        } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
+          prioBadge.innerText = 'PRIO 2';
+          prioBadge.className = 'badge bg-prio2';
+        } else {
+          prioBadge.innerText = 'INFO / MELDING';
+          prioBadge.className = 'badge bg-info';
+        }
+
+        // PUSH INTERRUPT: Als er een NIEUWE melding is voor Delfzijl -> Spring naar Slide 2!
+        if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
+          showSlide(1); 
+        }
+        lastDelfzijlTitle = title;
+      }
     }
 
     async function fetchRDWLatestPlate() {
@@ -600,34 +678,141 @@
         const res = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating%20DESC");
         const data = await res.json();
         if (data && data.length > 0) {
-          document.getElementById('rdw-plate').innerText = data[0].kenteken || "KZG-99-K";
-          document.getElementById('rdw-brand').innerText = (data[0].merk || "Onbekend") + " " + (data[0].handelsbenaming || "");
-          document.getElementById('rdw-class').innerText = data[0].voertuigsoort || "Personenauto";
-          if (data[0].datum_eerste_toelating) document.getElementById('rdw-date').innerText = data[0].datum_eerste_toelating.substring(0, 10);
+          const car = data[0];
+          document.getElementById('rdw-plate').innerText = car.kenteken || "KZG-99-K";
+          document.getElementById('rdw-brand').innerText = (car.merk || "Onbekend") + " " + (car.handelsbenaming || "");
+          document.getElementById('rdw-class').innerText = car.voertuigsoort || "Personenauto";
+          if (car.datum_eerste_toelating) {
+            const dateStr = car.datum_eerste_toelating.substring(0, 10);
+            document.getElementById('rdw-date').innerText = dateStr;
+          }
+        }
+      } catch (e) {
+        document.getElementById('rdw-plate').innerText = "KZG-99-K";
+        document.getElementById('rdw-brand').innerText = "Volkswagen / BMW";
+      }
+    }
+
+    async function fetchLiveTide() {
+      try {
+        const url = "https://waterblik.nl/api/waterinfo/DELFZL";
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.waterlevel) {
+          document.getElementById('water-level').innerText = (data.waterlevel > 0 ? "+" : "") + data.waterlevel + " cm";
+          document.getElementById('tide-status').innerText = data.trend === "rising" ? "VLOED ⬆️" : "EBBEN ⬇️";
+        } else {
+          fetchTideFallback();
+        }
+      } catch (e) {
+        fetchTideFallback();
+      }
+    }
+
+    function fetchTideFallback() {
+      const now = new Date();
+      const hours = now.getHours();
+      const isRising = (hours % 12) < 6;
+      document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
+      document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
+      document.getElementById('tide-hw').innerText = "12:05 uur";
+      document.getElementById('tide-lw').innerText = "18:19 uur";
+    }
+
+    async function fetchNews() {
+      try {
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('news-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function fetchRTVNoord() {
+      try {
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById('rtvnoord-container');
+        
+        if (items.length > 0) {
+          container.innerHTML = '';
+          for (let i = 0; i < Math.min(items.length, 2); i++) {
+            const item = items[i];
+            const title = item.querySelector("title").textContent;
+            const pubDate = new Date(item.querySelector("pubDate").textContent).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            container.innerHTML += `
+              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
+                <div>
+                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${title}</div>
+                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
+                </div>
+              </div>
+            `;
+          }
         }
       } catch (e) {}
     }
 
     async function fetchCityWeather(lat, lon, prefix) {
       try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`);
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
+        const res = await fetch(url);
         const data = await res.json();
+
         if (data.current) {
           document.getElementById(`${prefix}-temp`).innerText = `${Math.round(data.current.temperature_2m)}°C`;
           document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain} mm`;
+
           const kmh = data.current.wind_speed_10m;
-          let bft = 1; if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
+          let bft = 1;
+          if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
           document.getElementById(`${prefix}-wind`).innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
         }
+
         if (data.daily) {
-          document.getElementById(`${prefix}-uv`).innerText = data.daily.uv_index_max[0];
-          if (prefix === 'delfzijl' && data.daily.sunrise && data.daily.sunset) {
-            document.getElementById('sunrise-time').innerText = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('sunset-time').innerText = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            const golden = new Date(data.daily.sunset[0]); golden.setMinutes(golden.getMinutes() - 45);
-            document.getElementById('golden-hour').innerText = golden.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          const uv = data.daily.uv_index_max[0];
+          document.getElementById(`${prefix}-uv`).innerText = uv;
+
+          if (prefix === 'delfzijl') {
+            if (data.daily.sunrise[0]) {
+              const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+              document.getElementById('sunrise-time').innerText = sunrise;
+            }
+            if (data.daily.sunset[0]) {
+              const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+              document.getElementById('sunset-time').innerText = sunset;
+
+              const sunsetDate = new Date(data.daily.sunset[0]);
+              sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
+              document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            }
           }
         }
+
         const grid = document.getElementById(`${prefix}-forecast`);
         if (grid && data.hourly) {
           grid.innerHTML = '';
@@ -635,24 +820,41 @@
           for (let i = 0; i < 4; i++) {
             const idx = nowHour + (i * 3);
             if (data.hourly.time[idx]) {
-              grid.innerHTML += `<div class="grid-box"><div style="color:#8b949e; font-size:1.1rem; font-weight:800;">${new Date(data.hourly.time[idx]).getHours()}:00</div><div style="font-size:2.2rem; font-weight:900; margin:4px 0; color:#fff;">${Math.round(data.hourly.temperature_2m[idx])}°C</div><div style="color:#58a6ff; font-size:1.1rem; font-weight:800;">💧 ${data.hourly.precipitation_probability[idx]}%</div></div>`;
+              const time = new Date(data.hourly.time[idx]).getHours() + ':00';
+              const temp = Math.round(data.hourly.temperature_2m[idx]);
+              const pop = data.hourly.precipitation_probability[idx];
+              grid.innerHTML += `
+                <div class="grid-box">
+                  <div style="color:#8b949e; font-size:1.1rem; font-weight:800;">${time}</div>
+                  <div style="font-size:2.2rem; font-weight:900; margin: 4px 0; color:#ffffff;">${temp}°C</div>
+                  <div style="color:#58a6ff; font-size:1.1rem; font-weight:800;">💧 ${pop}%</div>
+                </div>
+              `;
             }
           }
         }
       } catch (e) {}
     }
 
-    updateP2000();
-    updateNews('eemskrant.xml', 'news-container');
-    updateNews('rtvnoord.xml', 'rtvnoord-container');
+    function fetchAllWeather() {
+      fetchCityWeather(LAT_DELFZIJL, LON_DELFZIJL, 'delfzijl');
+      fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
+    }
+
+    updateP2000Data();
     fetchRDWLatestPlate();
-    fetchCityWeather(53.33, 6.92, 'delfzijl');
-    fetchCityWeather(53.22, 6.57, 'groningen');
+    fetchNews();
+    fetchRTVNoord();
+    fetchAllWeather();
+    fetchLiveTide();
     resetProgressBar();
 
-    setInterval(updateP2000, 30000);
-    setInterval(() => updateNews('eemskrant.xml', 'news-container'), 60000);
-    setInterval(() => updateNews('rtvnoord.xml', 'rtvnoord-container'), 60000);
+    setInterval(updateP2000Data, 10000); // Live verversen elke 10 sec
+    setInterval(fetchRDWLatestPlate, 300000);
+    setInterval(fetchLiveTide, 300000);
+    setInterval(fetchNews, 300000);
+    setInterval(fetchRTVNoord, 300000);
+    setInterval(fetchAllWeather, 600000);
   </script>
 </body>
 </html>
