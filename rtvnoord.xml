@@ -4,18 +4,26 @@
         <title>RTV Noord</title>
         <link>https://www.rtvnoord.nl</link>
         <description>RTV Noord RSS feed</description>
-        <lastBuildDate>Fri, 25 Sep 2026 11:26:09 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 25 Sep 2026 11:59:10 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Groei ESS</generator>
         <language>nl</language>
         <copyright>Copyright © 2026 RTV Noord</copyright>
         <item>
-            <title><![CDATA[112-nieuws: Geen treinen naar Zwolle door 'object' op spoor, geen sprake van sabotage]]></title>
-            <link>https://www.rtvnoord.nl/112/1440152/112-nieuws-geen-treinen-naar-zwolle-door-object-op-spoor-geen-sprake-van-sabotage</link>
+            <title><![CDATA[112-nieuws: Treinen naar Zwolle rijden weer na 'object' op spoor, geen sprake van sabotage]]></title>
+            <link>https://www.rtvnoord.nl/112/1440152/112-nieuws-treinen-naar-zwolle-rijden-weer-na-object-op-spoor-geen-sprake-van-sabotage</link>
             <guid>https://www.rtvnoord.nl/112/1440152/-</guid>
-            <pubDate>Fri, 25 Sep 2026 11:10:42 GMT</pubDate>
+            <pubDate>Fri, 25 Sep 2026 11:32:02 GMT</pubDate>
             <description><![CDATA[In dit 112-blog houden we je deze vrijdag op de hoogte van het laatste 112-nieuws. Je vindt hier een overzicht van ongelukken, branden, storingen en misdrijven.]]></description>
             <enclosure url="https://i.regiogroei.cloud/5549c5b6-d187-3d34-8501-51ec9ec74bbf.jpg?width=552&amp;height=310&amp;aspect_ratio=552:310&amp;cb=dd66a743f9ec9a9fe968c850f84ade9d" length="0" type="image/jpg"/>
+        </item>
+        <item>
+            <title><![CDATA[Sanne (19) heropent de bloemenwinkel van haar overleden moeder]]></title>
+            <link>https://www.rtvnoord.nl/economie/1440064/sanne-19-heropent-de-bloemenwinkel-van-haar-overleden-moeder</link>
+            <guid>https://www.rtvnoord.nl/economie/1440064/-</guid>
+            <pubDate>Fri, 25 Sep 2026 11:30:00 GMT</pubDate>
+            <description><![CDATA[Sanne Brink was negen jaar toen haar moeder om het leven kwam bij een motorongeluk in België. Ze was er nota bene zelf bij, op de terugweg van hun zomervakantie. Nu, tien jaar later, kan ze de grote passie van haar moeder voortzetten: de bloemenwinkel in Hoogezand.]]></description>
+            <enclosure url="https://i.regiogroei.cloud/c923d1d0-670e-38da-8d27-b87da7def1d4.jpg?width=552&amp;height=310&amp;aspect_ratio=552:310&amp;cb=524c0179c417b79f48e9e9eaa5abc390" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[Presentatoren 'Roddelpraat' voor rechter vanwege 'ernstig beledigen' van Groningse vrouwen]]></title>
@@ -400,14 +408,6 @@
             <pubDate>Tue, 22 Sep 2026 16:30:00 GMT</pubDate>
             <description><![CDATA[De treinreis tussen Groningen en Bremen wordt vanaf 5 oktober een stuk sneller dan gedacht. Terwijl nu nog in de reisplanners staat dat de reis 3 uur en 48 minuten gaat duren, wordt dat in de praktijk een uur korter: 2 uur en 48 minuten dus.]]></description>
             <enclosure url="https://i.regiogroei.cloud/7382bbfc-9c9d-3c9d-8c32-67f86e862db5.jpg?width=552&amp;height=310&amp;aspect_ratio=552:310&amp;cb=1c05b8b6a94b53d76618509ab04eb295" length="0" type="image/jpg"/>
-        </item>
-        <item>
-            <title><![CDATA[Marloes Oldenburg gemotiveerd voor comeback in de roeiboot: 'Als ik het doe, dan ga ik ervoor']]></title>
-            <link>https://www.rtvnoord.nl/sport/1439472/marloes-oldenburg-gemotiveerd-voor-comeback-in-de-roeiboot-als-ik-het-doe-dan-ga-ik-ervoor</link>
-            <guid>https://www.rtvnoord.nl/sport/1439472/-</guid>
-            <pubDate>Tue, 22 Sep 2026 16:27:08 GMT</pubDate>
-            <description><![CDATA[Door de geboorte van haar zoon stond roeien even op een lager pitje. Maar Marloes Oldenburg maakt bekend dat ze op 38-jarige leeftijd toch weer de roeiboot instapt. 'Ik heb altijd van het roeien gehouden.']]></description>
-            <enclosure url="https://i.regiogroei.cloud/61c55f37-518b-3333-8b24-5d22418a5315.jpg?width=552&amp;height=310&amp;aspect_ratio=552:310&amp;cb=dd08c3da8869511148a25911da630e6c" length="0" type="image/jpg"/>
         </item>
     </channel>
 </rss>
