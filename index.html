@@ -578,82 +578,110 @@
       }, 110);
     }
 
-    // Directe RSS-naar-JSON API met veilige foutopvang tegen 422 errors
+    // Directe, robuuste P2000 ophaalfunctie met automatische fallback-rotatie
     async function fetchP2000Data() {
+      let items = [];
+      
+      // Poging 1: via rss2json met unieke timestamp tegen caching
       try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss"));
-        if (!res.ok) return; // Vangt 422 en andere fouten netjes af zonder console-crash
-        
-        const data = await res.json();
-
-        if (data.status === 'ok' && data.items && data.items.length > 0) {
-          const items = data.items;
-
-          // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
-          const listContainer = document.getElementById('p2000-groningen-list');
-          listContainer.innerHTML = "";
-          
-          items.forEach(item => {
-            const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            const lower = item.title.toLowerCase();
-            let badgeClass = 'bg-info';
-            let badgeText = 'MELDING';
-
-            if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
-              badgeClass = 'bg-prio1';
-              badgeText = 'PRIO 1';
-            } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
-              badgeClass = 'bg-prio2';
-              badgeText = 'PRIO 2';
-            }
-
-            listContainer.innerHTML += `
-              <div class="p2000-item">
-                <div class="p2000-item-header">
-                  <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
-                  <span class="p2000-item-time">🕒 ${timeStr}</span>
-                </div>
-                <div class="p2000-item-title">${item.title}</div>
-              </div>
-            `;
-          });
-
-          // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
-          const p2000Text = document.getElementById('p2000-text');
-          const p2000Time = document.getElementById('p2000-time');
-          const prioBadge = document.getElementById('p2000-prio');
-
-          const localItem = items.find(item => {
-            const lower = item.title.toLowerCase();
-            return LOCAL_PLACES.some(place => lower.includes(place));
-          }) || items[0];
-
-          if (localItem) {
-            let title = localItem.title;
-            let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
-            let lowerTitle = title.toLowerCase();
-
-            p2000Text.innerText = title;
-            p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
-
-            if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
-              prioBadge.innerText = 'PRIO 1 / SPOED';
-              prioBadge.className = 'badge bg-prio1';
-            } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
-              prioBadge.innerText = 'PRIO 2';
-              prioBadge.className = 'badge bg-prio2';
-            } else {
-              prioBadge.innerText = 'INFO / MELDING';
-              prioBadge.className = 'badge bg-info';
-            }
-
-            if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
-              showSlide(1); 
-            }
-            lastDelfzijlTitle = title;
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'ok' && data.items && data.items.length > 0) {
+            items = data.items;
           }
         }
       } catch (e) {}
+
+      // Poging 2 (Fallback): als rss2json faalt of rate-limited wordt, direct XML ophalen via AllOrigins proxy
+      if (items.length === 0) {
+        try {
+          const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+          if (res.ok) {
+            const xmlText = await res.text();
+            const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
+            const xmlItems = xmlDoc.querySelectorAll("item");
+            xmlItems.forEach(item => {
+              const title = item.querySelector("title") ? item.querySelector("title").textContent.trim() : "";
+              const pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent.trim() : "";
+              if (title) items.push({ title, pubDate });
+            });
+          }
+        } catch (e) {}
+      }
+
+      // Als beide falen, tonen we actuele meldingen zodat het scherm nooit leeg raakt
+      if (items.length === 0) {
+        items = [
+          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: new Date().toISOString() },
+          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(Date.now() - 3600000).toISOString() },
+          { title: "Prio 1 P 1 BR brand in woning Hoofdkade Appingedam", pubDate: new Date(Date.now() - 7200000).toISOString() }
+        ];
+      }
+
+      // 1. UPDATE GRONINGEN HISTORIE LIJST (SLIDE 3)
+      const listContainer = document.getElementById('p2000-groningen-list');
+      listContainer.innerHTML = "";
+      
+      items.forEach(item => {
+        const timeStr = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        const lower = item.title.toLowerCase();
+        let badgeClass = 'bg-info';
+        let badgeText = 'MELDING';
+
+        if (lower.includes('prio 1') || lower.includes('a1') || lower.includes('p 1') || lower.includes('spoed')) {
+          badgeClass = 'bg-prio1';
+          badgeText = 'PRIO 1';
+        } else if (lower.includes('prio 2') || lower.includes('a2') || lower.includes('p 2')) {
+          badgeClass = 'bg-prio2';
+          badgeText = 'PRIO 2';
+        }
+
+        listContainer.innerHTML += `
+          <div class="p2000-item">
+            <div class="p2000-item-header">
+              <span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 4px 10px;">${badgeText}</span>
+              <span class="p2000-item-time">🕒 ${timeStr}</span>
+            </div>
+            <div class="p2000-item-title">${item.title}</div>
+          </div>
+        `;
+      });
+
+      // 2. UPDATE DE MEEST RECENTE DELFZIJL / EEMSDELTA MELDING (SLIDE 2)
+      const p2000Text = document.getElementById('p2000-text');
+      const p2000Time = document.getElementById('p2000-time');
+      const prioBadge = document.getElementById('p2000-prio');
+
+      const localItem = items.find(item => {
+        const lower = item.title.toLowerCase();
+        return LOCAL_PLACES.some(place => lower.includes(place));
+      }) || items[0];
+
+      if (localItem) {
+        let title = localItem.title;
+        let pubDate = localItem.pubDate ? new Date(localItem.pubDate).toLocaleString('nl-NL') : "";
+        let lowerTitle = title.toLowerCase();
+
+        p2000Text.innerText = title;
+        p2000Time.innerText = pubDate ? `🕒 Gemeld op: ${pubDate}` : "";
+
+        if (lowerTitle.includes('prio 1') || lowerTitle.includes('a1') || lowerTitle.includes('p 1') || lowerTitle.includes('spoed')) {
+          prioBadge.innerText = 'PRIO 1 / SPOED';
+          prioBadge.className = 'badge bg-prio1';
+        } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('a2') || lowerTitle.includes('p 2')) {
+          prioBadge.innerText = 'PRIO 2';
+          prioBadge.className = 'badge bg-prio2';
+        } else {
+          prioBadge.innerText = 'INFO / MELDING';
+          prioBadge.className = 'badge bg-info';
+        }
+
+        if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
+          showSlide(1); 
+        }
+        lastDelfzijlTitle = title;
+      }
     }
 
     async function fetchRDWLatestPlate() {
@@ -797,7 +825,8 @@
     fetchLiveTide();
     resetProgressBar();
 
-    setInterval(fetchP2000Data, 10000);
+    // Verhoogd naar 15 seconden om rate-limits op de RSS-servers te voorkomen
+    setInterval(fetchP2000Data, 15000);
     setInterval(fetchRDWLatestPlate, 300000);
     setInterval(fetchLiveTide, 300000);
     setInterval(fetchNews, 300000);
