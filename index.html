@@ -578,10 +578,12 @@
       }, 110);
     }
 
-    // Directe RSS-naar-JSON API (Zonder CORS-problemen)
+    // Directe RSS-naar-JSON API met veilige foutopvang tegen 422 errors
     async function fetchP2000Data() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss"));
+        if (!res.ok) return; // Vangt 422 en andere fouten netjes af zonder console-crash
+        
         const data = await res.json();
 
         if (data.status === 'ok' && data.items && data.items.length > 0) {
@@ -645,7 +647,6 @@
               prioBadge.className = 'badge bg-info';
             }
 
-            // PUSH INTERRUPT: Als er een NIEUWE melding is voor Delfzijl -> Spring direct naar Slide 2!
             if (lastDelfzijlTitle !== "" && lastDelfzijlTitle !== title) {
               showSlide(1); 
             }
@@ -658,6 +659,7 @@
     async function fetchRDWLatestPlate() {
       try {
         const res = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating%20DESC");
+        if (!res.ok) return;
         const data = await res.json();
         if (data && data.length > 0) {
           const car = data[0];
@@ -683,6 +685,7 @@
     async function fetchNews() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
+        if (!res.ok) return;
         const data = await res.json();
         const container = document.getElementById('news-container');
         
@@ -706,6 +709,7 @@
     async function fetchRTVNoord() {
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
+        if (!res.ok) return;
         const data = await res.json();
         const container = document.getElementById('rtvnoord-container');
         
@@ -730,6 +734,7 @@
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&forecast_days=2&timezone=auto`;
         const res = await fetch(url);
+        if (!res.ok) return;
         const data = await res.json();
 
         if (data.current) {
