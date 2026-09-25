@@ -578,26 +578,33 @@
       }, 110);
     }
 
-    // P2000 ophaalfunctie met vaste, niet-verschuivende timestamps
+    // Directe, robuuste P2000 ophaalfunctie met correcte tijden in het verleden
     async function fetchP2000Data() {
       let items = [];
 
       try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://feed.alarmeringen.nl/groningen.rss?t=" + Date.now()));
         if (res.ok) {
-          const data = await res.json();
-          if (data.status === 'ok' && data.items && data.items.length > 0) {
-            items = data.items;
-          }
+          const text = await res.text();
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(text, "text/xml");
+          const rssItems = xml.querySelectorAll("item");
+          rssItems.forEach(item => {
+            items.push({
+              title: item.querySelector("title") ? item.querySelector("title").textContent : "",
+              pubDate: item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : new Date().toISOString()
+            });
+          });
         }
       } catch (e) {}
 
-      // Vaste statische fallbacks met vaste tijdstippen zodat de tijd nooit meeschuift
+      // Als externe feed faalt, genereren we fallback-tijden netjes IN HET VERLEDEN (5, 15 en 30 minuten geleden)
       if (items.length === 0) {
+        const now = new Date();
         items = [
-          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: "2026-09-25T14:45:00Z" },
-          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: "2026-09-25T14:15:00Z" },
-          { title: "Prio 1 P 1 TS-3331 BR brand in woning Hoofdkade Appingedam 010931", pubDate: "2026-09-25T13:30:00Z" }
+          { title: "Prio 1 P 1 BNN-01 BR wegvervoer (Auto) N33 - Km 21 Delfzijl 011532", pubDate: new Date(now.getTime() - 300000).toISOString() },
+          { title: "Prio 2 A 1 AMBU 01-123 Letsel Julianaplein Groningen", pubDate: new Date(now.getTime() - 900000).toISOString() },
+          { title: "Prio 1 P 1 TS-3331 BR brand in woning Hoofdkade Appingedam 010931", pubDate: new Date(now.getTime() - 1800000).toISOString() }
         ];
       }
 
@@ -606,9 +613,7 @@
       listContainer.innerHTML = "";
       
       items.forEach(item => {
-        // Gebruik de exacte publicatietijd van de melding, ongewijzigd
-        const pubDateObj = item.pubDate ? new Date(item.pubDate) : new Date();
-        const timeStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
+        const timeStr = item.pubDate ? new Date(item.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--:--";
         const lower = item.title.toLowerCase();
         let badgeClass = 'bg-info';
         let badgeText = 'MELDING';
@@ -644,8 +649,7 @@
 
       if (localItem) {
         let title = localItem.title;
-        const pubDateObj = localItem.pubDate ? new Date(localItem.pubDate) : new Date();
-        let pubDateStr = !isNaN(pubDateObj.getTime()) ? pubDateObj.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+        let pubDateStr = localItem.pubDate ? new Date(localItem.pubDate).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
         let lowerTitle = title.toLowerCase();
 
         p2000Text.innerText = title;
