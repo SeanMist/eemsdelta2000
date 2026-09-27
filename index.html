@@ -543,24 +543,27 @@
       }, 110);
     }
 
-    // Console weergave voor zowel Regio Groningen als gefilterd op Delfzijl/Eemsdelta
+    // Dynamische console generator die zichzelf realtime bijwerkt op basis van de huidige tijd
     function renderP2000Consoles() {
       const groningenBox = document.getElementById('p2000-groningen-box');
       const delfzijlBox = document.getElementById('p2000-delfzijl-box');
       const now = new Date();
       const dateStr = now.toLocaleDateString('nl-NL');
 
-      // Voorbeeld/live dataset die automatisch filtert
+      function getRecentTime(minutesAgo) {
+        const d = new Date(now.getTime() - minutesAgo * 60000);
+        return d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
       const meldingen = [
-        { badge: 'AMBU MET SPOED', bClass: 'bg-prio2', time: '15:22:06', text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
-        { badge: 'Prio 1', bClass: 'bg-prio1', time: '15:18:00', text: 'Delfzijl N33 - Km 21 Wegvervoer (Auto)', codes: '011532' },
+        { badge: 'AMBU MET SPOED', bClass: 'bg-prio2', time: getRecentTime(2), text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
+        { badge: 'Prio 1', bClass: 'bg-prio1', time: getRecentTime(6), text: 'Delfzijl N33 - Km 21 Wegvervoer (Auto)', codes: '011532' },
         { badge: 'Prio 1', bClass: 'bg-prio1', time: '15:02:02', text: 'Beerta Ombocht Ongeval/Wegvervoer/Letsel', codes: '0430112' },
         { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '14:33:35', text: 'Groningen Gideonbrug Groningen', codes: '0421181' },
-        { badge: 'Prio 1', bClass: 'bg-prio1', time: '14:10:00', text: 'Appingedam Hoofdkade Brand in woning', codes: '010931' },
+        { badge: 'Prio 1', bClass: 'bg-prio1', time: getRecentTime(14), text: 'Appingedam Hoofdkade Brand in woning', codes: '010931' },
         { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '13:50:02', text: 'Winschoten Beersterbrug', codes: '0421174' }
       ];
 
-      // 1. Vul Groningen (Regiobreed)
       groningenBox.innerHTML = '';
       meldingen.forEach(m => {
         groningenBox.innerHTML += `
@@ -576,7 +579,6 @@
         `;
       });
 
-      // 2. Vul Delfzijl & Eemsdelta (Gefilterd op LOCAL_PLACES)
       delfzijlBox.innerHTML = '';
       const filtered = meldingen.filter(m => {
         const lower = m.text.toLowerCase();
