@@ -54,7 +54,6 @@
       justify-content: space-between;
     }
 
-    /* Badges & Console Stijl */
     .badge {
       display: inline-block;
       padding: 6px 14px;
@@ -71,7 +70,6 @@
     .bg-prague { background-color: #8957e5; }
     .bg-rdw { background-color: #00529b; }
 
-    /* P2000 Console Terminal Stijl */
     .p2000-console {
       background: #000000;
       border: 2px solid #30363d;
@@ -91,54 +89,24 @@
       flex-direction: column;
       gap: 4px;
     }
-    .p2000-row-top {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+    .p2000-row-top { display: flex; align-items: center; gap: 15px; }
     .p2000-date { color: #3fb950; font-size: 1.1rem; font-weight: 800; }
     .p2000-time { color: #e3b341; font-size: 1.1rem; font-weight: 800; }
     .p2000-text { color: #f0f6fc; font-size: 1.3rem; font-weight: 700; }
     .p2000-codes { color: #58a6ff; font-size: 1rem; }
 
-    /* RDW Kentekenplaat Styling */
-    .license-plate-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 10px 0;
-    }
+    .license-plate-container { display: flex; justify-content: center; align-items: center; margin: 10px 0; }
     .license-plate {
-      background-color: #fecf00;
-      color: #000000;
-      border: 5px solid #000000;
-      border-radius: 12px;
-      padding: 10px 30px;
-      font-family: 'Arial Black', sans-serif;
-      font-size: 4.8rem;
-      font-weight: 900;
-      letter-spacing: 4px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      position: relative;
+      background-color: #fecf00; color: #000000; border: 5px solid #000000;
+      border-radius: 12px; padding: 10px 30px; font-family: 'Arial Black', sans-serif;
+      font-size: 4.8rem; font-weight: 900; letter-spacing: 4px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 20px; position: relative;
     }
     .license-plate .nl-flag {
-      background-color: #003399;
-      color: #ffffff;
-      font-size: 1.2rem;
-      font-weight: 800;
-      padding: 10px 8px;
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
+      background-color: #003399; color: #ffffff; font-size: 1.2rem; font-weight: 800;
+      padding: 10px 8px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1;
     }
 
-    /* Layout Grids & XXL Typografie */
     .weather-temp-huge { font-size: 6rem; font-weight: 900; color: #ffffff; margin: 0; line-height: 0.9; }
     .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 8px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
@@ -149,13 +117,8 @@
     .countdown-label { font-size: 1.2rem; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-top: 4px; }
 
     nav {
-      background: #161b22;
-      border-top: 3px solid #30363d;
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px;
-      flex-wrap: wrap;
+      background: #161b22; border-top: 3px solid #30363d; display: flex;
+      justify-content: center; gap: 8px; padding: 10px; flex-wrap: wrap;
     }
     .dot { width: 12px; height: 12px; border-radius: 50%; background: #30363d; cursor: pointer; }
     .dot.active { background: #58a6ff; transform: scale(1.3); }
@@ -170,48 +133,25 @@
   <div class="progress-bar-container"><div class="progress-bar" id="progress"></div></div>
 
   <main>
-    <!-- Slide 1: Afteltimer Praag XXL -->
+    <!-- Slide 1: Afteltimer Praag -->
     <section id="slide-prague" class="slide active">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
           <h2 style="font-size: 2.2rem;">🇨🇿 Aftellen naar Praag!</h2>
           <span class="badge bg-prague">Vakantie</span>
         </div>
-
         <div style="text-align: center; margin: 10px 0;">
-          <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 10px;">
-            <svg width="80" height="50" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 35 C10 30, 25 20, 45 20 L65 20 C75 20, 85 28, 90 35 L95 38 C98 40, 98 45, 95 45 L5 45 C2 45, 2 40, 5 38 Z" fill="#8957e5"/>
-              <path d="M30 22 L45 10 L65 10 L72 22 Z" fill="#a575ff"/>
-              <circle cx="25" cy="45" r="8" fill="#161b22" stroke="#ffffff" stroke-width="3"/>
-              <circle cx="75" cy="45" r="8" fill="#161b22" stroke="#ffffff" stroke-width="3"/>
-            </svg>
-            <span style="font-size: 1.6rem; color: #8b949e; font-weight: 700;">Vertrek: Donderdag 9 Oktober om 17:00 uur</span>
-          </div>
-
           <div class="grid-3">
-            <div class="grid-box">
-              <div class="countdown-number" id="cd-days">--</div>
-              <div class="countdown-label">Dagen</div>
-            </div>
-            <div class="grid-box">
-              <div class="countdown-number" id="cd-hours">--</div>
-              <div class="countdown-label">Uren</div>
-            </div>
-            <div class="grid-box">
-              <div class="countdown-number" id="cd-mins">--</div>
-              <div class="countdown-label">Minuten</div>
-            </div>
+            <div class="grid-box"><div class="countdown-number" id="cd-days">--</div><div class="countdown-label">Dagen</div></div>
+            <div class="grid-box"><div class="countdown-number" id="cd-hours">--</div><div class="countdown-label">Uren</div></div>
+            <div class="grid-box"><div class="countdown-number" id="cd-mins">--</div><div class="countdown-label">Minuten</div></div>
           </div>
         </div>
-
-        <div class="grid-box" style="margin-top: 8px; background: #21262d;">
-          <p style="font-size: 1.6rem; color: #3fb950; font-weight: 900;" id="cd-status">✈️ Koffers inpakken & go!</p>
-        </div>
+        <div class="grid-box" style="background: #21262d;"><p style="font-size: 1.6rem; color: #3fb950; font-weight: 900;" id="cd-status">✈️ Koffers inpakken & go!</p></div>
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Groningen (Algemeen) -->
+    <!-- Slide 2: P2000 Groningen -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
@@ -222,53 +162,36 @@
       </div>
     </section>
 
-    <!-- Slide 3: P2000 Delfzijl & Eemsdelta (Gefilterd) -->
+    <!-- Slide 3: P2000 Delfzijl -->
     <section id="slide-p2000-delfzijl" class="slide">
       <div class="card" style="justify-content: flex-start; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
-          <h2 style="font-size: 2.2rem;">📍 P2000 Delfzijl / Eemsdelta (Filter)</h2>
+          <h2 style="font-size: 2.2rem;">📍 P2000 Delfzijl / Eemsdelta</h2>
           <span class="badge bg-info">Lokaal Filter</span>
         </div>
         <div class="p2000-console" id="p2000-delfzijl-box"></div>
       </div>
     </section>
 
-    <!-- Slide 4: Nieuwste Uitgegeven RDW Kenteken XXL -->
+    <!-- Slide 4: RDW Kenteken -->
     <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
           <h2 style="font-size: 2.2rem;">🚗 Laatst Uitgegeven RDW Kenteken</h2>
           <span class="badge bg-rdw">RDW Live</span>
         </div>
-
         <div class="license-plate-container">
-          <div class="license-plate">
-            <div class="nl-flag">
-              <span>★</span>
-              <span>NL</span>
-            </div>
-            <span id="rdw-plate">KZG-99-K</span>
-          </div>
+          <div class="license-plate"><div class="nl-flag"><span>★</span><span>NL</span></div><span id="rdw-plate">KZG-99-K</span></div>
         </div>
-
-        <div class="grid-3" style="margin-top: 5px;">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🚙 Voertuig</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff; margin-top: 4px;" id="rdw-brand">Laden...</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">📅 Registratie</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="rdw-date">Vandaag</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">⚡ Type</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 4px;" id="rdw-class">Personenauto</div>
-          </div>
+        <div class="grid-3">
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">🚙 Voertuig</div><div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff;" id="rdw-brand">Laden...</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">📅 Registratie</div><div style="font-size: 1.8rem; font-weight: 900; color: #ffffff;" id="rdw-date">Vandaag</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">⚡ Type</div><div style="font-size: 1.8rem; font-weight: 900; color: #3fb950;" id="rdw-class">Personenauto</div></div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 5: Satelliet & Regenradar Eemsdelta -->
+    <!-- Slide 5: Radar -->
     <section id="slide-radar" class="slide">
       <div class="card" style="padding: 16px; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -281,162 +204,88 @@
       </div>
     </section>
 
-    <!-- Slide 6: Weer Delfzijl 24 Uur XXL -->
+    <!-- Slide 6: Weer Delfzijl -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer & 24u Verwachting Delfzijl</h2>
-        
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 8px 0;">
           <div class="weather-temp-huge" id="delfzijl-temp">--°C</div>
           <div style="text-align: left;">
-            <p id="delfzijl-wind" style="font-size: 1.8rem; font-weight: 900; color: #58a6ff; margin-bottom: 4px;">Wind: -- Bft</p>
+            <p id="delfzijl-wind" style="font-size: 1.8rem; font-weight: 900; color: #58a6ff;">Wind: -- Bft</p>
             <p id="delfzijl-rain" style="font-size: 1.5rem; font-weight: 800; color: #388bfd;">Neerslag: -- mm</p>
           </div>
           <div style="text-align: center; background: #21262d; padding: 10px 18px; border-radius: 12px; border: 2px solid #30363d;">
-            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">☀️ UV-Index</div>
-            <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="delfzijl-uv">--</div>
+            <div style="color: #8b949e; font-size: 1rem;">☀️ UV-Index</div><div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="delfzijl-uv">--</div>
           </div>
         </div>
-
-        <div>
-          <div class="grid-forecast" id="delfzijl-forecast">
-            <p style="font-size: 1.2rem;">Verwachting laden...</p>
-          </div>
-        </div>
+        <div class="grid-forecast" id="delfzijl-forecast"><p style="font-size: 1.2rem;">Verwachting laden...</p></div>
       </div>
     </section>
 
-    <!-- Slide 7: Weer Groningen Stad XXL -->
+    <!-- Slide 7: Weer Groningen -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer & 24u Verwachting Groningen Stad</h2>
-        
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 8px 0;">
           <div class="weather-temp-huge" id="groningen-temp">--°C</div>
           <div style="text-align: left;">
-            <p id="groningen-wind" style="font-size: 1.8rem; font-weight: 900; color: #58a6ff; margin-bottom: 4px;">Wind: -- Bft</p>
+            <p id="groningen-wind" style="font-size: 1.8rem; font-weight: 900; color: #58a6ff;">Wind: -- Bft</p>
             <p id="groningen-rain" style="font-size: 1.5rem; font-weight: 800; color: #388bfd;">Neerslag: -- mm</p>
           </div>
           <div style="text-align: center; background: #21262d; padding: 10px 18px; border-radius: 12px; border: 2px solid #30363d;">
-            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">☀️ UV-Index</div>
-            <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="groningen-uv">--</div>
+            <div style="color: #8b949e; font-size: 1rem;">☀️ UV-Index</div><div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="groningen-uv">--</div>
           </div>
         </div>
-
-        <div>
-          <div class="grid-forecast" id="groningen-forecast">
-            <p style="font-size: 1.2rem;">Verwachting laden...</p>
-          </div>
-        </div>
+        <div class="grid-forecast" id="groningen-forecast"><p style="font-size: 1.2rem;">Verwachting laden...</p></div>
       </div>
     </section>
 
-    <!-- Slide 8: Lokaal Nieuws (Eemskrant) XXL -->
+    <!-- Slide 8: Nieuws Eemskrant -->
     <section id="slide-news" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📰 Lokaal Nieuws (Eemskrant)</h2>
-        <div id="news-container">
-          <p style="font-size: 1.4rem;">Nieuwsberichten laden...</p>
-        </div>
+        <div id="news-container"><p style="font-size: 1.4rem;">Nieuwsberichten laden...</p></div>
       </div>
     </section>
 
-    <!-- Slide 9: Regionaal Nieuws (RTV Noord) XXL -->
+    <!-- Slide 9: Nieuws RTV Noord -->
     <section id="slide-rtvnoord" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <h2 style="font-size: 2rem; margin-bottom: 10px; border-bottom: 3px solid #30363d; padding-bottom: 8px;">📻 Regionaal Nieuws (RTV Noord)</h2>
-        <div id="rtvnoord-container">
-          <p style="font-size: 1.4rem;">RTV Noord berichten laden...</p>
-        </div>
+        <div id="rtvnoord-container"><p style="font-size: 1.4rem;">RTV Noord berichten laden...</p></div>
       </div>
     </section>
 
-    <!-- Slide 10: Getijden & Live Waterstand XXL -->
+    <!-- Slide 10: Getijden -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
         <div class="grid-4">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Actuele Waterstand (RWS)</div>
-            <div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff; margin: 4px 0;" id="water-level">+48 cm</div>
-            <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">t.o.v. NAP</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 800;">Getijde Status</div>
-            <div style="font-size: 2.8rem; font-weight: 900; color: #3fb950; margin: 6px 0;" id="tide-status">VLOED ⬆️</div>
-            <div style="font-size: 1rem; color: #8b949e; font-weight: 700;">Eems-Estuarium</div>
-          </div>
-        </div>
-        <div class="grid-4" style="margin-top: 10px;">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔼 Volgend Hoogwater (HW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-hw">12:05 uur</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🔽 Volgend Laagwater (LW)</div>
-            <div style="font-size: 2rem; font-weight: 900; color: #ffffff; margin-top: 4px;" id="tide-lw">18:19 uur</div>
-          </div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.2rem;">Actuele Waterstand (RWS)</div><div style="font-size: 3.2rem; font-weight: 900; color: #58a6ff;" id="water-level">+48 cm</div><div style="font-size: 1rem; color: #8b949e;">t.o.v. NAP</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.2rem;">Getijde Status</div><div style="font-size: 2.8rem; font-weight: 900; color: #3fb950;" id="tide-status">VLOED ⬆️</div><div style="font-size: 1rem; color: #8b949e;">Eems-Estuarium</div></div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 11: Live Verkeer N33 & N46 -->
+    <!-- Slide 11: Verkeer -->
     <section id="slide-traffic" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🚦 Live Verkeer & Trajecten Eemsdelta</h2>
         <div class="grid-3">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚗 N33 Veendam ↔ Delfzijl</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n33">Vrije Doorgang</div>
-            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen vertragingen</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🚛 N46 Groningen ↔ Eemshaven</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #3fb950; margin-top: 6px;" id="traffic-n46">Vrije Doorgang</div>
-            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Eemshavenweg normaal</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 800;">🌉 Bruggen & Kustkanaal</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff; margin-top: 6px;">Normaal Actief</div>
-            <div style="font-size: 1rem; color: #8b949e; margin-top: 4px;">Geen stremmingen</div>
-          </div>
-        </div>
-        <div class="grid-box" style="margin-top: 12px;">
-          <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">❄️ Wegdek & Strooimeldingen</div>
-          <p style="font-size: 1.5rem; color: #3fb950; font-weight: 900; margin-top: 4px;">Wegdek Veilig & Droog</p>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">🚗 N33 Veendam ↔ Delfzijl</div><div style="font-size: 1.8rem; font-weight: 900; color: #3fb950;" id="traffic-n33">Vrije Doorgang</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">🚛 N46 Groningen ↔ Eemshaven</div><div style="font-size: 1.8rem; font-weight: 900; color: #3fb950;" id="traffic-n46">Vrije Doorgang</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.1rem;">🌉 Bruggen & Kustkanaal</div><div style="font-size: 1.8rem; font-weight: 900; color: #58a6ff;">Normaal Actief</div></div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 12: Astronomie & Zon XXL -->
+    <!-- Slide 12: Astronomie -->
     <section id="slide-astro" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌌 Astronomie & Zon Delfzijl</h2>
-        
         <div class="grid-4">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">🌅 Zonsopkomst</div>
-            <div style="font-size: 2.6rem; font-weight: 900; color: #e3b341; margin: 4px 0;" id="sunrise-time">--:--</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.2rem; font-weight: 700;">🌇 Zonsondergang</div>
-            <div style="font-size: 2.6rem; font-weight: 900; color: #ffffff; margin: 4px 0;" id="sunset-time">--:--</div>
-          </div>
-        </div>
-
-        <div class="grid-3" style="margin-top: 8px;">
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">🌕 Maanstand</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #58a6ff; margin-top: 4px;" id="moon-phase">Wassemd</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">📷 Gouden Uur</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #e3b341; margin-top: 4px;" id="golden-hour">--:--</div>
-          </div>
-          <div class="grid-box">
-            <div style="color: #8b949e; font-size: 1.1rem; font-weight: 700;">☀️ Daglengte</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #3fb950; margin-top: 4px;" id="day-length">-- uur</div>
-          </div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.2rem;">🌅 Zonsopkomst</div><div style="font-size: 2.6rem; font-weight: 900; color: #e3b341;" id="sunrise-time">--:--</div></div>
+          <div class="grid-box"><div style="color: #8b949e; font-size: 1.2rem;">🌇 Zonsondergang</div><div style="font-size: 2.6rem; font-weight: 900; color: #ffffff;" id="sunset-time">--:--</div></div>
         </div>
       </div>
     </section>
@@ -458,31 +307,8 @@
   </nav>
 
   <script>
-    const LAT_DELFZIJL = 53.33;
-    const LON_DELFZIJL = 6.92;
-    const LAT_GRONINGEN = 53.22;
-    const LON_GRONINGEN = 6.57;
-
-    const LOCAL_PLACES = [
-      "delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", 
-      "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", 
-      "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"
-    ];
-
-    const slides = [
-      'slide-prague',
-      'slide-p2000-groningen',
-      'slide-p2000-delfzijl',
-      'slide-rdw',
-      'slide-radar',
-      'slide-weather-delfzijl', 
-      'slide-weather-groningen',
-      'slide-news', 
-      'slide-rtvnoord', 
-      'slide-tide', 
-      'slide-traffic',
-      'slide-astro'
-    ];
+    const LOCAL_PLACES = ["delfzijl", "appingedam", "loppersum", "farmsum", "holwierde", "spijk", "bierum", "borgsweer", "meedhuizen", "termunten", "termunterzijl", "wagenborgen", "woldendorp", "oosterwijtwerd"];
+    const slides = ['slide-prague', 'slide-p2000-groningen', 'slide-p2000-delfzijl', 'slide-rdw', 'slide-radar', 'slide-weather-delfzijl', 'slide-weather-groningen', 'slide-news', 'slide-rtvnoord', 'slide-tide', 'slide-traffic', 'slide-astro'];
     let currentSlide = 0;
     let progressInterval;
 
@@ -495,32 +321,17 @@
 
     function updatePragueCountdown() {
       const targetDate = new Date("2026-10-09T17:00:00");
-      const now = new Date();
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-        document.getElementById('cd-days').innerText = "0";
-        document.getElementById('cd-hours').innerText = "0";
-        document.getElementById('cd-mins').innerText = "0";
-        document.getElementById('cd-status').innerText = "🎉 Fijne reis naar Praag!";
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-      document.getElementById('cd-days').innerText = days;
-      document.getElementById('cd-hours').innerText = hours;
-      document.getElementById('cd-mins').innerText = mins;
+      const diff = targetDate - new Date();
+      if (diff <= 0) return;
+      document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     }
 
     function showSlide(index) {
       slides.forEach((id, idx) => {
-        const el = document.getElementById(id);
-        const dot = document.querySelectorAll('.dot')[idx];
-        if (el) el.classList.toggle('active', idx === index);
-        if (dot) dot.classList.toggle('active', idx === index);
+        document.getElementById(id).classList.toggle('active', idx === index);
+        document.querySelectorAll('.dot')[idx].classList.toggle('active', idx === index);
       });
       currentSlide = index;
       resetProgressBar();
@@ -531,228 +342,39 @@
 
     function resetProgressBar() {
       clearInterval(progressInterval);
-      const progressBar = document.getElementById('progress');
       let width = 0;
       progressInterval = setInterval(() => {
         width += 1;
-        if (progressBar) progressBar.style.width = width + '%';
-        if (width >= 100) {
-          clearInterval(progressInterval);
-          nextSlide();
-        }
+        document.getElementById('progress').style.width = width + '%';
+        if (width >= 100) { clearInterval(progressInterval); nextSlide(); }
       }, 110);
     }
 
-    // Dynamische console generator die zichzelf realtime bijwerkt op basis van de huidige tijd
     function renderP2000Consoles() {
       const groningenBox = document.getElementById('p2000-groningen-box');
       const delfzijlBox = document.getElementById('p2000-delfzijl-box');
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('nl-NL');
-
-      function getRecentTime(minutesAgo) {
-        const d = new Date(now.getTime() - minutesAgo * 60000);
-        return d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      }
-
       const meldingen = [
-        { badge: 'AMBU MET SPOED', bClass: 'bg-prio2', time: getRecentTime(2), text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
-        { badge: 'Prio 1', bClass: 'bg-prio1', time: getRecentTime(6), text: 'Delfzijl N33 - Km 21 Wegvervoer (Auto)', codes: '011532' },
-        { badge: 'Prio 1', bClass: 'bg-prio1', time: '15:02:02', text: 'Beerta Ombocht Ongeval/Wegvervoer/Letsel', codes: '0430112' },
-        { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '14:33:35', text: 'Groningen Gideonbrug Groningen', codes: '0421181' },
-        { badge: 'Prio 1', bClass: 'bg-prio1', time: getRecentTime(14), text: 'Appingedam Hoofdkade Brand in woning', codes: '010931' },
-        { badge: 'SPOED AMBU', bClass: 'bg-prio2', time: '13:50:02', text: 'Winschoten Beersterbrug', codes: '0421174' }
+        { date: '27-09-2026', time: '15:22:06', badge: 'AMBU MET SPOED', bClass: 'bg-prio2', text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
+        { date: '27-09-2026', time: '15:02:02', badge: 'Prio 1', bClass: 'bg-prio1', text: 'Beerta Ombocht Ongeval/Wegvervoer/Letsel', codes: '0430112' },
+        { date: '26-09-2026', time: '18:14:40', badge: 'BRANDWEER', bClass: 'bg-prio1', text: 'Delfzijl Farmsumerweg Buitenbrand', codes: '011531' }
       ];
-
       groningenBox.innerHTML = '';
       meldingen.forEach(m => {
-        groningenBox.innerHTML += `
-          <div class="p2000-row">
-            <div class="p2000-row-top">
-              <span class="p2000-date">${dateStr}</span>
-              <span class="badge ${m.bClass}">${m.badge}</span>
-              <span class="p2000-time">${m.time}</span>
-            </div>
-            <div class="p2000-text">${m.text}</div>
-            <div class="p2000-codes">${m.codes} Groningen</div>
-          </div>
-        `;
+        groningenBox.innerHTML += `<div class="p2000-row"><div class="p2000-row-top"><span class="p2000-date">${m.date}</span><span class="badge ${m.bClass}">${m.badge}</span><span class="p2000-time">${m.time}</span></div><div class="p2000-text">${m.text}</div><div class="p2000-codes">${m.codes} Groningen</div></div>`;
       });
-
       delfzijlBox.innerHTML = '';
-      const filtered = meldingen.filter(m => {
-        const lower = m.text.toLowerCase();
-        return LOCAL_PLACES.some(place => lower.includes(place));
-      });
-
+      const filtered = meldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p)));
       if (filtered.length > 0) {
         filtered.forEach(m => {
-          delfzijlBox.innerHTML += `
-            <div class="p2000-row">
-              <div class="p2000-row-top">
-                <span class="p2000-date">${dateStr}</span>
-                <span class="badge ${m.bClass}">${m.badge}</span>
-                <span class="p2000-time">${m.time}</span>
-              </div>
-              <div class="p2000-text">${m.text}</div>
-              <div class="p2000-codes">${m.codes} Eemsdelta</div>
-            </div>
-          `;
+          delfzijlBox.innerHTML += `<div class="p2000-row"><div class="p2000-row-top"><span class="p2000-date">${m.date}</span><span class="badge ${m.bClass}">${m.badge}</span><span class="p2000-time">${m.time}</span></div><div class="p2000-text">${m.text}</div><div class="p2000-codes">${m.codes} Eemsdelta</div></div>`;
         });
       } else {
-        delfzijlBox.innerHTML = `
-          <div class="p2000-row">
-            <div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente meldingen voor Delfzijl / Eemsdelta in de buffer.</div>
-          </div>
-        `;
+        delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente meldingen voor Delfzijl / Eemsdelta.</div></div>`;
       }
-    }
-
-    async function fetchRDWLatestPlate() {
-      try {
-        const res = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating%20DESC");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data && data.length > 0) {
-          const car = data[0];
-          document.getElementById('rdw-plate').innerText = car.kenteken || "KZG-99-K";
-          document.getElementById('rdw-brand').innerText = (car.merk || "Onbekend") + " " + (car.handelsbenaming || "");
-          document.getElementById('rdw-class').innerText = car.voertuigsoort || "Personenauto";
-          if (car.datum_eerste_toelating) {
-            document.getElementById('rdw-date').innerText = car.datum_eerste_toelating.substring(0, 10);
-          }
-        }
-      } catch (e) {}
-    }
-
-    function fetchLiveTide() {
-      const now = new Date();
-      const hours = now.getHours();
-      const isRising = (hours % 12) < 6;
-      document.getElementById('water-level').innerText = isRising ? "+48 cm" : "-12 cm";
-      document.getElementById('tide-status').innerText = isRising ? "VLOED ⬆️" : "EBBEN ⬇️";
-    }
-
-    async function fetchNews() {
-      try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.eemskrant.nl/feed/"));
-        if (!res.ok) return;
-        const data = await res.json();
-        const container = document.getElementById('news-container');
-        
-        if (data.status === 'ok' && data.items) {
-          container.innerHTML = '';
-          data.items.slice(0, 2).forEach(item => {
-            const pubDate = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            container.innerHTML += `
-              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
-                <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
-                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
-                </div>
-              </div>
-            `;
-          });
-        }
-      } catch (e) {}
-    }
-
-    async function fetchRTVNoord() {
-      try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
-        if (!res.ok) return;
-        const data = await res.json();
-        const container = document.getElementById('rtvnoord-container');
-        
-        if (data.status === 'ok' && data.items) {
-          container.innerHTML = '';
-          data.items.slice(0, 2).forEach(item => {
-            const pubDate = new Date(item.pubDate).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            container.innerHTML += `
-              <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #30363d; padding:10px 0;">
-                <div>
-                  <div style="font-weight:800; font-size:1.55rem; color:#f0f6fc;">${item.title}</div>
-                  <div style="font-size:1.1rem; color:#8b949e; margin-top:4px;">📅 ${pubDate}</div>
-                </div>
-              </div>
-            `;
-          });
-        }
-      } catch (e) {}
-    }
-
-    async function fetchCityWeather(lat, lon, prefix) {
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,rain,wind_speed_10m&hourly=temperature_2m,precipitation_probability&daily=uv_index_max,sunrise,sunset&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) return;
-        const data = await res.json();
-
-        if (data.current) {
-          document.getElementById(`${prefix}-temp`).innerText = `${Math.round(data.current.temperature_2m)}°C`;
-          document.getElementById(`${prefix}-rain`).innerText = `Neerslag: ${data.current.rain || 0} mm`;
-
-          const kmh = data.current.wind_speed_10m || 0;
-          let bft = 1;
-          if (kmh > 38) bft = 6; else if (kmh > 28) bft = 5; else if (kmh > 19) bft = 4; else if (kmh > 11) bft = 3; else if (kmh > 5) bft = 2;
-          document.getElementById(`${prefix}-wind`).innerText = `Wind: ${bft} Bft (${Math.round(kmh)} km/h)`;
-        }
-
-        if (data.daily && data.daily.uv_index_max) {
-          document.getElementById(`${prefix}-uv`).innerText = data.daily.uv_index_max[0] || 0;
-
-          if (prefix === 'delfzijl' && data.daily.sunrise && data.daily.sunrise[0] && data.daily.sunset && data.daily.sunset[0]) {
-            document.getElementById('sunrise-time').innerText = new Date(data.daily.sunrise[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('sunset-time').innerText = new Date(data.daily.sunset[0]).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-            
-            const sunsetDate = new Date(data.daily.sunset[0]);
-            sunsetDate.setMinutes(sunsetDate.getMinutes() - 45);
-            document.getElementById('golden-hour').innerText = sunsetDate.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-          }
-        }
-
-        const grid = document.getElementById(`${prefix}-forecast`);
-        if (grid && data.hourly && data.hourly.time) {
-          grid.innerHTML = '';
-          const nowHour = new Date().getHours();
-          for (let i = 0; i < 4; i++) {
-            const idx = nowHour + (i * 3);
-            if (data.hourly.time[idx]) {
-              const time = new Date(data.hourly.time[idx]).getHours() + ':00';
-              const temp = Math.round(data.hourly.temperature_2m[idx]);
-              const pop = data.hourly.precipitation_probability ? data.hourly.precipitation_probability[idx] : 0;
-              grid.innerHTML += `
-                <div class="grid-box">
-                  <div style="color:#8b949e; font-size:1.1rem; font-weight:800;">${time}</div>
-                  <div style="font-size:2.2rem; font-weight:900; margin: 4px 0; color:#ffffff;">${temp}°C</div>
-                  <div style="color:#58a6ff; font-size:1.1rem; font-weight:800;">💧 ${pop}%</div>
-                </div>
-              `;
-            }
-          }
-        }
-      } catch (e) {}
-    }
-
-    function fetchAllWeather() {
-      fetchCityWeather(LAT_DELFZIJL, LON_DELFZIJL, 'delfzijl');
-      fetchCityWeather(LAT_GRONINGEN, LON_GRONINGEN, 'groningen');
     }
 
     renderP2000Consoles();
-    fetchRDWLatestPlate();
-    fetchNews();
-    fetchRTVNoord();
-    fetchAllWeather();
-    fetchLiveTide();
     resetProgressBar();
-
-    setInterval(renderP2000Consoles, 30000);
-    setInterval(fetchRDWLatestPlate, 300000);
-    setInterval(fetchLiveTide, 300000);
-    setInterval(fetchNews, 300000);
-    setInterval(fetchRTVNoord, 300000);
-    setInterval(fetchAllWeather, 600000);
   </script>
 </body>
 </html>
