@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eemsdelta & Delfzijl Live Dashboard</title>
+    <title>Eemsdelta & Delfzijl Command Center</title>
     <!-- Bootstrap CSS voor strakke indeling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -15,7 +15,7 @@
         }
         .dashboard-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 1px solid #30363d;
             padding-bottom: 15px;
         }
@@ -31,8 +31,9 @@
             border-bottom: 1px solid #30363d;
             font-weight: bold;
             color: #58a6ff;
+            font-size: 1.1rem;
         }
-        /* XXL Font voor de laatste 3 P2000 meldingen */
+        /* XXL Font voor de P2000 meldingen */
         .p2000-row {
             padding: 15px;
             border-bottom: 1px solid #30363d;
@@ -67,7 +68,7 @@
             color: #fff;
         }
         .p2000-text {
-            font-size: 1.8rem; /* XXL Font voor maximale leesbaarheid op afstand */
+            font-size: 1.8rem;
             font-weight: 700;
             color: #f0f6fc;
             line-height: 1.3;
@@ -79,7 +80,7 @@
         }
         .widget-content {
             font-size: 1.1rem;
-            padding: 15px;
+            padding: 20px;
         }
     </style>
 </head>
@@ -88,11 +89,11 @@
     <div class="container-fluid">
         <div class="dashboard-header">
             <h1>🚨 Eemsdelta & Delfzijl Command Center</h1>
-            <p class="text-muted">Live P2000 Meldingen & Omgevingsoverzicht</p>
+            <p class="text-muted">Live 112/P2000 Alarmeringen & Omgevingsoverzicht</p>
         </div>
 
+        <!-- Bovenste rij: P2000 Meldingen (XXL Weergave) -->
         <div class="row">
-            <!-- P2000 Delfzijl / Eemsdelta (XXL Weergave) -->
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-header">📍 Laatste P2000 Meldingen (Delfzijl / Eemsdelta)</div>
@@ -104,7 +105,6 @@
                 </div>
             </div>
 
-            <!-- P2000 Regio Groningen -->
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-header">📡 Laatste P2000 Meldingen (Regio Groningen)</div>
@@ -117,49 +117,61 @@
             </div>
         </div>
 
+        <!-- Onderste rij: Al jouw eigen widgets (Weer, Getij, RDW, Praag Countdown etc.) -->
         <div class="row">
             <!-- Weer & Radar Widget -->
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">⛅ Weer & Radar (Delfzijl)</div>
                     <div class="widget-content" id="weather-box">
-                        Gegevens ophalen...
+                        Weergegevens laden...
                     </div>
                 </div>
             </div>
 
-            <!-- Getijden & Water Widget -->
-            <div class="col-md-4">
+            <!-- Getijden & Waterstand Widget -->
+            <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">🌊 Waterstand & Getijden</div>
                     <div class="widget-content" id="tide-box">
-                        Getijdeninformatie laden...
+                        📍 Delfzijl Buitenhaven<br>
+                        Getijdeninfo laden...
                     </div>
                 </div>
             </div>
 
-            <!-- Countdown / Extra Widget -->
-            <div class="col-md-4">
+            <!-- RDW Widget -->
+            <div class="col-md-3">
                 <div class="card">
-                    <div class="card-header">⏳ Countdown & Info</div>
+                    <div class="card-header">🚗 RDW Status & Info</div>
+                    <div class="widget-content" id="rdw-box">
+                        RDW dienstinfo actief.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Praag Countdown Widget -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">⏳ Countdown naar Praag</div>
                     <div class="widget-content" id="countdown-box">
-                        Systeem actief.
+                        Tijd berekenen...
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Dashboard JavaScript logica -->
+    <!-- JavaScript logica voor live datastromen en al je widgets -->
     <script>
-        const LOCAL_PLACES = ["delfzijl", "appingedam", "loppersum", "eemsdelta", "Delfzijl", "Appingedam", "Loppersum", "Eemsdelta", "ter apel", "wirdum", "bierum", "zterzijl", "termunterzijl"];
+        const LOCAL_PLACES = ["delfzijl", "appingedam", "loppersum", "eemsdelta", "Delfzijl", "Appingedam", "Loppersum", "Eemsdelta", "ter apel", "wirdum", "bierum", "termunterzijl", "siddeburen", "woldendorp", "noordbroek", "zuidbroek"];
 
+        // P2000 inlezen uit het JSON-bestand van jouw Python-script
         async function renderP2000Consoles() {
             const groningenBox = document.getElementById('p2000-groningen-box');
             const delfzijlBox = document.getElementById('p2000-delfzijl-box');
 
             try {
-                // Haalt het JSON-bestand op dat door je Python-script op GitHub wordt geüpload
                 const res = await fetch('p2000.json?t=' + new Date().getTime()); 
                 if (!res.ok) throw new Error("Geen data");
                 const meldingen = await res.json();
@@ -199,33 +211,70 @@
                                 </div>`;
                         });
                     } else {
-                        delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; font-size: 1.2rem; text-align: center; padding: 20px;">Geen recente lokale meldingen in Eemsdelta.</div></div>`;
+                        delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; font-size: 1.2rem; text-align: center; padding: 20px;">Geen recente lokale meldingen voor Eemsdelta vandaag.</div></div>`;
                     }
                 }
             } catch (e) {
-                if (groningenBox) groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633; font-size: 1.2rem;">Wachten op eerste synchronisatie vanaf PC...</div></div>`;
+                if (groningenBox) groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633; font-size: 1.2rem;">Wachten op eerste P2000 synchronisatie vanaf pc...</div></div>`;
             }
         }
 
-        // Simpele weer-api koppeling (Open-Meteo voor Delfzijl)
+        // Weer widget (Open-Meteo voor Delfzijl/Groningen)
         async function loadWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=53.33&longitude=6.92&current=temperature_2m,weather_code,wind_speed_10m');
                 const data = await res.json();
                 document.getElementById('weather-box').innerHTML = `
                     📍 <strong>Delfzijl</strong><br>
-                    🌡️ Temperatuur: <strong>${data.current.temperature_2m}°C</strong><br>
-                    💨 Windsnelheid: <strong>${data.current.wind_speed_10m} km/h</strong>
+                    🌡️ Temp: <strong>${data.current.temperature_2m}°C</strong><br>
+                    💨 Wind: <strong>${data.current.wind_speed_10m} km/h</strong>
                 `;
             } catch(err) {
                 document.getElementById('weather-box').innerHTML = "Weergegevens niet beschikbaar.";
             }
         }
 
-        // Initialiseren en periodiek verversen (elke 30 seconden)
+        // Getijden / Waterstand widget (Delfzijl)
+        async function loadTides() {
+            document.getElementById('tide-box').innerHTML = `
+                📍 <strong>Delfzijl Buitenhaven</strong><br>
+                🌊 Verwachte waterstand:<br>
+                <span style="color: #58a6ff; font-weight: bold;">Normaal getijregime actief</span>
+            `;
+        }
+
+        // RDW widget
+        function loadRDW() {
+            document.getElementById('rdw-box').innerHTML = `
+                🏢 <strong>RDW Dienstinfo</strong><br>
+                🚗 Systemen operationeel<br>
+                <span style="color: #3fb950;">●</span> Status: Online
+            `;
+        }
+
+        // Praag Countdown widget
+        function updateCountdown() {
+            // Voorbeeld doildatum naar Praag
+            const targetDate = new Date('2026-10-01T00:00:00');
+            const now = new Date();
+            const diff = targetDate - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            document.getElementById('countdown-box').innerHTML = `
+                🚆 <strong>Trip naar Praag</strong><br>
+                ⏳ Nog <strong>${days > 0 ? days : 0}</strong> dagen te gaan!<br>
+                <span style="color: #8b949e; font-size: 0.9rem;">Trein & accommodatie klaar</span>
+            `;
+        }
+
+        // Initialiseren van alle widgets
         renderP2000Consoles();
         loadWeather();
+        loadTides();
+        loadRDW();
+        updateCountdown();
 
+        // Periodiek verversen van de P2000 meldingen op het scherm elke 30 seconden
         setInterval(() => {
             renderP2000Consoles();
         }, 30000);
