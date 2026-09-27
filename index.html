@@ -352,41 +352,54 @@
       }, 110);
     }
 
-    function renderP2000Consoles() {
+    async function renderP2000Consoles() {
       const groningenBox = document.getElementById('p2000-groningen-box');
       const delfzijlBox = document.getElementById('p2000-delfzijl-box');
-      
-      // Bron met alle recente meldingen
-      const alleMeldingen = [
-        { date: '27-09-2026', time: '15:22:06', badge: 'AMBU MET SPOED', bClass: 'bg-prio2', text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
-        { date: '27-09-2026', time: '15:02:02', badge: 'Prio 1', bClass: 'bg-prio1', text: 'Beerta Ombocht Ongeval/Wegvervoer/Letsel', codes: '0430112' },
-        { date: '26-09-2026', time: '18:14:40', badge: 'BRANDWEER', bClass: 'bg-prio1', text: 'Delfzijl Farmsumerweg Buitenbrand', codes: '011531' },
-        { date: '26-09-2026', time: '14:33:35', badge: 'SPOED AMBU', bClass: 'bg-prio2', text: 'Groningen Gideonbrug Groningen', codes: '0421181' }
-      ];
 
-      // Selecteer alleen de LAATSTE DRIE meldingen voor Groningen
-      const laatsteDrieGroningen = alleMeldingen.slice(0, 3);
-      groningenBox.innerHTML = '';
-      laatsteDrieGroningen.forEach(m => {
-        groningenBox.innerHTML += `
-          <div class="p2000-row">
-            <div class="p2000-row-top">
-              <span class="p2000-date">${m.date}</span>
-              <span class="badge ${m.bClass}">${m.badge}</span>
-              <span class="p2000-time">${m.time}</span>
-            </div>
-            <div class="p2000-text">${m.text}</div>
-            <div class="p2000-codes">${m.codes} Groningen</div>
-          </div>`;
-      });
+      try {
+        // Ophalen van echte live RTV Noord / regionale RSS als stabiele live bron
+        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
+        const data = await res.json();
 
-      // Filter voor Delfzijl en selecteer ook de laatste drie
-      delfzijlBox.innerHTML = '';
-      const gefilterdDelfzijl = alleMeldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p))).slice(0, 3);
-      
-      if (gefilterdDelfzijl.length > 0) {
-        gefilterdDelfzijl.forEach(m => {
-          delfzijlBox.innerHTML += `
+        let alleMeldingen = [];
+        if (data.status === 'ok' && data.items) {
+          alleMeldingen = data.items.map(item => {
+            const pub = new Date(item.pubDate);
+            const dateStr = pub.toLocaleDateString('nl-NL');
+            const timeStr = pub.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const lowerTitle = item.title.toLowerCase();
+            let badge = 'MELDING';
+            let bClass = 'bg-info';
+            if (lowerTitle.includes('prio 1') || lowerTitle.includes('brand') || lowerTitle.includes('ongeval') || lowerTitle.includes('spoed')) {
+              badge = 'PRIO 1 / SPOED';
+              bClass = 'bg-prio1';
+            } else if (lowerTitle.includes('prio 2') || lowerTitle.includes('ambu')) {
+              badge = 'PRIO 2';
+              bClass = 'bg-prio2';
+            }
+
+            return {
+              date: dateStr,
+              time: timeStr,
+              badge: badge,
+              bClass: bClass,
+              text: item.title,
+              codes: 'Regio Groningen'
+            };
+          });
+        }
+
+        // Als er om wat voor reden geen items zijn, tonen we een nette melding
+        if (alleMeldingen.length === 0) {
+          alleMeldingen = [{ date: 'Vandaag', time: 'Net binnen', badge: 'STATUS', bClass: 'bg-info', text: 'Geen nieuwe live meldingen op dit moment.', codes: 'Systeem' }];
+        }
+
+        // Laatste 3 voor Groningen
+        const laatsteGroningen = alleMeldingen.slice(0, 3);
+        groningenBox.innerHTML = '';
+        laatsteGroningen.forEach(m => {
+          groningenBox.innerHTML += `
             <div class="p2000-row">
               <div class="p2000-row-top">
                 <span class="p2000-date">${m.date}</span>
@@ -394,16 +407,34 @@
                 <span class="p2000-time">${m.time}</span>
               </div>
               <div class="p2000-text">${m.text}</div>
-              <div class="p2000-codes">${m.codes} Eemsdelta</div>
+              <div class="p2000-codes">${m.codes}</div>
             </div>`;
         });
-      } else {
-        delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente meldingen voor Delfzijl / Eemsdelta.</div></div>`;
+
+        // Laatste 3 voor Delfzijl / Eemsdelta gefilterd
+        const gefilterdDelfzijl = alleMeldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p))).slice(0, 3);
+        delfzijlBox.innerHTML = '';
+        if (gefilterdDelfzijl.length > 0) {
+          gefilterdDelfzijl.forEach(m => {
+            delfzijlBox.innerHTML += `
+              <div class="p2000-row">
+                <div class="p2000-row-top">
+                  <span class="p2000-date">${m.date}</span>
+                  <span class="badge ${m.bClass}">${m.badge}</span>
+                  <span class="p2000-time">${m.time}</span>
+                </div>
+                <div class="p2000-text">${m.text}</div>
+                <div class="p2000-codes">${m.codes} Eemsdelta</div>
+              </div>`;
+          });
+        } else {
+          delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente live meldingen voor Delfzijl / Eemsdelta.</div></div>`;
+        }
+
+      } catch (e) {
+        groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633;">Kan live meldingen niet ophalen. Controleer netwerk.</div></div>`;
       }
     }
 
     renderP2000Consoles();
-    resetProgressBar();
-  </script>
-</body>
-</html>
+    setInterval(renderP2000Consoles, 30000); // Ververst elke 30 seconden automatisch live!
