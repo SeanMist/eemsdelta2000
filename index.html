@@ -93,7 +93,6 @@
     .p2000-row-top { display: flex; align-items: center; gap: 20px; }
     .p2000-date { color: #3fb950; font-size: 1.3rem; font-weight: 900; }
     .p2000-time { color: #e3b341; font-size: 1.3rem; font-weight: 900; }
-    /* Extra groot lettertype zodat het vanaf de bank leesbaar is */
     .p2000-text { color: #f0f6fc; font-size: 1.7rem; font-weight: 800; line-height: 1.2; }
     .p2000-codes { color: #58a6ff; font-size: 1.2rem; font-weight: 700; }
 
@@ -315,7 +314,9 @@
     let progressInterval;
 
     function updateClock() {
-      document.getElementById('clock').innerText = new Date().toLocaleTimeString('nl-NL');
+      const now = new Date();
+      const clockEl = document.getElementById('clock');
+      if (clockEl) clockEl.innerText = now.toLocaleTimeString('nl-NL');
       updatePragueCountdown();
     }
     setInterval(updateClock, 1000);
@@ -325,15 +326,22 @@
       const targetDate = new Date("2026-10-09T17:00:00");
       const diff = targetDate - new Date();
       if (diff <= 0) return;
-      document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-      document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      const daysEl = document.getElementById('cd-days');
+      const hoursEl = document.getElementById('cd-hours');
+      const minsEl = document.getElementById('cd-mins');
+
+      if (daysEl) daysEl.innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+      if (hoursEl) hoursEl.innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      if (minsEl) minsEl.innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     }
 
     function showSlide(index) {
       slides.forEach((id, idx) => {
-        document.getElementById(id).classList.toggle('active', idx === index);
-        document.querySelectorAll('.dot')[idx].classList.toggle('active', idx === index);
+        const slideEl = document.getElementById(id);
+        const dotEl = document.querySelectorAll('.dot')[idx];
+        if (slideEl) slideEl.classList.toggle('active', idx === index);
+        if (dotEl) dotEl.classList.toggle('active', idx === index);
       });
       currentSlide = index;
       resetProgressBar();
@@ -345,9 +353,10 @@
     function resetProgressBar() {
       clearInterval(progressInterval);
       let width = 0;
+      const progressBar = document.getElementById('progress');
       progressInterval = setInterval(() => {
         width += 1;
-        document.getElementById('progress').style.width = width + '%';
+        if (progressBar) progressBar.style.width = width + '%';
         if (width >= 100) { clearInterval(progressInterval); nextSlide(); }
       }, 110);
     }
@@ -357,7 +366,6 @@
       const delfzijlBox = document.getElementById('p2000-delfzijl-box');
 
       try {
-        // Ophalen van echte live RTV Noord / regionale RSS als stabiele live bron
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.rtvnoord.nl/rss"));
         const data = await res.json();
 
@@ -390,33 +398,14 @@
           });
         }
 
-        // Als er om wat voor reden geen items zijn, tonen we een nette melding
         if (alleMeldingen.length === 0) {
           alleMeldingen = [{ date: 'Vandaag', time: 'Net binnen', badge: 'STATUS', bClass: 'bg-info', text: 'Geen nieuwe live meldingen op dit moment.', codes: 'Systeem' }];
         }
 
-        // Laatste 3 voor Groningen
-        const laatsteGroningen = alleMeldingen.slice(0, 3);
-        groningenBox.innerHTML = '';
-        laatsteGroningen.forEach(m => {
-          groningenBox.innerHTML += `
-            <div class="p2000-row">
-              <div class="p2000-row-top">
-                <span class="p2000-date">${m.date}</span>
-                <span class="badge ${m.bClass}">${m.badge}</span>
-                <span class="p2000-time">${m.time}</span>
-              </div>
-              <div class="p2000-text">${m.text}</div>
-              <div class="p2000-codes">${m.codes}</div>
-            </div>`;
-        });
-
-        // Laatste 3 voor Delfzijl / Eemsdelta gefilterd
-        const gefilterdDelfzijl = alleMeldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p))).slice(0, 3);
-        delfzijlBox.innerHTML = '';
-        if (gefilterdDelfzijl.length > 0) {
-          gefilterdDelfzijl.forEach(m => {
-            delfzijlBox.innerHTML += `
+        if (groningenBox) {
+          groningenBox.innerHTML = '';
+          alleMeldingen.slice(0, 3).forEach(m => {
+            groningenBox.innerHTML += `
               <div class="p2000-row">
                 <div class="p2000-row-top">
                   <span class="p2000-date">${m.date}</span>
@@ -424,17 +413,40 @@
                   <span class="p2000-time">${m.time}</span>
                 </div>
                 <div class="p2000-text">${m.text}</div>
-                <div class="p2000-codes">${m.codes} Eemsdelta</div>
+                <div class="p2000-codes">${m.codes}</div>
               </div>`;
           });
-        } else {
-          delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente live meldingen voor Delfzijl / Eemsdelta.</div></div>`;
+        }
+
+        if (delfzijlBox) {
+          const gefilterdDelfzijl = alleMeldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p))).slice(0, 3);
+          delfzijlBox.innerHTML = '';
+          if (gefilterdDelfzijl.length > 0) {
+            gefilterdDelfzijl.forEach(m => {
+              delfzijlBox.innerHTML += `
+                <div class="p2000-row">
+                  <div class="p2000-row-top">
+                    <span class="p2000-date">${m.date}</span>
+                    <span class="badge ${m.bClass}">${m.badge}</span>
+                    <span class="p2000-time">${m.time}</span>
+                  </div>
+                  <div class="p2000-text">${m.text}</div>
+                  <div class="p2000-codes">${m.codes} Eemsdelta</div>
+                </div>`;
+            });
+          } else {
+            delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente live meldingen voor Delfzijl / Eemsdelta.</div></div>`;
+          }
         }
 
       } catch (e) {
-        groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633;">Kan live meldingen niet ophalen. Controleer netwerk.</div></div>`;
+        if (groningenBox) groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633;">Kan live meldingen niet ophalen.</div></div>`;
       }
     }
 
     renderP2000Consoles();
-    setInterval(renderP2000Consoles, 30000); // Ververst elke 30 seconden automatisch live!
+    resetProgressBar();
+    setInterval(renderP2000Consoles, 30000);
+  </script>
+</body>
+</html>
