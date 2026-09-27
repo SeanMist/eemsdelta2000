@@ -56,10 +56,10 @@
 
     .badge {
       display: inline-block;
-      padding: 6px 14px;
+      padding: 8px 16px;
       font-weight: 900;
       border-radius: 8px;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       color: #fff;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -70,30 +70,32 @@
     .bg-prague { background-color: #8957e5; }
     .bg-rdw { background-color: #00529b; }
 
+    /* XXL P2000 Console voor leesbaarheid vanaf de bank */
     .p2000-console {
       background: #000000;
       border: 2px solid #30363d;
       border-radius: 12px;
-      padding: 16px;
+      padding: 20px;
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       font-family: monospace;
     }
     .p2000-row {
-      border-bottom: 1px solid #21262d;
-      padding-bottom: 10px;
+      border-bottom: 2px solid #21262d;
+      padding-bottom: 14px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 8px;
     }
-    .p2000-row-top { display: flex; align-items: center; gap: 15px; }
-    .p2000-date { color: #3fb950; font-size: 1.1rem; font-weight: 800; }
-    .p2000-time { color: #e3b341; font-size: 1.1rem; font-weight: 800; }
-    .p2000-text { color: #f0f6fc; font-size: 1.3rem; font-weight: 700; }
-    .p2000-codes { color: #58a6ff; font-size: 1rem; }
+    .p2000-row-top { display: flex; align-items: center; gap: 20px; }
+    .p2000-date { color: #3fb950; font-size: 1.3rem; font-weight: 900; }
+    .p2000-time { color: #e3b341; font-size: 1.3rem; font-weight: 900; }
+    /* Extra groot lettertype zodat het vanaf de bank leesbaar is */
+    .p2000-text { color: #f0f6fc; font-size: 1.7rem; font-weight: 800; line-height: 1.2; }
+    .p2000-codes { color: #58a6ff; font-size: 1.2rem; font-weight: 700; }
 
     .license-plate-container { display: flex; justify-content: center; align-items: center; margin: 10px 0; }
     .license-plate {
@@ -151,18 +153,18 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Groningen -->
+    <!-- Slide 2: P2000 Groningen (Laatste 3 XXL) -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
-          <h2 style="font-size: 2.2rem;">🚨 P2000 Groningen (Regiobreed)</h2>
+          <h2 style="font-size: 2.2rem;">🚨 P2000 Groningen (Laatste 3)</h2>
           <span class="badge bg-prio1">Live Monitor</span>
         </div>
         <div class="p2000-console" id="p2000-groningen-box"></div>
       </div>
     </section>
 
-    <!-- Slide 3: P2000 Delfzijl -->
+    <!-- Slide 3: P2000 Delfzijl (Laatste 3 XXL) -->
     <section id="slide-p2000-delfzijl" class="slide">
       <div class="card" style="justify-content: flex-start; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 8px; margin-bottom: 10px;">
@@ -353,20 +355,47 @@
     function renderP2000Consoles() {
       const groningenBox = document.getElementById('p2000-groningen-box');
       const delfzijlBox = document.getElementById('p2000-delfzijl-box');
-      const meldingen = [
+      
+      // Bron met alle recente meldingen
+      const alleMeldingen = [
         { date: '27-09-2026', time: '15:22:06', badge: 'AMBU MET SPOED', bClass: 'bg-prio2', text: 'Groningen Oosterhavenbrug Groningen', codes: '0421127' },
         { date: '27-09-2026', time: '15:02:02', badge: 'Prio 1', bClass: 'bg-prio1', text: 'Beerta Ombocht Ongeval/Wegvervoer/Letsel', codes: '0430112' },
-        { date: '26-09-2026', time: '18:14:40', badge: 'BRANDWEER', bClass: 'bg-prio1', text: 'Delfzijl Farmsumerweg Buitenbrand', codes: '011531' }
+        { date: '26-09-2026', time: '18:14:40', badge: 'BRANDWEER', bClass: 'bg-prio1', text: 'Delfzijl Farmsumerweg Buitenbrand', codes: '011531' },
+        { date: '26-09-2026', time: '14:33:35', badge: 'SPOED AMBU', bClass: 'bg-prio2', text: 'Groningen Gideonbrug Groningen', codes: '0421181' }
       ];
+
+      // Selecteer alleen de LAATSTE DRIE meldingen voor Groningen
+      const laatsteDrieGroningen = alleMeldingen.slice(0, 3);
       groningenBox.innerHTML = '';
-      meldingen.forEach(m => {
-        groningenBox.innerHTML += `<div class="p2000-row"><div class="p2000-row-top"><span class="p2000-date">${m.date}</span><span class="badge ${m.bClass}">${m.badge}</span><span class="p2000-time">${m.time}</span></div><div class="p2000-text">${m.text}</div><div class="p2000-codes">${m.codes} Groningen</div></div>`;
+      laatsteDrieGroningen.forEach(m => {
+        groningenBox.innerHTML += `
+          <div class="p2000-row">
+            <div class="p2000-row-top">
+              <span class="p2000-date">${m.date}</span>
+              <span class="badge ${m.bClass}">${m.badge}</span>
+              <span class="p2000-time">${m.time}</span>
+            </div>
+            <div class="p2000-text">${m.text}</div>
+            <div class="p2000-codes">${m.codes} Groningen</div>
+          </div>`;
       });
+
+      // Filter voor Delfzijl en selecteer ook de laatste drie
       delfzijlBox.innerHTML = '';
-      const filtered = meldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p)));
-      if (filtered.length > 0) {
-        filtered.forEach(m => {
-          delfzijlBox.innerHTML += `<div class="p2000-row"><div class="p2000-row-top"><span class="p2000-date">${m.date}</span><span class="badge ${m.bClass}">${m.badge}</span><span class="p2000-time">${m.time}</span></div><div class="p2000-text">${m.text}</div><div class="p2000-codes">${m.codes} Eemsdelta</div></div>`;
+      const gefilterdDelfzijl = alleMeldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p))).slice(0, 3);
+      
+      if (gefilterdDelfzijl.length > 0) {
+        gefilterdDelfzijl.forEach(m => {
+          delfzijlBox.innerHTML += `
+            <div class="p2000-row">
+              <div class="p2000-row-top">
+                <span class="p2000-date">${m.date}</span>
+                <span class="badge ${m.bClass}">${m.badge}</span>
+                <span class="p2000-time">${m.time}</span>
+              </div>
+              <div class="p2000-text">${m.text}</div>
+              <div class="p2000-codes">${m.codes} Eemsdelta</div>
+            </div>`;
         });
       } else {
         delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; text-align: center; padding: 20px;">Geen recente meldingen voor Delfzijl / Eemsdelta.</div></div>`;
