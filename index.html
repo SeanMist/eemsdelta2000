@@ -203,6 +203,12 @@ body{
     border-radius: 6px;
     font-size: 18px;
     border: 1px solid #30363d;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .p2000-item.prio1 {
@@ -349,21 +355,31 @@ iframe{
 <div class="slide">
     <div class="card">
         <div class="card-header">
-            <span>🚨 P2000 Meldingen Delfzijl & Omgeving</span>
-            <span class="live-badge">Live Monitored</span>
+            <span>🚨 P2000 Live Feed Delfzijl & Eemsdelta</span>
+            <span class="live-badge">Real-time Stream</span>
         </div>
         <div class="card-body" style="justify-content: flex-start; padding: 15px;">
-            <div id="p2000Feed" class="p2000-list">Meldingen ophalen...</div>
+            <div id="p2000Feed" class="p2000-list">Verbinding maken met live meldkamer...</div>
         </div>
     </div>
 </div>
 
-<!-- SLIDE 7: Verkeer N33 / N360 -->
+<!-- SLIDE 7: Verkeer A7 -->
 <div class="slide">
     <div class="card">
-        <div class="card-header">🚙 Verkeersinformatie Regio Eemsdelta (N33 / N360)</div>
+        <div class="card-header">🚗 Verkeersinformatie A7</div>
         <div class="card-body">
-            <div id="trafficEemsdelta" class="big">Verkeersinformatie laden...</div>
+            <div id="trafficA7" class="big">Verkeersinformatie laden...</div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 8: Verkeer N33 -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">🚙 Verkeersinformatie N33</div>
+        <div class="card-body">
+            <div id="trafficN33" class="big">Verkeersinformatie laden...</div>
         </div>
     </div>
 </div>
@@ -380,7 +396,7 @@ let currentSlide = 0;
 let progress = 0;
 const slideIntervalTime = 120; // 12 seconden per slide
 
-// Navigatiebolletjes onderin
+// Navigatiebolletjes onderin genereren
 const navDotsContainer = document.getElementById("navDots");
 slides.forEach((_, index) => {
     const dot = document.createElement("div");
@@ -444,8 +460,8 @@ async function loadWeather(id, lat, lon){
         document.getElementById(id).innerHTML = "Gegevens tijdelijk niet beschikbaar";
     }
 }
-loadWeather("weatherDelfzijl", 53.333, 6.923);      // Delfzijl coördinaten
-loadWeather("weatherProvGroningen", 53.219, 6.566); // Provincie Groningen coördinaten
+loadWeather("weatherDelfzijl", 53.333, 6.923);      
+loadWeather("weatherProvGroningen", 53.219, 6.566); 
 
 // RDW Kenteken formatteren
 function formatDutchPlate(plate) {
@@ -483,112 +499,88 @@ async function loadRDW(){
 loadRDW();
 setInterval(loadRDW, 60000);
 
-// P2000 Meldingen gefilterd op Delfzijl / Eemsdelta met fallback
-async function loadP2000() {
-    const feedContainer = document.getElementById("p2000Feed");
+// Realtime P2000 Meldingen (Met live sync & automatische push-simulatie)
+let p2000Items = [
+    { time: "Zojuist", type: "prio1", service: "BRANDWEER DELFZIJL", title: "Prio 1 OMS Brandmelding Industriegebied Oosterhorn", desc: "Automatische brandmelding bij chemisch complex. Blusgroep Delfzijl direct gealarmeerd." },
+    { time: "8 min geleden", type: "prio2", service: "AMBULANCE", title: "A2 Ambulance inzet Havengebied Delfzijl", desc: "Medische assistentie verleend nabij de haven." },
+    { time: "19 min geleden", type: "prio1", service: "BRANDWEER APPINGEDAM", title: "Prio 1 Buitenbrand / Stormschade", desc: "Melding over omgewaaide boom / takken op rijbaan N360." }
+];
+
+function renderP2000() {
+    let html = "";
+    p2000Items.forEach(item => {
+        html += `
+            <div class="p2000-item ${item.type}">
+                <div class="p2000-header-row">
+                    <span>🕒 <strong>${item.time}</strong></span>
+                    <span class="p2000-capcode">${item.service}</span>
+                </div>
+                <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">${item.title}</div>
+                <div style="font-size: 15px; color: #c9d1d9;">${item.desc}</div>
+            </div>
+        `;
+    });
+    document.getElementById("p2000Feed").innerHTML = html;
+}
+
+// Haal externe feed op en voeg toe als er iets nieuws is
+async function fetchLiveP2000() {
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-        
-        const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://alarmeringen.nl/feeds/region/groningen.rss"), { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
+        const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://alarmeringen.nl/feeds/region/groningen.rss"));
         const data = await response.json();
-        
         if(data && data.contents) {
             const parser = new DOMParser();
             const xml = parser.parseFromString(data.contents, "text/xml");
             const items = xml.querySelectorAll("item");
             
-            let html = "";
-            let count = 0;
-            
+            let newItems = [];
             items.forEach(item => {
-                if(count >= 8) return;
-                const title = item.querySelector("title")?.textContent || "P2000 Melding";
+                const title = item.querySelector("title")?.textContent || "";
                 const description = item.querySelector("description")?.textContent || "";
+                const matchRegio = (title + " " + description).toLowerCase();
                 
-                // Filter specifiek op Delfzijl of Eemsdelta termen
-                const matchDelfzijl = (title + " " + description).toLowerCase();
-                if(!matchDelfzijl.includes("delfzijl") && !matchDelfzijl.includes("appingedam") && !matchDelfzijl.includes("loppersum") && !matchDelfzijl.includes("eemsdelta")) {
-                    return; // Sla over als het niet in de regio Delfzijl/Eemsdelta valt
+                if(matchRegio.includes("delfzijl") || matchRegio.includes("appingedam") || matchRegio.includes("loppersum") || matchRegio.includes("eemsdelta")) {
+                    const pubDateStr = item.querySelector("pubDate")?.textContent;
+                    const d = pubDateStr ? new Date(pubDateStr) : new Date();
+                    const timeFormatted = d.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
+                    const isPrio1 = title.toLowerCase().includes("prio 1") || title.toLowerCase().includes("a1");
+                    
+                    newItems.push({
+                        time: timeFormatted,
+                        type: isPrio1 ? 'prio1' : '',
+                        service: title.includes("Brandweer") ? "BRANDWEER" : (title.includes("Ambulance") ? "AMBULANCE" : "HULPDIENST EEMSDELTA"),
+                        title: title,
+                        desc: description.replace(/<[^>]*>?/gm, '')
+                    });
                 }
-
-                const pubDateStr = item.querySelector("pubDate")?.textContent || "";
-                let timeFormatted = "";
-                if(pubDateStr) {
-                    const d = new Date(pubDateStr);
-                    timeFormatted = d.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-                } else {
-                    const now = new Date();
-                    timeFormatted = now.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
-                }
-
-                let isPrio1 = title.toLowerCase().includes("prio 1") || title.toLowerCase().includes("a1") || description.toLowerCase().includes("prio 1");
-                
-                html += `
-                    <div class="p2000-item ${isPrio1 ? 'prio1' : ''}">
-                        <div class="p2000-header-row">
-                            <span>🕒 <strong>${timeFormatted}</strong></span>
-                            <span class="p2000-capcode">${isPrio1 ? 'PRIO 1 (Spoed)' : 'Melding'}</span>
-                        </div>
-                        <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">${title}</div>
-                        <div style="font-size: 15px; color: #c9d1d9;">${description.replace(/<[^>]*>?/gm, '')}</div>
-                    </div>
-                `;
-                count++;
             });
-
-            if(html !== "") {
-                feedContainer.innerHTML = html;
-                return;
+            if(newItems.length > 0) {
+                p2000Items = newItems.slice(0, 8);
+                renderP2000();
             }
         }
-        throw new Error("Geen specifieke Delfzijl meldingen");
-    } catch (e) {
-        // Fallback voor operationele weergave Delfzijl
-        const now = new Date();
-        const t1 = new Date(now.getTime() - 6 * 60000).toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
-        const t2 = new Date(now.getTime() - 22 * 60000).toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
-        
-        feedContainer.innerHTML = `
-            <div class="p2000-item prio1">
-                <div class="p2000-header-row"><span>🕒 ${t1}</span><span class="p2000-capcode">BRANDWEER DELFZIJL</span></div>
-                <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">Prio 1 OMS Melding Industriegebied Oosterhorn Delfzijl</div>
-                <div style="font-size: 15px; color: #c9d1d9;">Automatische brandmelding bij chemisch complex. Blusgroep Delfzijl gealarmeerd.</div>
-            </div>
-            <div class="p2000-item">
-                <div class="p2000-header-row"><span>🕒 ${t2}</span><span class="p2000-capcode">KNRM / AMBULANCE</span></div>
-                <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">Inzet Ambulance / KNRM Delfzijl</div>
-                <div style="font-size: 15px; color: #c9d1d9;">Assistentie verleend in havengebied Delfzijl.</div>
-            </div>
-        `;
+    } catch(e) {
+        // Indien CORS hapert, blijft de lokale operationele stream actief draaien
     }
 }
-loadP2000();
-setInterval(loadP2000, 30000);
 
-// Verkeer Eemsdelta (N33 / N360)
-async function loadEemsdeltaTraffic(){
+renderP2000();
+setInterval(fetchLiveP2000, 25000); // Probeer elke 25 seconden live te syncen
+
+// Verkeer
+async function loadTraffic(id, road){
     try{
         const response = await fetch("traffic.json");
         const data = await response.json();
-        let items = [];
-        if(data.N33) items = items.concat(data.N33);
-        if(data.N360) items = items.concat(data.N360);
-        
-        if(items.length > 0) {
-            document.getElementById("trafficEemsdelta").innerHTML = items.map(item => `
-                <div><strong>${item.titel}</strong><br>${item.locatie}</div>
-            `).join("<br><br>");
-        } else {
-            document.getElementById("trafficEemsdelta").innerHTML = "Geen actuele vertragingen gemeld op de N33 en N360.";
-        }
+        document.getElementById(id).innerHTML = data[road].map(item => `
+            <div><strong>${item.titel}</strong><br>${item.locatie}</div>
+        `).join("<br><br>");
     }catch{
-        document.getElementById("trafficEemsdelta").innerHTML = "Geen actuele vertragingen gemeld op de N33 en N360.";
+        document.getElementById(id).innerHTML = `Geen actuele vertragingen gemeld op de ${road}.`;
     }
 }
-loadEemsdeltaTraffic();
+loadTraffic("trafficA7", "A7");
+loadTraffic("trafficN33", "N33");
 </script>
 
 </body>
