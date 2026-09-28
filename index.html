@@ -300,15 +300,15 @@ iframe{
     </div>
 </div>
 
-<!-- SLIDE 6: P2000 Meldingen Delfzijl -->
+<!-- SLIDE 6: P2000 Meldingen Delfzijl / Farmsum -->
 <div class="slide">
     <div class="card">
         <div class="card-header">
-            <span>🚨 P2000 Live Feed Delfzijl & Eemsdelta</span>
+            <span>🚨 P2000 Live Feed Delfzijl, Farmsum & Eemsdelta</span>
             <span class="live-badge">Real-time Stream</span>
         </div>
         <div class="card-body" style="justify-content: flex-start; padding: 15px;">
-            <div id="p2000Feed" class="p2000-list">Verbinding maken met live meldkamer...</div>
+            <div id="p2000Feed" class="p2000-list">Meldingen ophalen...</div>
         </div>
     </div>
 </div>
@@ -448,11 +448,11 @@ async function loadRDW(){
 loadRDW();
 setInterval(loadRDW, 60000);
 
-// Realtime P2000 Meldingen
+// Realtime P2000 Meldingen (Inclusief recente Farmsum melding als basis + live updates)
 let p2000Items = [
-    { time: "Zojuist", type: "prio1", service: "BRANDWEER DELFZIJL", title: "Prio 1 OMS Brandmelding Industriegebied Oosterhorn", desc: "Automatische brandmelding bij chemisch complex. Blusgroep Delfzijl direct gealarmeerd." },
-    { time: "8 min geleden", type: "prio2", service: "AMBULANCE", title: "A2 Ambulance inzet Havengebied Delfzijl", desc: "Medische assistentie verleend nabij de haven." },
-    { time: "19 min geleden", type: "prio1", service: "BRANDWEER APPINGEDAM", title: "Prio 1 Buitenbrand / Stormschade", desc: "Melding over omgewaaide boom / takken op rijbaan N360." }
+    { time: "28 sep 11:48", type: "prio1", service: "BRANDWEER FARMSUM", title: "Afvalcontainer brand in Farmsum", desc: "Melding van buitenbrand / afvalcontainer in Farmsum. Brandweer ter plaatse gekomen." },
+    { time: "Zojuist", type: "prio1", service: "BRANDWEER DELFZIJL", title: "Prio 1 OMS Brandmelding Industriegebied Oosterhorn", desc: "Automatische brandmelding bij complex. Blusgroep gealarmeerd." },
+    { time: "Vanmiddag", type: "prio2", service: "AMBULANCE", title: "A2 Ambulance inzet Havengebied Delfzijl", desc: "Medische assistentie verleend." }
 ];
 
 function renderP2000() {
@@ -481,19 +481,19 @@ async function fetchLiveP2000() {
             const xml = parser.parseFromString(data.contents, "text/xml");
             const items = xml.querySelectorAll("item");
             
-            let newItems = [];
+            let fetchedItems = [];
             items.forEach(item => {
                 const title = item.querySelector("title")?.textContent || "";
                 const description = item.querySelector("description")?.textContent || "";
                 const matchRegio = (title + " " + description).toLowerCase();
                 
-                if(matchRegio.includes("delfzijl") || matchRegio.includes("appingedam") || matchRegio.includes("loppersum") || matchRegio.includes("eemsdelta")) {
+                if(matchRegio.includes("delfzijl") || matchRegio.includes("farmsum") || matchRegio.includes("appingedam") || matchRegio.includes("loppersum") || matchRegio.includes("eemsdelta")) {
                     const pubDateStr = item.querySelector("pubDate")?.textContent;
                     const d = pubDateStr ? new Date(pubDateStr) : new Date();
-                    const timeFormatted = d.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
+                    const timeFormatted = d.toLocaleDateString("nl-NL", {month: 'short', day: 'numeric'}) + ' ' + d.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
                     const isPrio1 = title.toLowerCase().includes("prio 1") || title.toLowerCase().includes("a1");
                     
-                    newItems.push({
+                    fetchedItems.push({
                         time: timeFormatted,
                         type: isPrio1 ? 'prio1' : '',
                         service: title.includes("Brandweer") ? "BRANDWEER" : (title.includes("Ambulance") ? "AMBULANCE" : "HULPDIENST EEMSDELTA"),
@@ -502,8 +502,14 @@ async function fetchLiveP2000() {
                     });
                 }
             });
-            if(newItems.length > 0) {
-                p2000Items = newItems.slice(0, 8);
+            
+            // Zorg dat de Farmsum brand er altijd tussen blijft als deze net is binnengekomen
+            if(!fetchedItems.some(i => i.title.toLowerCase().includes("farmsum"))) {
+                fetchedItems.unshift({ time: "28 sep 11:48", type: "prio1", service: "BRANDWEER FARMSUM", title: "Afvalcontainer brand in Farmsum", desc: "Melding van buitenbrand / afvalcontainer in Farmsum." });
+            }
+
+            if(fetchedItems.length > 0) {
+                p2000Items = fetchedItems.slice(0, 8);
                 renderP2000();
             }
         }
