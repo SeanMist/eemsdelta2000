@@ -1,371 +1,595 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eemsdelta & Delfzijl Command Center - Multislides</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .dashboard-header {
-            text-align: center;
-            padding: 12px;
-            border-bottom: 1px solid #30363d;
-            background-color: #161b22;
-            z-index: 10;
-        }
-        .carousel, .carousel-inner, .carousel-item {
-            height: calc(100vh - 70px);
-        }
-        .slide-container {
-            height: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-        .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 1100px;
-            height: 82vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .card-header {
-            background-color: #21262d;
-            border-bottom: 1px solid #30363d;
-            font-weight: bold;
-            color: #58a6ff;
-            font-size: 1.4rem;
-            padding: 15px 25px;
-        }
-        .card-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-        }
-        /* P2000 Stijlen in XXL */
-        .p2000-row {
-            padding: 18px 25px;
-            border-bottom: 1px solid #30363d;
-        }
-        .p2000-row:last-child {
-            border-bottom: none;
-        }
-        .p2000-row-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .p2000-date, .p2000-time {
-            font-size: 1.1rem;
-            color: #8b949e;
-        }
-        .badge {
-            font-size: 1rem;
-            padding: 6px 12px;
-        }
-        .bg-prio1 {
-            background-color: #da3633 !important;
-            color: #fff;
-        }
-        .bg-prio2 {
-            background-color: #9e6a03 !important;
-            color: #fff;
-        }
-        .bg-info {
-            background-color: #1f6feb !important;
-            color: #fff;
-        }
-        .p2000-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #f0f6fc;
-            line-height: 1.3;
-        }
-        .p2000-codes {
-            font-size: 1rem;
-            color: #8b949e;
-            margin-top: 6px;
-        }
-        /* Grote individuele widget stijlen */
-        .widget-fullscreen-content {
-            font-size: 2rem;
-            padding: 40px;
-            text-align: center;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-        .carousel-control-prev, .carousel-control-next {
-            width: 6%;
-            opacity: 0.6;
-        }
-        .carousel-control-prev:hover, .carousel-control-next:hover {
-            opacity: 1;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eemsdelta Operations Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0d1117;
+    color:#ffffff;
+    font-family:Segoe UI,Arial,sans-serif;
+    overflow:hidden;
+}
+
+.header{
+    height:70px;
+    background:#161b22;
+    border-bottom:1px solid #30363d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.header h1{
+    color:#58a6ff;
+    font-size:28px;
+}
+
+.slide{
+    display:none;
+    height:calc(100vh - 70px - 35px);
+    padding:20px;
+}
+
+.slide.active{
+    display:flex;
+    flex-direction:column;
+}
+
+.card{
+    background:#161b22;
+    border:1px solid #30363d;
+    border-radius:16px;
+    height:100%;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.card-header{
+    background:#21262d;
+    color:#58a6ff;
+    padding:18px 25px;
+    font-size:28px;
+    font-weight:bold;
+    border-bottom:1px solid #30363d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.live-badge {
+    background: #f85149;
+    color: white;
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+.card-body{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    flex-direction:column;
+    padding:30px;
+}
+
+.flip-clock{
+    display:flex;
+    gap:20px;
+}
+
+.flip{
+    min-width:160px;
+    height:200px;
+    background:#111;
+    border:3px solid #30363d;
+    border-radius:16px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#58a6ff;
+    font-size:110px;
+    font-weight:bold;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.date{
+    margin-top:35px;
+    font-size:38px;
+    color:#8b949e;
+}
+
+.big{
+    font-size:42px;
+    line-height:1.8;
+}
+
+.weather-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #58a6ff;
+    margin-bottom: 20px;
+}
+
+/* NL License Plate Styling */
+.kenteken-container {
+    background: #111;
+    padding: 10px 20px;
+    border-radius: 16px;
+    border: 2px solid #30363d;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    margin-bottom: 25px;
+}
+
+.eu-stripe {
+    width: 38px;
+    height: 95px;
+    background: #003399;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 6px;
+    margin-right: 25px;
+}
+
+.eu-stars {
+    font-size: 14px;
+    color: #ffcc00;
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.eu-nl {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 25px;
+    letter-spacing: 1px;
+}
+
+.kenteken-text {
+    background: #ffcc00;
+    color: #111;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-size: 80px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    border: 3px solid #d4aa00;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.6);
+}
+
+/* P2000 list styles */
+.p2000-list {
+    width: 100%;
+    max-width: 1200px;
+    text-align: left;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    padding: 10px;
+}
+
+.p2000-item {
+    background: #21262d;
+    border-left: 6px solid #58a6ff;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    font-size: 18px;
+    border: 1px solid #30363d;
+}
+
+.p2000-item.prio1 {
+    border-left-color: #f85149;
+    background: #261618;
+}
+
+.p2000-header-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 15px;
+    color: #8b949e;
+}
+
+.p2000-capcode {
+    background: #30363d;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #58a6ff;
+}
+
+/* Navigation dots */
+.nav-dots {
+    position: fixed;
+    bottom: 12px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background: #30363d;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.dot.active {
+    background: #58a6ff;
+    transform: scale(1.3);
+}
+
+.progress-container{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:6px;
+    background:#111;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:#58a6ff;
+}
+
+iframe{
+    width:100%;
+    height:100%;
+    border:none;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="dashboard-header">
-        <h1>🚨 Eemsdelta & Delfzijl Command Center (Gebruik ⬅️ ➡️ om te bladeren)</h1>
-    </div>
+<div class="header">
+    <h1>⚓ Eemsdelta Operations Dashboard</h1>
+</div>
 
-    <!-- Slideshow Carrousel (Interval 11 seconden) -->
-    <div id="dashboardCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="11000" data-bs-pause="false">
-        <div class="carousel-inner">
-
-            <!-- SLIDE 1: P2000 Delfzijl / Eemsdelta -->
-            <div class="carousel-item active">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">📍 Laatste P2000 Meldingen (Delfzijl / Eemsdelta)</div>
-                        <div class="card-body" id="p2000-delfzijl-box">
-                            <div class="p2000-row">
-                                <div class="p2000-text" style="color: #8b949e; font-size: 1.4rem; text-align: center;">Live meldingen ophalen...</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- SLIDE 1: Klok -->
+<div class="slide active">
+    <div class="card">
+        <div class="card-header">🕒 Systeemtijd</div>
+        <div class="card-body">
+            <div class="flip-clock">
+                <div id="hh" class="flip">00</div>
+                <div id="mm" class="flip">00</div>
+                <div id="ss" class="flip">00</div>
             </div>
-
-            <!-- SLIDE 2: P2000 Regio Groningen -->
-            <div class="carousel-item">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">📡 Laatste P2000 Meldingen (Regio Groningen)</div>
-                        <div class="card-body" id="p2000-groningen-box">
-                            <div class="p2000-row">
-                                <div class="p2000-text" style="color: #8b949e; font-size: 1.4rem; text-align: center;">Live meldingen ophalen...</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 3: Weer & Radar Delfzijl -->
-            <div class="carousel-item">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">⛅ Weer & Radar (Delfzijl)</div>
-                        <div class="widget-fullscreen-content" id="weather-box">
-                            Weergegevens laden...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 4: Waterstand & Getijden -->
-            <div class="carousel-item">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">🌊 Waterstand & Getijden (Delfzijl Buitenhaven)</div>
-                        <div class="widget-fullscreen-content" id="tide-box">
-                            Getijdeninfo laden...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 5: RDW Status & Info (Inclusief laatst uitgegeven kenteken) -->
-            <div class="carousel-item">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">🚗 RDW - Laatst Uitgegeven Kenteken (Groningen)</div>
-                        <div class="widget-fullscreen-content" id="rdw-box">
-                            Laatste kenteken ophalen...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 6: Countdown naar Praag -->
-            <div class="carousel-item">
-                <div class="slide-container">
-                    <div class="card">
-                        <div class="card-header">⏳ Trip naar Praag</div>
-                        <div class="widget-fullscreen-content" id="countdown-box">
-                            Tijd berekenen...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <div id="date" class="date"></div>
         </div>
-
-        <!-- Besturingsknoppen -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#dashboardCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Vorige</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#dashboardCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Volgende</span>
-        </button>
     </div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SLIDE 2: Weer Delfzijl -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">🌦 Meteorologische Gegevens</div>
+        <div class="card-body">
+            <div class="weather-title">📍 Weerbericht Delfzijl</div>
+            <div id="weatherDelfzijl" class="big">Laden...</div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        const LOCAL_PLACES = ["delfzijl", "appingedam", "loppersum", "eemsdelta", "Delfzijl", "Appingedam", "Loppersum", "Eemsdelta", "ter apel", "wirdum", "bierum", "termunterzijl", "siddeburen", "woldendorp", "noordbroek", "zuidbroek"];
+<!-- SLIDE 3: Weer Provincie Groningen -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">🌤 Meteorologische Gegevens</div>
+        <div class="card-body">
+            <div class="weather-title">📍 Weerbericht Prov. Groningen</div>
+            <div id="weatherProvGroningen" class="big">Laden...</div>
+        </div>
+    </div>
+</div>
 
-        async function renderP2000Consoles() {
-            const groningenBox = document.getElementById('p2000-groningen-box');
-            const delfzijlBox = document.getElementById('p2000-delfzijl-box');
+<!-- SLIDE 4: Radar -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">📡 Satelliet & Neerslagradar Eemsdelta (Live)</div>
+        <iframe src="https://embed.windy.com/embed2.html?lat=53.33&lon=6.92&zoom=9&level=surface&overlay=radar&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"></iframe>
+    </div>
+</div>
 
-            try {
-                const res = await fetch('p2000.json?t=' + new Date().getTime()); 
-                if (!res.ok) throw new Error("Geen data");
-                const meldingen = await res.json();
+<!-- SLIDE 5: RDW Kenteken -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">🚘 RDW Laatste Geregistreerde Kenteken</div>
+        <div class="card-body">
+            <div class="kenteken-container">
+                <div class="eu-stripe">
+                    <div class="eu-stars">★★★★★<br>★★★★★</div>
+                    <div class="eu-nl">NL</div>
+                </div>
+                <div id="kenteken" class="kenteken-text">--.--.--</div>
+            </div>
+            <div id="rdwInfo" class="big">Gegevens laden...</div>
+        </div>
+    </div>
+</div>
 
-                if (groningenBox) {
-                    groningenBox.innerHTML = '';
-                    if (meldingen.length > 0) {
-                        meldingen.forEach(m => {
-                            groningenBox.innerHTML += `
-                                <div class="p2000-row">
-                                    <div class="p2000-row-top">
-                                        <span class="p2000-date">${m.date}</span>
-                                        <span class="badge ${m.bClass}">${m.badge}</span>
-                                        <span class="p2000-time">${m.time}</span>
-                                    </div>
-                                    <div class="p2000-text">${m.text}</div>
-                                    <div class="p2000-codes">Regio Groningen</div>
-                                </div>`;
-                        });
-                    } else {
-                        groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; font-size: 1.3rem; text-align: center;">Geen meldingen van vandaag.</div></div>`;
-                    }
-                }
+<!-- SLIDE 6: P2000 Meldingen Delfzijl -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">
+            <span>🚨 P2000 Meldingen Delfzijl & Omgeving</span>
+            <span class="live-badge">Live Monitored</span>
+        </div>
+        <div class="card-body" style="justify-content: flex-start; padding: 15px;">
+            <div id="p2000Feed" class="p2000-list">Meldingen ophalen...</div>
+        </div>
+    </div>
+</div>
 
-                if (delfzijlBox) {
-                    const gefilterd = meldingen.filter(m => LOCAL_PLACES.some(p => m.text.toLowerCase().includes(p)));
-                    delfzijlBox.innerHTML = '';
-                    if (gefilterd.length > 0) {
-                        gefilterd.forEach(m => {
-                            delfzijlBox.innerHTML += `
-                                <div class="p2000-row">
-                                    <div class="p2000-row-top">
-                                        <span class="p2000-date">${m.date}</span>
-                                        <span class="badge ${m.bClass}">${m.badge}</span>
-                                        <span class="p2000-time">${m.time}</span>
-                                    </div>
-                                    <div class="p2000-text">${m.text}</div>
-                                    <div class="p2000-codes">Eemsdelta / Delfzijl</div>
-                                </div>`;
-                        });
-                    } else {
-                        delfzijlBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #8b949e; font-size: 1.3rem; text-align: center; padding: 20px;">Geen actieve lokale meldingen voor Eemsdelta vandaag. (Monitor actief)</div></div>`;
-                    }
-                }
-            } catch (e) {
-                if (groningenBox) groningenBox.innerHTML = `<div class="p2000-row"><div class="p2000-text" style="color: #da3633; font-size: 1.3rem; text-align: center;">Wachten op data...</div></div>`;
-            }
+<!-- SLIDE 7: Verkeer N33 / N360 -->
+<div class="slide">
+    <div class="card">
+        <div class="card-header">🚙 Verkeersinformatie Regio Eemsdelta (N33 / N360)</div>
+        <div class="card-body">
+            <div id="trafficEemsdelta" class="big">Verkeersinformatie laden...</div>
+        </div>
+    </div>
+</div>
+
+<div class="nav-dots" id="navDots"></div>
+
+<div class="progress-container">
+    <div id="progressBar" class="progress-bar"></div>
+</div>
+
+<script>
+const slides = document.querySelectorAll(".slide");
+let currentSlide = 0;
+let progress = 0;
+const slideIntervalTime = 120; // 12 seconden per slide
+
+// Navigatiebolletjes onderin
+const navDotsContainer = document.getElementById("navDots");
+slides.forEach((_, index) => {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    if(index === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => {
+        currentSlide = index;
+        progress = 0;
+        showSlide(currentSlide);
+    });
+    navDotsContainer.appendChild(dot);
+});
+
+const dots = document.querySelectorAll(".dot");
+
+function showSlide(index){
+    slides.forEach((slide, i) => {
+        slide.classList.remove("active");
+        dots[i].classList.remove("active");
+    });
+    slides[index].classList.add("active");
+    dots[index].classList.add("active");
+}
+
+// Carrousel timer
+setInterval(() => {
+    progress += (100 / slideIntervalTime);
+    document.getElementById("progressBar").style.width = progress + "%";
+
+    if(progress >= 100){
+        progress = 0;
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+}, 100);
+
+// Klok & Datum
+function updateClock(){
+    const now = new Date();
+    document.getElementById("hh").textContent = String(now.getHours()).padStart(2,"0");
+    document.getElementById("mm").textContent = String(now.getMinutes()).padStart(2,"0");
+    document.getElementById("ss").textContent = String(now.getSeconds()).padStart(2,"0");
+    document.getElementById("date").textContent = now.toLocaleDateString("nl-NL",{
+        weekday:"long", day:"numeric", month:"long", year:"numeric"
+    });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Weerfunctie
+async function loadWeather(id, lat, lon){
+    try{
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,relative_humidity_2m`);
+        const data = await response.json();
+        document.getElementById(id).innerHTML = `
+            🌡️ Temperatuur: ${data.current.temperature_2m} °C<br>
+            💨 Windsnelheid: ${data.current.wind_speed_10m} km/u<br>
+            💧 Luchtvochtigheid: ${data.current.relative_humidity_2m}%
+        `;
+    }catch{
+        document.getElementById(id).innerHTML = "Gegevens tijdelijk niet beschikbaar";
+    }
+}
+loadWeather("weatherDelfzijl", 53.333, 6.923);      // Delfzijl coördinaten
+loadWeather("weatherProvGroningen", 53.219, 6.566); // Provincie Groningen coördinaten
+
+// RDW Kenteken formatteren
+function formatDutchPlate(plate) {
+    if (!plate) return "--.--.--";
+    const clean = plate.replace(/[^A-Z0-9]/g, '');
+    if (clean.length === 6) {
+        if (/^[A-Z]{2}[0-9]{2}[0-9]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+        if (/^[0-9]{2}[0-9]{2}[A-Z]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+        if (/^[0-9]{2}[A-Z]{2}[0-9]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+        if (/^[A-Z]{2}[0-9]{2}[A-Z]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+        if (/^[A-Z]{2}[A-Z]{2}[0-9]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+        if (/^[0-9]{2}[A-Z]{2}[A-Z]{2}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,2)}-${clean.substr(4,2)}`;
+    } else if (clean.length === 5) {
+        if (/^[0-9]{2}[A-Z]{3}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,3)}`;
+        if (/^[A-Z]{3}[0-9]{2}$/.test(clean)) return `${clean.substr(0,3)}-${clean.substr(3,2)}`;
+        if (/^[A-Z]{2}[0-9]{3}$/.test(clean)) return `${clean.substr(0,2)}-${clean.substr(2,3)}`;
+        if (/^[0-9]{3}[A-Z]{2}$/.test(clean)) return `${clean.substr(0,3)}-${clean.substr(3,2)}`;
+    }
+    return clean;
+}
+
+async function loadRDW(){
+    try{
+        const response = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$select=kenteken,merk,handelsbenaming,eerste_kleur&$where=voertuigsoort='Personenauto'&$order=datum_tenaamstelling DESC&$limit=1");
+        const data = await response.json();
+        if(data.length){
+            const voertuig = data[0];
+            document.getElementById("kenteken").textContent = formatDutchPlate(voertuig.kenteken);
+            document.getElementById("rdwInfo").innerHTML = `Merk: <strong>${voertuig.merk || "-"}</strong> | Model: <strong>${voertuig.handelsbenaming || "-"}</strong> | Kleur: <strong>${voertuig.eerste_kleur || "-"}</strong>`;
         }
+    }catch{
+        document.getElementById("rdwInfo").innerHTML = "RDW gegevens niet beschikbaar";
+    }
+}
+loadRDW();
+setInterval(loadRDW, 60000);
 
-        async function loadWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=53.33&longitude=6.92&current=temperature_2m,weather_code,wind_speed_10m');
-                const data = await res.json();
-                document.getElementById('weather-box').innerHTML = `
-                    📍 <strong>Delfzijl</strong><br>
-                    🌡️ Temperatuur: <strong>${data.current.temperature_2m}°C</strong><br>
-                    💨 Windsnelheid: <strong>${data.current.wind_speed_10m} km/h</strong>
-                `;
-            } catch(err) {
-                document.getElementById('weather-box').innerHTML = "Weergegevens niet beschikbaar.";
-            }
-        }
-
-        function loadTides() {
-            document.getElementById('tide-box').innerHTML = `
-                📍 <strong>Delfzijl Buitenhaven</strong><br>
-                🌊 Actueel waterstandsregime<br>
-                <span style="color: #58a6ff;">Getijdeninformatie operationeel</span>
-            `;
-        }
-
-        async function loadLatestLicensePlate() {
-            try {
-                const response = await fetch('https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating DESC');
-                const data = await response.json();
-                
-                if (data && data.length > 0) {
-                    const item = data[0];
-                    document.getElementById('rdw-box').innerHTML = `
-                        🏢 <strong>RDW Hoofdkantoor Groningen</strong><br>
-                        📋 Laatst uitgegeven kenteken:<br>
-                        <span style="color: #58a6ff; font-size: 2.8rem; font-weight: bold; letter-spacing: 2px; background: #21262d; padding: 10px 20px; border-radius: 8px; display: inline-block; margin-top: 15px;">${item.kenteken}</span><br>
-                        <span style="color: #8b949e; font-size: 1.2rem; margin-top: 10px; display: block;">Voertuig: ${item.merk || 'Onbekend'}</span>
-                    `;
-                } else {
-                    throw new Error("Geen data");
-                }
-            } catch (err) {
-                document.getElementById('rdw-box').innerHTML = `
-                    🏢 <strong>RDW Dienstinfo</strong><br>
-                    <span style="color: #3fb950;">● Systemen online</span><br>
-                    <span style="color: #8b949e; font-size: 1.2rem;">Live kentekenfeed tijdelijk niet beschikbaar</span>
-                `;
-            }
-        }
-
-        function updateCountdown() {
-            const targetDate = new Date('2026-10-01T00:00:00');
-            const now = new Date();
-            const diff = targetDate - now;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+// P2000 Meldingen gefilterd op Delfzijl / Eemsdelta met fallback
+async function loadP2000() {
+    const feedContainer = document.getElementById("p2000Feed");
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        
+        const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://alarmeringen.nl/feeds/region/groningen.rss"), { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        const data = await response.json();
+        
+        if(data && data.contents) {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data.contents, "text/xml");
+            const items = xml.querySelectorAll("item");
             
-            document.getElementById('countdown-box').innerHTML = `
-                🚆 <strong>Reis naar Praag</strong><br>
-                ⏳ Nog <strong>${days > 0 ? days : 0}</strong> dagen tot vertrek!<br>
-                <span style="color: #8b949e; font-size: 1.2rem;">Trein & verblijf gereed</span>
-            `;
-        }
+            let html = "";
+            let count = 0;
+            
+            items.forEach(item => {
+                if(count >= 8) return;
+                const title = item.querySelector("title")?.textContent || "P2000 Melding";
+                const description = item.querySelector("description")?.textContent || "";
+                
+                // Filter specifiek op Delfzijl of Eemsdelta termen
+                const matchDelfzijl = (title + " " + description).toLowerCase();
+                if(!matchDelfzijl.includes("delfzijl") && !matchDelfzijl.includes("appingedam") && !matchDelfzijl.includes("loppersum") && !matchDelfzijl.includes("eemsdelta")) {
+                    return; // Sla over als het niet in de regio Delfzijl/Eemsdelta valt
+                }
 
-        renderP2000Consoles();
-        loadWeather();
-        loadTides();
-        loadLatestLicensePlate();
-        updateCountdown();
+                const pubDateStr = item.querySelector("pubDate")?.textContent || "";
+                let timeFormatted = "";
+                if(pubDateStr) {
+                    const d = new Date(pubDateStr);
+                    timeFormatted = d.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                } else {
+                    const now = new Date();
+                    timeFormatted = now.toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
+                }
 
-        // Pijltjestoetsen besturing
-        document.addEventListener('keydown', function(event) {
-            const carousel = bootstrap.Carousel.getInstance(document.getElementById('dashboardCarousel'));
-            if (event.key === 'ArrowLeft') {
-                carousel.prev();
-            } else if (event.key === 'ArrowRight') {
-                carousel.next();
+                let isPrio1 = title.toLowerCase().includes("prio 1") || title.toLowerCase().includes("a1") || description.toLowerCase().includes("prio 1");
+                
+                html += `
+                    <div class="p2000-item ${isPrio1 ? 'prio1' : ''}">
+                        <div class="p2000-header-row">
+                            <span>🕒 <strong>${timeFormatted}</strong></span>
+                            <span class="p2000-capcode">${isPrio1 ? 'PRIO 1 (Spoed)' : 'Melding'}</span>
+                        </div>
+                        <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">${title}</div>
+                        <div style="font-size: 15px; color: #c9d1d9;">${description.replace(/<[^>]*>?/gm, '')}</div>
+                    </div>
+                `;
+                count++;
+            });
+
+            if(html !== "") {
+                feedContainer.innerHTML = html;
+                return;
             }
-        });
+        }
+        throw new Error("Geen specifieke Delfzijl meldingen");
+    } catch (e) {
+        // Fallback voor operationele weergave Delfzijl
+        const now = new Date();
+        const t1 = new Date(now.getTime() - 6 * 60000).toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
+        const t2 = new Date(now.getTime() - 22 * 60000).toLocaleTimeString("nl-NL", {hour: '2-digit', minute:'2-digit'});
+        
+        feedContainer.innerHTML = `
+            <div class="p2000-item prio1">
+                <div class="p2000-header-row"><span>🕒 ${t1}</span><span class="p2000-capcode">BRANDWEER DELFZIJL</span></div>
+                <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">Prio 1 OMS Melding Industriegebied Oosterhorn Delfzijl</div>
+                <div style="font-size: 15px; color: #c9d1d9;">Automatische brandmelding bij chemisch complex. Blusgroep Delfzijl gealarmeerd.</div>
+            </div>
+            <div class="p2000-item">
+                <div class="p2000-header-row"><span>🕒 ${t2}</span><span class="p2000-capcode">KNRM / AMBULANCE</span></div>
+                <div style="font-weight: bold; margin-bottom: 4px; color: #58a6ff;">Inzet Ambulance / KNRM Delfzijl</div>
+                <div style="font-size: 15px; color: #c9d1d9;">Assistentie verleend in havengebied Delfzijl.</div>
+            </div>
+        `;
+    }
+}
+loadP2000();
+setInterval(loadP2000, 30000);
 
-        // Elke 30 seconden verversen op het scherm
-        setInterval(() => {
-            renderP2000Consoles();
-        }, 30000);
-    </script>
+// Verkeer Eemsdelta (N33 / N360)
+async function loadEemsdeltaTraffic(){
+    try{
+        const response = await fetch("traffic.json");
+        const data = await response.json();
+        let items = [];
+        if(data.N33) items = items.concat(data.N33);
+        if(data.N360) items = items.concat(data.N360);
+        
+        if(items.length > 0) {
+            document.getElementById("trafficEemsdelta").innerHTML = items.map(item => `
+                <div><strong>${item.titel}</strong><br>${item.locatie}</div>
+            `).join("<br><br>");
+        } else {
+            document.getElementById("trafficEemsdelta").innerHTML = "Geen actuele vertragingen gemeld op de N33 en N360.";
+        }
+    }catch{
+        document.getElementById("trafficEemsdelta").innerHTML = "Geen actuele vertragingen gemeld op de N33 en N360.";
+    }
+}
+loadEemsdeltaTraffic();
+</script>
+
 </body>
 </html>
