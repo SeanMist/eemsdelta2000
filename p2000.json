@@ -1,23 +1,14 @@
 [
   {
-    "date": "29-09-2026",
-    "time": "09:00",
-    "badge": "PRIO 1",
-    "bClass": "bg-prio1",
-    "text": "Brand woning Delfzijl"
+    "title": "Prio 1 BR Brandgerucht Delfzijl",
+    "pubDate": "Mon, 29 Sep 2026 19:30:00 GMT"
   },
   {
-    "date": "29-09-2026",
-    "time": "09:12",
-    "badge": "PRIO 2",
-    "bClass": "bg-prio2",
-    "text": "Assistentie ambulance Appingedam"
+    "title": "Prio 2 HV Stormschade Appingedam",
+    "pubDate": "Mon, 29 Sep 2026 18:15:00 GMT"
   },
   {
-    "date": "29-09-2026",
-    "time": "09:25",
-    "badge": "INFO",
-    "bClass": "bg-info",
-    "text": "Melding regio Groningen"
+    "title": "Prio 1 TS Assistentie Groningen",
+    "pubDate": "Mon, 29 Sep 2026 17:45:00 GMT"
   }
 ]
