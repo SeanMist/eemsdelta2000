@@ -44,7 +44,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             width: 100%;
             max-width: 1100px;
-            height: 82vh;
+            height: 80vh;
             display: flex;
             flex-direction: column;
         }
@@ -118,23 +118,41 @@
             align-items: center;
             height: 100%;
         }
-        .carousel-control-prev, .carousel-control-next {
-            width: 6%;
-            opacity: 0.6;
+        /* Stijl voor de navigatiebolletjes onderin */
+        .carousel-indicators [data-bs-target] {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #58a6ff;
+            margin: 0 6px;
+            opacity: 0.4;
+            border: none;
         }
-        .carousel-control-prev:hover, .carousel-control-next:hover {
+        .carousel-indicators .active {
             opacity: 1;
+            background-color: #58a6ff;
         }
     </style>
 </head>
 <body>
 
     <div class="dashboard-header">
-        <h1>🚨 Eemsdelta & Delfzijl Command Center (Gebruik ⬅️ ➡️ om te bladeren)</h1>
+        <h1>🚨 Eemsdelta & Delfzijl Command Center</h1>
     </div>
 
-    <!-- Slideshow Carrousel (Interval 11 seconden) -->
+    <!-- Slideshow Carrousel (Interval 11 seconden, met bolletjes onderin) -->
     <div id="dashboardCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="11000" data-bs-pause="false">
+        
+        <!-- Navigatiebolletjes onderin -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            <button type="button" data-bs-target="#dashboardCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+        </div>
+
         <div class="carousel-inner">
 
             <!-- SLIDE 1: P2000 Delfzijl / Eemsdelta -->
@@ -189,7 +207,7 @@
                 </div>
             </div>
 
-            <!-- SLIDE 5: RDW Status & Info (Inclusief laatst uitgegeven kenteken) -->
+            <!-- SLIDE 5: RDW Status & Info (Laatst uitgegeven kenteken) -->
             <div class="carousel-item">
                 <div class="slide-container">
                     <div class="card">
@@ -214,16 +232,6 @@
             </div>
 
         </div>
-
-        <!-- Besturingsknoppen -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#dashboardCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Vorige</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#dashboardCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Volgende</span>
-        </button>
     </div>
 
     <!-- Bootstrap JS -->
@@ -352,7 +360,7 @@
         loadLatestLicensePlate();
         updateCountdown();
 
-        // Pijltjestoetsen besturing
+        // Pijltjestoetsen besturing op toetsenbord
         document.addEventListener('keydown', function(event) {
             const carousel = bootstrap.Carousel.getInstance(document.getElementById('dashboardCarousel'));
             if (event.key === 'ArrowLeft') {
