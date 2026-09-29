@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "date": "29-09-2026",
+    "time": "09:00",
+    "badge": "PRIO 1",
+    "bClass": "bg-prio1",
+    "text": "Brand woning Delfzijl"
+  },
+  {
+    "date": "29-09-2026",
+    "time": "09:12",
+    "badge": "PRIO 2",
+    "bClass": "bg-prio2",
+    "text": "Assistentie ambulance Appingedam"
+  },
+  {
+    "date": "29-09-2026",
+    "time": "09:25",
+    "badge": "INFO",
+    "bClass": "bg-info",
+    "text": "Melding regio Groningen"
+  }
+]
