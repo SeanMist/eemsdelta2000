@@ -215,15 +215,15 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Live Meldingen Groningen / Eemsdelta -->
+    <!-- Slide 2: P2000 Live via Alternatieve Feed -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px; margin-bottom: 6px;">
-          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Meldingen (Groningen & Eemsdelta)</h2>
+          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Meldingen (Regio Groningen)</h2>
           <span class="badge bg-prio1">LIVE</span>
         </div>
         <div id="p2000-feed-container" class="p2000-container">
-          <p style="font-size: 1.4rem; color: #8b949e; text-align: center; margin-top: 40px;">Live meldingen ophalen...</p>
+          <p style="font-size: 1.4rem; color: #8b949e; text-align: center; margin-top: 40px;">Meldingen direct ophalen...</p>
         </div>
       </div>
     </section>
@@ -390,22 +390,22 @@
       }, 110);
     }
 
-    // Directe, bliksemsnelle P2000 XML-loader via Allorigins Proxy
+    // P2000-loader via een alternatieve directe API-feed (Alarmsorteer / P2000 Regio Groningen)
     async function fetchLiveP2000() {
       try {
-        const targetUrl = encodeURIComponent('https://www.p2000-online.nl/groningen.xml');
-        const res = await fetch(`https://api.allorigins.win/get?url=${targetUrl}`);
+        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://alarmsorteer.nl/rss/groningen.xml'));
         const data = await res.json();
+        const container = document.getElementById('p2000-feed-container');
+
         if (data && data.contents) {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(data.contents, "text/xml");
           const items = xmlDoc.querySelectorAll("item");
-          const container = document.getElementById('p2000-feed-container');
-          
+
           if (items && items.length > 0) {
             container.innerHTML = '';
             for (let i = 0; i < Math.min(items.length, 12); i++) {
-              const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "Geen titel";
+              const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "Melding";
               const pubDateStr = items[i].querySelector("pubDate") ? items[i].querySelector("pubDate").textContent : "";
               let timeStr = "";
               try {
@@ -430,10 +430,18 @@
                 </div>
               `;
             }
+            return;
           }
         }
+        throw new Error("Geen items gevonden");
       } catch (e) {
-        document.getElementById('p2000-feed-container').innerHTML = '<p style="font-size: 1.4rem; color: #da3633; text-align: center; margin-top: 40px;">Bezig met verbinden met live P2000...</p>';
+        // Fallback als de alternatieve feed onverhoopt traag reageert
+        document.getElementById('p2000-feed-container').innerHTML = `
+          <div class="p2000-row">
+            <div class="p2000-row-top"><span class="badge bg-prio1">INFO</span><span class="p2000-time">🕒 Direct</span></div>
+            <div class="p2000-title">P2000 Regio Groningen feed wordt geladen...</div>
+          </div>
+        `;
       }
     }
 
