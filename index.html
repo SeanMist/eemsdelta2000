@@ -215,7 +215,7 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Eemsdelta (Live Feed) -->
+    <!-- Slide 2: P2000 Eemsdelta (Lokale Feed) -->
     <section id="slide-p2000-eemsdelta" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px; margin-bottom: 6px;">
@@ -228,7 +228,7 @@
       </div>
     </section>
 
-    <!-- Slide 3: P2000 Groningen (Live Feed) -->
+    <!-- Slide 3: P2000 Groningen (Lokale Feed) -->
     <section id="slide-p2000-groningen" class="slide">
       <div class="card" style="justify-content: flex-start;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px; margin-bottom: 6px;">
@@ -300,7 +300,7 @@
             <p id="delfzijl-rain" style="font-size: 1.5rem; font-weight: 800; color: #388bfd;">Neerslag: -- mm</p>
           </div>
           <div style="text-align: center; background: #21262d; padding: 10px 18px; border-radius: 12px; border: 2px solid #30363d;">
-            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">☀️ UV-Index</div>
+            <div style="color: #8b949e; font-size: 1rem; font-weight: 700;">☀️️ UV-Index</div>
             <div style="font-size: 2.2rem; font-weight: 900; color: #e3b341;" id="delfzijl-uv">--</div>
           </div>
         </div>
@@ -404,85 +404,67 @@
       }, 110);
     }
 
-    // Live P2000 Fetcher voor Eemsdelta
-    async function fetchEemsdeltaP2000() {
+    // Direct inlezen van de lokale p2000.json van jouw Python-server
+    async function fetchLocalP2000() {
       try {
-        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://alarmsorteer.nl/rss/gemeente/eemsdelta'));
+        const res = await fetch('p2000.json');
         const data = await res.json();
-        if (data && data.contents) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
-          const container = document.getElementById('p2000-eemsdelta-container');
-          if (items && items.length > 0) {
-            container.innerHTML = '';
-            for (let i = 0; i < Math.min(items.length, 3); i++) {
-              const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "Geen titel";
-              const pubDateStr = items[i].querySelector("pubDate") ? items[i].querySelector("pubDate").textContent : "";
-              let timeStr = "";
-              try { timeStr = new Date(pubDateStr).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}); } catch(e) { timeStr = pubDateStr.substring(11, 16); }
+        
+        // Vult de Eemsdelta slide (3 recentste meldingen)
+        const containerEems = document.getElementById('p2000-eemsdelta-container');
+        if (containerEems && data && data.length > 0) {
+          containerEems.innerHTML = '';
+          for (let i = 0; i < Math.min(data.length, 3); i++) {
+            const item = data[i];
+            const title = item.title || "Geen titel";
+            const timeStr = item.pubDate ? item.pubDate.substring(17, 22) : "";
+            
+            const lower = title.toLowerCase();
+            let badgeClass = 'bg-info';
+            let badgeText = 'MELDING';
+            if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
+            else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
 
-              const lower = title.toLowerCase();
-              let badgeClass = 'bg-info';
-              let badgeText = 'MELDING';
-              if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
-              else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
-
-              container.innerHTML += `
-                <div class="p2000-row">
-                  <div class="p2000-row-top">
-                    <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
-                    <span class="p2000-time">🕒 ${timeStr}</span>
-                  </div>
-                  <div class="p2000-title">${title}</div>
+            containerEems.innerHTML += `
+              <div class="p2000-row">
+                <div class="p2000-row-top">
+                  <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
+                  <span class="p2000-time">🕒 ${timeStr}</span>
                 </div>
-              `;
-            }
+                <div class="p2000-title">${title}</div>
+              </div>
+            `;
+          }
+        }
+
+        // Vult de Groningen slide
+        const containerGroningen = document.getElementById('p2000-groningen-container');
+        if (containerGroningen && data && data.length > 0) {
+          containerGroningen.innerHTML = '';
+          for (let i = 0; i < Math.min(data.length, 5); i++) {
+            const item = data[i];
+            const title = item.title || "Geen titel";
+            const timeStr = item.pubDate ? item.pubDate.substring(17, 22) : "";
+            
+            const lower = title.toLowerCase();
+            let badgeClass = 'bg-info';
+            let badgeText = 'MELDING';
+            if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
+            else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
+
+            containerGroningen.innerHTML += `
+              <div class="p2000-row">
+                <div class="p2000-row-top">
+                  <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
+                  <span class="p2000-time">🕒 ${timeStr}</span>
+                </div>
+                <div class="p2000-title">${title}</div>
+              </div>
+            `;
           }
         }
       } catch (e) {
-        document.getElementById('p2000-eemsdelta-container').innerHTML = '<p style="font-size: 1.4rem; color: #8b949e; text-align: center; margin-top: 40px;">Geen actieve meldingen momenteel.</p>';
-      }
-    }
-
-    // Live P2000 Fetcher voor Groningen
-    async function fetchGroningenP2000() {
-      try {
-        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://alarmsorteer.nl/rss/groningen.xml'));
-        const data = await res.json();
-        if (data && data.contents) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
-          const container = document.getElementById('p2000-groningen-container');
-          if (items && items.length > 0) {
-            container.innerHTML = '';
-            for (let i = 0; i < Math.min(items.length, 5); i++) {
-              const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "Geen titel";
-              const pubDateStr = items[i].querySelector("pubDate") ? items[i].querySelector("pubDate").textContent : "";
-              let timeStr = "";
-              try { timeStr = new Date(pubDateStr).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'}); } catch(e) { timeStr = pubDateStr.substring(11, 16); }
-
-              const lower = title.toLowerCase();
-              let badgeClass = 'bg-info';
-              let badgeText = 'MELDING';
-              if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
-              else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
-
-              container.innerHTML += `
-                <div class="p2000-row">
-                  <div class="p2000-row-top">
-                    <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
-                    <span class="p2000-time">🕒 ${timeStr}</span>
-                  </div>
-                  <div class="p2000-title">${title}</div>
-                </div>
-              `;
-            }
-          }
-        }
-      } catch (e) {
-        document.getElementById('p2000-groningen-container').innerHTML = '<p style="font-size: 1.4rem; color: #8b949e; text-align: center; margin-top: 40px;">Geen actieve meldingen momenteel.</p>';
+        console.log("Kon lokale p2000.json niet laden", e);
       }
     }
 
@@ -527,18 +509,14 @@
       } catch (e) {}
     }
 
-    fetchEemsdeltaP2000();
-    fetchGroningenP2000();
+    fetchLocalP2000();
     fetchRDWLatestPlate();
     fetchCityWeather(53.33, 6.92, 'delfzijl');
     fetchCityWeather(53.22, 6.57, 'groningen');
     resetProgressBar();
 
-    // Automatisch verversen van meldingen elke 30 seconden
-    setInterval(() => {
-      fetchEemsdeltaP2000();
-      fetchGroningenP2000();
-    }, 30000);
+    // Automatisch verversen van lokale data elke 10 seconden
+    setInterval(fetchLocalP2000, 10000);
   </script>
 </body>
 </html>
