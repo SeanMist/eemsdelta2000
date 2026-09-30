@@ -66,8 +66,6 @@
       letter-spacing: 1px;
     }
     .bg-prio1 { background-color: #da3633; }
-    .bg-prio2 { background-color: #d29922; color: #0d1117; }
-    .bg-info { background-color: #238636; }
     .bg-prague { background-color: #8957e5; }
     .bg-rdw { background-color: #00529b; }
     .bg-rain { background-color: #1f6feb; }
@@ -107,41 +105,6 @@
       align-items: center;
       justify-content: center;
       line-height: 1;
-    }
-
-    .p2000-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      flex: 1;
-      margin-top: 10px;
-      padding-right: 4px;
-    }
-    .p2000-row {
-      background: #1c2128;
-      border: 2px solid #30363d;
-      border-radius: 12px;
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .p2000-row-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .p2000-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.3;
-    }
-    .p2000-time {
-      font-size: 1.1rem;
-      color: #8b949e;
-      font-weight: 700;
     }
 
     .weather-temp-huge { font-size: 6rem; font-weight: 900; color: #ffffff; margin: 0; line-height: 0.9; }
@@ -215,20 +178,33 @@
       </div>
     </section>
 
-    <!-- Slide 2: P2000 Live via Alternatieve Feed -->
-    <section id="slide-p2000-groningen" class="slide">
-      <div class="card" style="justify-content: flex-start;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px; margin-bottom: 6px;">
-          <h2 style="font-size: 2.2rem;">🚨 Live P2000 Meldingen (Regio Groningen)</h2>
-          <span class="badge bg-prio1">LIVE</span>
+    <!-- Slide 2: P2000 Eemsdelta (Live Iframe) -->
+    <section id="slide-p2000-eemsdelta" class="slide">
+      <div class="card" style="padding: 16px; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
+          <h2 style="font-size: 2.2rem;">🚨 P2000 Live Meldingen Eemsdelta</h2>
+          <span class="badge bg-prio1">EEMSDELTA</span>
         </div>
-        <div id="p2000-feed-container" class="p2000-container">
-          <p style="font-size: 1.4rem; color: #8b949e; text-align: center; margin-top: 40px;">Meldingen direct ophalen...</p>
+        <div style="flex: 1; border-radius: 14px; overflow: hidden; margin-top: 12px; border: 2px solid #30363d; background: #161b22;">
+          <iframe src="https://alarmsorteer.nl/gemeente/eemsdelta" width="100%" height="100%" frameborder="0" style="border:0; background: #161b22;"></iframe>
         </div>
       </div>
     </section>
 
-    <!-- Slide 3: RDW Kenteken -->
+    <!-- Slide 3: P2000 Groningen (Live Iframe) -->
+    <section id="slide-p2000-groningen" class="slide">
+      <div class="card" style="padding: 16px; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
+          <h2 style="font-size: 2.2rem;">🚒 P2000 Live Meldingen Regio Groningen</h2>
+          <span class="badge bg-prio1">GRONINGEN</span>
+        </div>
+        <div style="flex: 1; border-radius: 14px; overflow: hidden; margin-top: 12px; border: 2px solid #30363d; background: #161b22;">
+          <iframe src="https://alarmsorteer.nl/regio/groningen" width="100%" height="100%" frameborder="0" style="border:0; background: #161b22;"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: RDW Kenteken -->
     <section id="slide-rdw" class="slide">
       <div class="card" style="justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -263,7 +239,7 @@
       </div>
     </section>
 
-    <!-- Slide 4: Buienradar -->
+    <!-- Slide 5: Buienradar -->
     <section id="slide-radar" class="slide">
       <div class="card" style="padding: 16px; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #30363d; padding-bottom: 10px;">
@@ -276,7 +252,7 @@
       </div>
     </section>
 
-    <!-- Slide 5: Weer Delfzijl -->
+    <!-- Slide 6: Weer Delfzijl -->
     <section id="slide-weather-delfzijl" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🌤️ Weer & 24u Verwachting Delfzijl</h2>
@@ -295,10 +271,10 @@
       </div>
     </section>
 
-    <!-- Slide 6: Weer Groningen -->
+    <!-- Slide 7: Weer Groningen -->
     <section id="slide-weather-groningen" class="slide">
       <div class="card">
-        <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️ Weer & 24u Verwachting Groningen Stad</h2>
+        <h2 style="font-size: 2rem; border-bottom: 3px solid #30363d; padding-bottom: 8px;">🏙️️ Weer & 24u Verwachting Groningen Stad</h2>
         <div style="display: flex; align-items: center; justify-content: space-around; margin: 8px 0;">
           <div class="weather-temp-huge" id="groningen-temp">--°C</div>
           <div style="text-align: left;">
@@ -314,7 +290,7 @@
       </div>
     </section>
 
-    <!-- Slide 7: Getijden -->
+    <!-- Slide 8: Getijden -->
     <section id="slide-tide" class="slide">
       <div class="card">
         <h2 style="font-size: 2rem;">🌊 Live Getijden & Waterstand Delfzijl</h2>
@@ -342,10 +318,11 @@
     <div class="dot" onclick="goToSlide(4)"></div>
     <div class="dot" onclick="goToSlide(5)"></div>
     <div class="dot" onclick="goToSlide(6)"></div>
+    <div class="dot" onclick="goToSlide(7)"></div>
   </nav>
 
   <script>
-    const slides = ['slide-prague', 'slide-p2000-groningen', 'slide-rdw', 'slide-radar', 'slide-weather-delfzijl', 'slide-weather-groningen', 'slide-tide'];
+    const slides = ['slide-prague', 'slide-p2000-eemsdelta', 'slide-p2000-groningen', 'slide-rdw', 'slide-radar', 'slide-weather-delfzijl', 'slide-weather-groningen', 'slide-tide'];
     let currentSlide = 0;
     let progressInterval;
 
@@ -390,61 +367,6 @@
       }, 110);
     }
 
-    // P2000-loader via een alternatieve directe API-feed (Alarmsorteer / P2000 Regio Groningen)
-    async function fetchLiveP2000() {
-      try {
-        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://alarmsorteer.nl/rss/groningen.xml'));
-        const data = await res.json();
-        const container = document.getElementById('p2000-feed-container');
-
-        if (data && data.contents) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
-
-          if (items && items.length > 0) {
-            container.innerHTML = '';
-            for (let i = 0; i < Math.min(items.length, 12); i++) {
-              const title = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "Melding";
-              const pubDateStr = items[i].querySelector("pubDate") ? items[i].querySelector("pubDate").textContent : "";
-              let timeStr = "";
-              try {
-                timeStr = new Date(pubDateStr).toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
-              } catch(e) {
-                timeStr = pubDateStr.substring(11, 16);
-              }
-
-              const lower = title.toLowerCase();
-              let badgeClass = 'bg-info';
-              let badgeText = 'MELDING';
-              if (lower.includes('prio 1') || lower.includes('a1')) { badgeClass = 'bg-prio1'; badgeText = 'PRIO 1'; }
-              else if (lower.includes('prio 2') || lower.includes('a2')) { badgeClass = 'bg-prio2'; badgeText = 'PRIO 2'; }
-
-              container.innerHTML += `
-                <div class="p2000-row">
-                  <div class="p2000-row-top">
-                    <span class="badge ${badgeClass}" style="font-size: 0.95rem; padding: 4px 12px;">${badgeText}</span>
-                    <span class="p2000-time">🕒 ${timeStr}</span>
-                  </div>
-                  <div class="p2000-title">${title}</div>
-                </div>
-              `;
-            }
-            return;
-          }
-        }
-        throw new Error("Geen items gevonden");
-      } catch (e) {
-        // Fallback als de alternatieve feed onverhoopt traag reageert
-        document.getElementById('p2000-feed-container').innerHTML = `
-          <div class="p2000-row">
-            <div class="p2000-row-top"><span class="badge bg-prio1">INFO</span><span class="p2000-time">🕒 Direct</span></div>
-            <div class="p2000-title">P2000 Regio Groningen feed wordt geladen...</div>
-          </div>
-        `;
-      }
-    }
-
     async function fetchRDWLatestPlate() {
       try {
         const res = await fetch("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&$order=datum_eerste_toelating%20DESC");
@@ -486,14 +408,10 @@
       } catch (e) {}
     }
 
-    fetchLiveP2000();
     fetchRDWLatestPlate();
     fetchCityWeather(53.33, 6.92, 'delfzijl');
     fetchCityWeather(53.22, 6.57, 'groningen');
     resetProgressBar();
-
-    // Automatisch verversen elke 30 seconden
-    setInterval(fetchLiveP2000, 30000);
   </script>
 </body>
 </html>
