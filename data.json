@@ -1,8 +1,11 @@
 {
-  "temp": "16.5",
-  "hum": "72",
-  "wind": "14",
-  "water": "+25 cm NAP",
-  "p1": "Brandgerucht Oosterlaan Delfzijl",
-  "p2": "Prio 1 Assistentie ambulance Appingedam"
+  "temp": "24.3",
+  "hum": "47",
+  "wind": "13.3",
+  "water": "+128 cm NAP",
+  "getij": "HW om 16:40 (+155cm)",
+  "p1": "Geen recente meldingen",
+  "p2": "Geen recente meldingen",
+  "kenteken": "T-843-NZ",
+  "auto": "Voertuig"
 }
