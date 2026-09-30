@@ -1,0 +1,32 @@
+name: Update Dashboard Data
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Draait elke 30 minuten automatisch
+  workflow_dispatch: # Maakt het ook mogelijk om handmatig op de knop te klikken
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run Python Update Script
+        run: python update_data.py
+
+      - name: Commit and push updated data.json
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git status
+          git add data.json
+          git commit -m "Automatische update van dashboard data.json" || echo "Geen wijzigingen"
+          git push
